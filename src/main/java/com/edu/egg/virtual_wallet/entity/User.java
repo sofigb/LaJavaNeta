@@ -17,6 +17,8 @@ import java.time.LocalDateTime;
 @Where(clause = "active = true")
 public class User {
 
+    // Under Revision
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
