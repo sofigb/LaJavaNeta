@@ -19,7 +19,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     private EmployeeRepo employeeRepository;
 
     @Autowired
-    private UserServiceImpl userService;
+    private AppUserServiceImpl userService;
 
     /*
     @Autowired

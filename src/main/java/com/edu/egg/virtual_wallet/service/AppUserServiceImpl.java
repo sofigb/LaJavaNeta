@@ -1,9 +1,8 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.User;
+import com.edu.egg.virtual_wallet.entity.AppUser;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
-import com.edu.egg.virtual_wallet.repository.UserRepo;
-import com.edu.egg.virtual_wallet.validation.Validation;
+import com.edu.egg.virtual_wallet.repository.AppUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -11,28 +10,31 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 
 @Service
-public class UserServiceImpl implements UserService {
+public class AppUserServiceImpl implements AppUserService {
 
     // Under Revision
 
     @Autowired
-    private UserRepo userRepository;
+    private AppUserRepo appUserRepository;
 
     @Autowired
-    private NameServiceImpl nameService;
+    private NameService nameService;
 
     @Autowired
-    private ContactServiceImpl contactService;
+    private ContactService contactService;
+
+    @Autowired
+    private LoginService loginService;
 
     @Override
     @Transactional
-    public void createUser(User newUser) throws VirtualWalletException {
+    public void createUser(AppUser newUser) throws VirtualWalletException {
         try {
-            checkUser(newUser.getUsername(), newUser.getPassword(), newUser.getSecurityQuestion());
             nameService.createName(newUser.getFullName());
+            loginService.createLogin(newUser.getLoginDetails());
             contactService.createContact(newUser.getContactInfo());
             newUser.setActive(true);
-            userRepository.save(newUser);
+            appUserRepository.save(newUser);
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }
@@ -40,13 +42,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deactivateUser(User deletedUser) throws VirtualWalletException{ // ?
+    public void deactivateUser(AppUser deletedUser) throws VirtualWalletException{ // ?
         try {
             nameService.deactivateName(deletedUser.getFullName().getId());
+            loginService.deactivateLogin(deletedUser.getLoginDetails().getId());
             contactService.deactivateContact(deletedUser.getContactInfo().getId());
-            userRepository.deleteById(deletedUser.getId());
+            appUserRepository.deleteById(deletedUser.getId());
             deletedUser.setDeactivationDate(LocalDate.now());
-            userRepository.save(deletedUser);
+            appUserRepository.save(deletedUser);
         } catch (Exception e) {
             throw new VirtualWalletException("Unable to delete Customer");
         }
@@ -54,13 +57,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void editUser(User updatedUser) throws VirtualWalletException {
-        if (userRepository.findById(updatedUser.getId()).isPresent()) {
+    public void editUser(AppUser updatedUser) throws VirtualWalletException {
+        if (appUserRepository.findById(updatedUser.getId()).isPresent()) {
             try {
-                checkUser(updatedUser.getUsername(), updatedUser.getPassword(), updatedUser.getSecurityQuestion());
                 nameService.editName(updatedUser.getFullName());
+                loginService.editLogin(updatedUser.getLoginDetails());
                 contactService.editContact(updatedUser.getContactInfo());
-                userRepository.save(updatedUser);
+                appUserRepository.save(updatedUser);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }
@@ -71,26 +74,18 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public User returnUser(Integer idUser) throws VirtualWalletException{
-        if (userRepository.findById(idUser).isPresent()) {
+    public AppUser returnUser(Integer idUser) throws VirtualWalletException{
+        if (appUserRepository.findById(idUser).isPresent()) {
             try {
-                User user = userRepository.findById(idUser).get();
-                user.setFullName(user.getFullName());
-                user.setContactInfo(user.getContactInfo());
-                return user;
+                AppUser appUser = appUserRepository.findById(idUser).get();
+                appUser.setFullName(appUser.getFullName());
+                appUser.setContactInfo(appUser.getContactInfo());
+                return appUser;
             } catch (Exception e) {
                 throw new VirtualWalletException("Unable to retrieve user data");
             }
         } else {
             throw new VirtualWalletException("Unable to retrieve user data");
         }
-    }
-
-    @Override
-    public void checkUser(String username, String password, String securityQuestion) throws VirtualWalletException {
-        // How to verify if username and email is unique?
-        Validation.nullCheck(username, "Username");
-        Validation.nullCheck(securityQuestion, "Security Question");
-        Validation.validPasswordCheck(password);
     }
 }

@@ -14,13 +14,13 @@ public class Employee {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
-    private User user;
+    private AppUser user;
 
     /***************************************************************
     ************************** CONSTRUCTOR *************************
     ***************************************************************/
 
-    public Employee(Integer id, User user) {
+    public Employee(Integer id, AppUser user) {
         this.id = id;
         this.user = user;
     }
@@ -40,11 +40,11 @@ public class Employee {
         this.id = id;
     }
 
-    public User getUser() {
+    public AppUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(AppUser user) {
         this.user = user;
     }
 }

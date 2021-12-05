@@ -14,7 +14,7 @@ public class CustomerServiceImpl implements CustomerService {
     private CustomerRepo customerRepository;
 
     @Autowired
-    private UserServiceImpl userService;
+    private AppUserServiceImpl userService;
 
     @Override
     @Transactional

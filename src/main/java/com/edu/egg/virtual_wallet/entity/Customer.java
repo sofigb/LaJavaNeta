@@ -17,7 +17,7 @@ public class Customer {
 
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
-    private User user;
+    private AppUser user;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
@@ -26,23 +26,23 @@ public class Customer {
     @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate dateOfBirth;
 
-    @OneToMany(mappedBy = "accountOwner", fetch = FetchType.LAZY)
-    private List<Account> accounts;
+    //@OneToMany(mappedBy = "accountOwner", fetch = FetchType.LAZY)
+    //private List<Account> accounts;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<Payee> payees;
+    //@OneToMany(fetch = FetchType.LAZY)
+    //private List<Payee> payees;
 
     /*************************************************************
     ************************** CONSTRUCTOR ***********************
     *************************************************************/
 
-    public Customer(Integer id, User user, Address addressInfo, LocalDate dateOfBirth, List<Account> accounts, List<Payee> payees) {
+    public Customer(Integer id, AppUser user, Address addressInfo, LocalDate dateOfBirth/*, List<Account> accounts, List<Payee> payees*/) {
         this.id = id;
         this.user = user;
         this.addressInfo = addressInfo;
         this.dateOfBirth = dateOfBirth;
-        this.accounts = accounts;
-        this.payees = payees;
+        //this.accounts = accounts;
+        //this.payees = payees;
     }
 
     public Customer() {
@@ -60,11 +60,11 @@ public class Customer {
         this.id = id;
     }
 
-    public User getUser() {
+    public AppUser getUser() {
         return user;
     }
 
-    public void setUser(User user) {
+    public void setUser(AppUser user) {
         this.user = user;
     }
 
@@ -84,6 +84,7 @@ public class Customer {
         this.dateOfBirth = dateOfBirth;
     }
 
+    /*
     public List<Account> getAccounts() {
         return accounts;
     }
@@ -99,4 +100,5 @@ public class Customer {
     public void setPayees(List<Payee> payees) {
         this.payees = payees;
     }
+     */
 }
