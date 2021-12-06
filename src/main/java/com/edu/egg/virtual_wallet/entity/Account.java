@@ -4,11 +4,12 @@ import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EntityListeners;
-import javax.persistence.Id;
+
+
+import javax.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -39,11 +40,11 @@ public class Account {
 
     private Boolean active;
 
-    //@OneToMany
-    //private List<Transaccion> transactions;
+    @OneToMany
+    private List<Transaction> transactions;
 
-    //@ManyToOne
-    //private Customer accountOwner;
+    // @ManyToOne
+    // private Customer accountOwner;
 
 
     public Long getNumber() {
