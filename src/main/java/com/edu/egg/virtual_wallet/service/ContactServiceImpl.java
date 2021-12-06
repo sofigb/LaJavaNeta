@@ -54,6 +54,11 @@ public class ContactServiceImpl implements ContactService {
     @Override
     public void checkContact(Long phoneNumber, String email) throws VirtualWalletException {
         Validation.validEmailCheck(email);
+
+        if (contactRepository.existsContactByEmail(email)) {
+            throw new VirtualWalletException("Email '" + email +  "' is already taken");
+        }
+
         Validation.validPhoneNumberCheck(phoneNumber);
     }
 }

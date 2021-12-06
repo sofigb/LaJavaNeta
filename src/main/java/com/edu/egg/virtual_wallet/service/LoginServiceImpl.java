@@ -64,8 +64,12 @@ public class LoginServiceImpl implements LoginService, UserDetailsService {
 
     @Override
     public void checkLoginDetails(String username, String password) throws VirtualWalletException {
-        // How to verify if username is unique?
         Validation.nullCheck(username, "Username");
+
+        if (loginRepository.existsLoginByUsername(username)) {
+            throw new VirtualWalletException("Username '" + username +  "' is already taken");
+        }
+
         Validation.validPasswordCheck(password);
     }
 
