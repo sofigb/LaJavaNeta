@@ -37,7 +37,7 @@ public class AuthenticationController {
         }
 
         if (principal != null) {
-            modelAndView.setViewName("redirect:/");
+            modelAndView.setViewName("redirect:/"); // Redirect to Customers profile
         }
 
         return modelAndView;

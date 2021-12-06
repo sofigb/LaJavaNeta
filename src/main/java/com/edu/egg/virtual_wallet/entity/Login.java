@@ -24,6 +24,12 @@ public class Login {
     @Column(nullable = false)
     private boolean active;
 
+    @ManyToMany
+    // Under revision. If we add a Super Admin role, then it will be a ManyToMany relationship, since a Super Admin does everything an Employee can
+    // If we only have Customer and Employee roles, then we should map the relationship as ManyToOne
+    @JoinColumn(nullable = false)
+    private UserRole role;
+
     /*
     @Column(nullable = false)
     private String securityQuestion;
@@ -33,11 +39,12 @@ public class Login {
     ************************** CONSTRUCTOR ************************
     **************************************************************/
 
-    public Login(Integer id, String username, String password, boolean active) {
+    public Login(Integer id, String username, String password, boolean active, UserRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.active = active;
+        this.role = role;
     }
 
     public Login() {
@@ -77,5 +84,13 @@ public class Login {
 
     public void setActive(boolean active) {
         this.active = active;
+    }
+
+    public UserRole getRole() {
+        return role;
+    }
+
+    public void setRole(UserRole role) {
+        this.role = role;
     }
 }
