@@ -4,7 +4,7 @@ import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
+import javax.persistence.OneToMany;
 
 import javax.persistence.*;
 
@@ -18,6 +18,9 @@ public class Account {
 
     @Id
     @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    
     private Long number;
 
     @Column(nullable = false)
@@ -41,12 +44,13 @@ public class Account {
     private Boolean active;
 
     @OneToMany
+    @JoinColumn(nullable = false)
     private List<Transaction> transactions;
 
     // @ManyToOne
     // private Customer accountOwner;
 
-
+    
     public Long getNumber() {
         return number;
     }
@@ -110,4 +114,21 @@ public class Account {
     public void setActive(Boolean active) {
         this.active = active;
     }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public void setTransactions(List<Transaction> transactions) {
+        this.transactions = transactions;
+    }
+    
 }

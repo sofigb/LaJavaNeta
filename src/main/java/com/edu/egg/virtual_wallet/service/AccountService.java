@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-
+import java.util.Optional;
+import org.springframework.stereotype.Service;
+@Service
 public class AccountService {
-    @Autowired
+    @Autowired(required=true)
     private AccountRepository repository;
 
     @Transactional(readOnly = true)
@@ -133,6 +135,23 @@ public class AccountService {
         repository.enableByAccountNumber(accountNumber);
     }
 
+    
+    @Transactional
+    public void transaction(Long accountNumber,Double balance) throws Exception {
+
+       
+        Account account = repository.findById(accountNumber).get();
+
+        account.setBalance(balance);
+
+        repository.save(account); 
+    }
+    
+    @Transactional(readOnly = true)
+    public Optional <Account> findByNumber(Long number) {
+        return repository.findById(number);
+    }
+    
 }
 
 

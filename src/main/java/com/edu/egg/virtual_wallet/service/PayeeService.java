@@ -5,6 +5,7 @@ import com.edu.egg.virtual_wallet.exception.MyException;
 import com.edu.egg.virtual_wallet.repository.PayeeRepository;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,7 @@ public class PayeeService {
     private PayeeRepository payeeRep;
     
      private String mensaje = "No existe ningun contacto asociado con el nombre %s";
-     @Transactional
+    @Transactional
     public void create(Payee payee) throws MyException {
         
         //VALIDAR FORMATO CUENTA
@@ -53,8 +54,8 @@ public class PayeeService {
     }
 
     @Transactional(readOnly = true)
-    public Payee findById(Integer id) {
-        return payeeRep.getById(id);
+    public Optional <Payee> findById(Integer id) {
+        return payeeRep.findById(id);
     }
 
     @Transactional

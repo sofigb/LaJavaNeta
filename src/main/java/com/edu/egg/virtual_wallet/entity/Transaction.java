@@ -29,20 +29,24 @@ public class Transaction {
     @ManyToOne
     @JoinColumn(nullable = false)
     private Payee payee;
-    private Long senderAccountNumber;
+    //NO VA A FUNCIONAR ASI, TENGO QUE TENER UN OBJETO CUENTA
+   // private Long senderAccountNumber;
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Account senderAccount;
     private CurrencyType currency;
 
     public Transaction() {
     }
 
-    public Transaction(Long id, LocalDateTime timeStamp, String reference, TransactionType type, Double amount, Payee payee, Long senderAccountNumber, CurrencyType currency) {
+    public Transaction(Long id, LocalDateTime timeStamp, String reference, TransactionType type, Double amount, Payee payee, Account senderAccount, CurrencyType currency) {
         this.id = id;
         this.timeStamp = timeStamp;
         this.reference = reference;
         this.type = type;
         this.amount = amount;
         this.payee = payee;
-        this.senderAccountNumber = senderAccountNumber;
+        this.senderAccount = senderAccount;
         this.currency = currency;
     }
 
@@ -94,12 +98,12 @@ public class Transaction {
         this.payee = payee;
     }
 
-    public Long getSenderAccountNumber() {
-        return senderAccountNumber;
+    public Account getSenderAccount() {
+        return senderAccount;
     }
 
-    public void setSenderAccountNumber(Long senderAccountNumber) {
-        this.senderAccountNumber = senderAccountNumber;
+    public void setSenderAccountNumber(Account senderAccount) {
+        this.senderAccount = senderAccount;
     }
 
     public CurrencyType getCurrency() {

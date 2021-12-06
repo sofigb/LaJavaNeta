@@ -2,6 +2,8 @@
 
 package com.edu.egg.virtual_wallet.validation;
 
+import com.edu.egg.virtual_wallet.entity.Account;
+import com.edu.egg.virtual_wallet.entity.Payee;
 import com.edu.egg.virtual_wallet.exception.MyException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,16 +18,57 @@ public class Validation {
     
     public static void validationName(String name) throws MyException {
         if (name == null || name.isEmpty()) {
-            throw MyException.nameNotNull();
+            throw MyException.NotNull();
         }
 
         Pattern patterString = Pattern.compile("^[a-zA-Z]+( [a-zA-Z]+)*$");
         Matcher matcherName = patterString.matcher(name);
         if (!matcherName.matches()) {
-            throw MyException.nameFormat();
+            throw MyException.NameFormat();
         }
     }
-    // Under Revision
+     public static void exitsPayee(Boolean payee, Payee payeeObj) throws MyException {
+         if (!payee || payeeObj==null) {
+               throw MyException.NotExist();
+        
+     }
+     }
+      public static void exitsAccount(Boolean accountNumber, Account accountObj) throws MyException {
+         if (!accountNumber || accountObj==null) {
+               throw MyException.NotExist();
+        
+     }
+     }
+     
+    public static void checkReference(String reference) throws MyException {
+        if (reference == null || reference.isEmpty()) {
+            throw MyException.NotNull();
+        }
+
+        Pattern patterString = Pattern.compile("[a-zA-Z ]{2,30}");
+        Matcher matcherReference = patterString.matcher(reference);
+        if (!matcherReference.matches()) {
+            throw MyException.ReferenceFormat();
+        }
+    }
+     
+    public static void notNullNegativeAmout(Double amount) throws MyException {
+        
+        if (amount == null || amount <= 0) {
+              throw MyException.amountNotNullNegative();
+        }
+    }
+    public static void insufficientBalance(Double balance , Double amount) throws MyException {
+        
+        if (balance == null || balance == 0 || balance < amount ) {
+              throw MyException.insufficientBalance();
+        }
+    }
+    
+    
+    
+    
+    // Under Revision --DANA-- 
 
     public static void nullCheck(String userStringInput, String inputName) throws VirtualWalletException {
         if(userStringInput.trim().isEmpty() || userStringInput == null) {
@@ -79,5 +122,6 @@ public class Validation {
 
         }
     }
+    //---DANA
 }
 
