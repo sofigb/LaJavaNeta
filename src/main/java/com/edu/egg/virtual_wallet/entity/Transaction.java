@@ -8,6 +8,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
 
 @Entity
@@ -23,6 +25,9 @@ public class Transaction {
     private String reference;
     private TransactionType type;
     private Double amount;
+    
+    @ManyToOne
+    @JoinColumn(nullable = false)
     private Payee payee;
     private Long senderAccountNumber;
     private CurrencyType currency;

@@ -4,8 +4,10 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import org.hibernate.annotations.SQLDelete;
 
 @Entity
+@SQLDelete(sql = "UPDATE payee SET active = false WHERE id = ?")
 public class Payee {
 
     @Id
@@ -13,14 +15,16 @@ public class Payee {
     private Integer id;
     private Long accountNumber;
     private String name;
+    private Boolean active;
 
     public Payee() {
     }
 
-    public Payee(Integer id, Long accountNumber, String name) {
+    public Payee(Integer id, Long accountNumber, String name, Boolean active) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.name = name;
+        this.active = active;
     }
 
     public Integer getId() {
@@ -47,4 +51,11 @@ public class Payee {
         this.name = name;
     }
 
+    public Boolean getActive() {
+        return active;
+    }
+
+    public void setActive(Boolean active) {
+        this.active = active;
+    }
 }

@@ -1,9 +1,9 @@
 package com.edu.egg.virtual_wallet.entity;
 
+import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import org.hibernate.annotations.SQLDelete;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EntityListeners;
@@ -26,7 +26,7 @@ public class Account {
     private String alias;
 
     @Column(nullable = false)
-    private Currency currency;
+    private CurrencyType currency;
 
     @Column(nullable = false)
     private Double balance;
@@ -70,11 +70,11 @@ public class Account {
         this.alias = alias;
     }
 
-    public Currency getCurrency() {
+    public CurrencyType getCurrency() {
         return currency;
     }
 
-    public void setCurrency(Currency currency) {
+    public void setCurrency(CurrencyType currency) {
         this.currency = currency;
     }
 
