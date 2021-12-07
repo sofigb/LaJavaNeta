@@ -14,8 +14,7 @@ import java.time.Period;
 
 
 public class Validation {
-    
-    
+
     public static void validationName(String name) throws MyException {
         if (name == null || name.isEmpty()) {
             throw MyException.NotNull();
@@ -30,14 +29,12 @@ public class Validation {
      public static void exitsPayee(Boolean payee, Payee payeeObj) throws MyException {
          if (!payee || payeeObj==null) {
                throw MyException.NotExist();
-        
-     }
+          }
      }
       public static void exitsAccount(Boolean accountNumber, Account accountObj) throws MyException {
          if (!accountNumber || accountObj==null) {
                throw MyException.NotExist();
-        
-     }
+          }
      }
      
     public static void checkReference(String reference) throws MyException {
@@ -64,11 +61,8 @@ public class Validation {
               throw MyException.insufficientBalance();
         }
     }
-    
-    
-    
-    
-    // Under Revision --DANA-- 
+
+    // Under Revision --DNA--
 
     public static void nullCheck(String userStringInput, String inputName) throws VirtualWalletException {
         if(userStringInput.trim().isEmpty() || userStringInput == null) {
