@@ -25,11 +25,13 @@ public class Login {
     @Column(nullable = false)
     private boolean active;
 
-    @ManyToMany
-    // Under revision. If we add a Super Admin role, then it will be a ManyToMany relationship, since a Super Admin does everything an Employee can
-    // If we only have Customer and Employee roles, then we should map the relationship as ManyToOne
+    @ManyToOne
+    /* The application wil have 3 roles: CUSTOMER, EMPLOYEE and ADMIN
+    - We will utilize role hierarchy to be able to assign a single role to each user.
+    - For example, a user with the ADMIN role will automatically have the authorisations of
+     the EMPLOYEE and CUSTOMER roles */
     @JoinColumn(nullable = false)
-    private List<UserRole> role;
+    private UserRole role;
 
     /*
     @Column(nullable = false)
@@ -40,7 +42,7 @@ public class Login {
     ************************** CONSTRUCTOR ************************
     **************************************************************/
 
-    public Login(Integer id, String username, String password, boolean active, List<UserRole> role) {
+    public Login(Integer id, String username, String password, boolean active, UserRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -87,11 +89,11 @@ public class Login {
         this.active = active;
     }
 
-    public List<UserRole> getRole() {
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(List<UserRole> role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 }

@@ -21,16 +21,18 @@ public class EmployeeService {
     @Autowired
     private AppUserService userService;
 
+    @Autowired
+    private UserRoleService userRoleService;
+
     /*
     @Autowired
     private CustomerService customerService; Will allow employee to edit/create customers
     */
 
-    /*
-    @Override
     @Transactional
     public void createEmployee(Employee newEmployee) throws VirtualWalletException {
         try {
+            newEmployee.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("EMPLOYEE"));
             userService.createUser(newEmployee.getUser());
             employeeRepository.save(newEmployee);
         } catch (Exception e) {
@@ -38,7 +40,6 @@ public class EmployeeService {
         }
     }
 
-    @Override
     @Transactional
     public void deactivateEmployee(Integer idEmployee) throws VirtualWalletException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
@@ -52,7 +53,6 @@ public class EmployeeService {
             throw new VirtualWalletException("Unable to find Employee");
         }
     }
-    */
 
     @Transactional
     public void editEmployee(Employee updatedEmployee) throws VirtualWalletException {
