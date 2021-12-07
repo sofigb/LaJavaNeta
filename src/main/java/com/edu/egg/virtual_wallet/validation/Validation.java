@@ -1,5 +1,4 @@
 
-
 package com.edu.egg.virtual_wallet.validation;
 
 import com.edu.egg.virtual_wallet.entity.Account;
@@ -7,6 +6,7 @@ import com.edu.egg.virtual_wallet.entity.Payee;
 import com.edu.egg.virtual_wallet.exception.MyException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 
 import java.time.LocalDate;
@@ -36,7 +36,7 @@ public class Validation {
                throw MyException.NotExist();
           }
      }
-     
+
     public static void checkReference(String reference) throws MyException {
         if (reference == null || reference.isEmpty()) {
             throw MyException.NotNull();
@@ -48,21 +48,22 @@ public class Validation {
             throw MyException.ReferenceFormat();
         }
     }
-     
+
     public static void notNullNegativeAmout(Double amount) throws MyException {
-        
+
         if (amount == null || amount <= 0) {
               throw MyException.amountNotNullNegative();
         }
     }
     public static void insufficientBalance(Double balance , Double amount) throws MyException {
-        
+
         if (balance == null || balance == 0 || balance < amount ) {
               throw MyException.insufficientBalance();
         }
     }
 
     // Under Revision --DNA--
+
 
     public static void nullCheck(String userStringInput, String inputName) throws VirtualWalletException {
         if(userStringInput.trim().isEmpty() || userStringInput == null) {
@@ -101,6 +102,7 @@ public class Validation {
         if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
             throw new VirtualWalletException("Invalid phone number format!");
         }
+
     }
 
     /*
@@ -113,9 +115,7 @@ public class Validation {
         nullCheck(password, "Password");
         if (!password.trim().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")) {
             throw new VirtualWalletException("Invalid password! Hint: Make sure you are complying with the password policy");
-
         }
     }
     //---DANA
 }
-

@@ -8,7 +8,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class EmployeeService{
+
+public class EmployeeService {
+
 
     // QUESTION FOR TEAM:
     // Should employees create/delete employees? That should be the role of a Super Admin
@@ -19,7 +21,9 @@ public class EmployeeService{
     private EmployeeRepo employeeRepository;
 
     @Autowired
-    private UserService userService;
+
+    private AppUserService userService;
+
 
     /*
     @Autowired

@@ -9,7 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ContactService{
+
+public class ContactService {
 
     @Autowired
     private ContactRepo contactRepository;
@@ -50,6 +51,11 @@ public class ContactService{
 
     public void checkContact(Long phoneNumber, String email) throws VirtualWalletException {
         Validation.validEmailCheck(email);
+
+        if (contactRepository.existsContactByEmail(email)) {
+            throw new VirtualWalletException("Email '" + email +  "' is already taken");
+        }
+
         Validation.validPhoneNumberCheck(phoneNumber);
     }
 }
