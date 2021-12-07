@@ -4,6 +4,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "LoginInformation")
 @Table(name = "LoginInformation")
@@ -28,7 +29,7 @@ public class Login {
     // Under revision. If we add a Super Admin role, then it will be a ManyToMany relationship, since a Super Admin does everything an Employee can
     // If we only have Customer and Employee roles, then we should map the relationship as ManyToOne
     @JoinColumn(nullable = false)
-    private UserRole role;
+    private List<UserRole> role;
 
     /*
     @Column(nullable = false)
@@ -39,7 +40,7 @@ public class Login {
     ************************** CONSTRUCTOR ************************
     **************************************************************/
 
-    public Login(Integer id, String username, String password, boolean active, UserRole role) {
+    public Login(Integer id, String username, String password, boolean active, List<UserRole> role) {
         this.id = id;
         this.username = username;
         this.password = password;
@@ -86,11 +87,11 @@ public class Login {
         this.active = active;
     }
 
-    public UserRole getRole() {
+    public List<UserRole> getRole() {
         return role;
     }
 
-    public void setRole(UserRole role) {
+    public void setRole(List<UserRole> role) {
         this.role = role;
     }
 }
