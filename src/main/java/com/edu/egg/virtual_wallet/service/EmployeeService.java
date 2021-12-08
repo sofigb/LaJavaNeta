@@ -3,6 +3,7 @@ package com.edu.egg.virtual_wallet.service;
 import com.edu.egg.virtual_wallet.entity.Employee;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
+import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +34,7 @@ public class EmployeeService {
     public void createEmployee(Employee newEmployee) throws VirtualWalletException {
         try {
             newEmployee.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("EMPLOYEE"));
+            newEmployee.getUser().getLoginDetails().setPassword(PasswordPolicyEnforcer.generatePassword());
             userService.createUser(newEmployee.getUser());
             employeeRepository.save(newEmployee);
         } catch (Exception e) {
