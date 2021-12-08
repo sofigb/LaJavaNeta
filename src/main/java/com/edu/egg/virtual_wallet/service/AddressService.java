@@ -10,38 +10,41 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 
 public class AddressService {
-
+//finish agus
     @Autowired
     private AddressRepo addressRepository;
 
     @Transactional
-    public void createAddress(Address newAddress) throws VirtualWalletException {
+    public void createAddress(Address newAddress) throws InputException {
         try {
             addressRepository.save(newAddress);
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            throw new InputException NotCreated();
         }
     }
 
     @Transactional
-    public void deactivateAddress(Integer id) throws VirtualWalletException {
+    public void deactivateAddress(Integer id) throws InputException {
         try {
             addressRepository.deleteById(id);
         } catch (Exception e) {
-            throw new VirtualWalletException("Unable to delete Customer. Failed to identify Address");
+            //throw new VirtualWalletException("Unable to delete Customer. Failed to identify Address");
+                throw  new InputException NotFound();
         }
     }
 
     @Transactional
-    public void editAddress(Address updatedAddress) throws VirtualWalletException{
+    public void editAddress(Address updatedAddress) throws InputException{
         if (addressRepository.findById(updatedAddress.getId()).isPresent()) {
             try {
                 addressRepository.save(updatedAddress);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+               // throw new VirtualWalletException(e.getMessage());
+                throw new InputException NotEdited();
             }
         } else {
-            throw new VirtualWalletException("Failed to identify Customers Address information");
+           // throw new VirtualWalletException("Failed to identify Customers Address information");
+            throw new InputException NotFound();
         }
     }
 }

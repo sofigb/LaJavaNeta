@@ -12,8 +12,9 @@ import java.time.LocalDate;
 
 @Service
 public class UserService  {
-
+//finish agus
     // Under Revision
+    private String User="El usuario ";
 
     @Autowired
     private UserRepo userRepository;
@@ -25,7 +26,7 @@ public class UserService  {
     private ContactService contactService;
 
     @Transactional
-    public void createUser(User newUser) throws VirtualWalletException {
+    public void createUser(User newUser) throws InputException {
         try {
             checkUser(newUser.getUsername(), newUser.getPassword(), newUser.getSecurityQuestion());
             nameService.createName(newUser.getFullName());
@@ -33,12 +34,13 @@ public class UserService  {
             newUser.setActive(true);
             userRepository.save(newUser);
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            throw new InputException NotCreated(User);//falta hacer
+            //throw new VirtualWalletException(e.getMessage());
         }
     }
 
     @Transactional
-    public void deactivateUser(User deletedUser) throws VirtualWalletException{ // ?
+    public void deactivateUser(User deletedUser) throws InputException{ // ?
         try {
             nameService.deactivateName(deletedUser.getFullName().getId());
             contactService.deactivateContact(deletedUser.getContactInfo().getId());
@@ -46,12 +48,13 @@ public class UserService  {
             deletedUser.setDeactivationDate(LocalDate.now());
             userRepository.save(deletedUser);
         } catch (Exception e) {
-            throw new VirtualWalletException("Unable to delete Customer");
+            //throw new VirtualWalletException("Unable to delete Customer");repeticion
+            throw new InputException NotFound(User);
         }
     }
 
     @Transactional
-    public void editUser(User updatedUser) throws VirtualWalletException {
+    public void editUser(User updatedUser) throws InputException{
         if (userRepository.findById(updatedUser.getId()).isPresent()) {
             try {
                 checkUser(updatedUser.getUsername(), updatedUser.getPassword(), updatedUser.getSecurityQuestion());
@@ -59,15 +62,17 @@ public class UserService  {
                 contactService.editContact(updatedUser.getContactInfo());
                 userRepository.save(updatedUser);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+               // throw new VirtualWalletException(e.getMessage());
+                throw new InputException NotEdited(User);//falta hacer
             }
         } else {
-            throw new VirtualWalletException("Unable to find Customer");
+            // throw new VirtualWalletException("Unable to find Customer");repeticion
+            throw new InputException NotFound(User);
         }
     }
 
     @Transactional
-    public User returnUser(Integer idUser) throws VirtualWalletException{
+    public User returnUser(Integer idUser) throws InputException{
         if (userRepository.findById(idUser).isPresent()) {
             try {
                 User user = userRepository.findById(idUser).get();
@@ -75,14 +80,18 @@ public class UserService  {
                 user.setContactInfo(user.getContactInfo());
                 return user;
             } catch (Exception e) {
-                throw new VirtualWalletException("Unable to retrieve user data");
+                //DOUBT , ASK TO DANITA
+                throw new InputException NotRetrievedData(User);
+                //throw new VirtualWalletException("Unable to retrieve user data");//repeticion
             }
         } else {
-            throw new VirtualWalletException("Unable to retrieve user data");
+           // throw new VirtualWalletException("Unable to retrieve user data");//repeticion
+            //no existe el usuario
+            throw new InputException NotRetrievedData(User);
         }
     }
 
-    public void checkUser(String username, String password, String securityQuestion) throws VirtualWalletException {
+    public void checkUser(String username, String password, String securityQuestion) {
         // How to verify if username and email is unique?
         Validation.nullCheck(username, "Username");
         Validation.nullCheck(securityQuestion, "Security Question");

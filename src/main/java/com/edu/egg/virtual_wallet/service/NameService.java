@@ -11,45 +11,51 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 
 public class NameService {
+//finish agus
+    private String Name="El nombre ";
 
     @Autowired
     private NameRepo nameRepository;
 
     @Transactional
-    public void createName(Name newName) throws VirtualWalletException {
+    public void createName(Name newName) throws InputException {
         try {
             checkName(newName.getFirstName(), newName.getMiddleName(), newName.getLastName());
             newName.setActive(true);
             nameRepository.save(newName);
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            //   throw new VirtualWalletException(e.getMessage());
+            throw new InputException NotCreated(Name);
         }
     }
 
     @Transactional
-    public void deactivateName(Integer id) throws VirtualWalletException {
+    public void deactivateName(Integer id) throws InputException {
         try {
             nameRepository.deleteById(id);
         } catch (Exception e) {
-            throw new VirtualWalletException("Unable to delete Customer. Failed to identify Name.");
+            //throw new VirtualWalletException("Unable to delete Customer. Failed to identify Name.");
+            throw new InputException NotFound(Name);
         }
     }
 
     @Transactional
-    public void editName(Name updatedName) throws VirtualWalletException {
+    public void editName(Name updatedName) throws InputException {
         if(nameRepository.findById(updatedName.getId()).isPresent()) {
             try {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
                 nameRepository.save(updatedName);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+               // throw new VirtualWalletException(e.getMessage());
+                throw new InputException NotEdited(Name);//falta hacer
             }
         } else {
-            throw new VirtualWalletException("Failed to identify Customers full name");
+            //throw new VirtualWalletException("Failed to identify Customers full name");
+            throw new InputException NotFound(Name);
         }
     }
 
-    public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException{
+    public void checkName(String firstName, String middleName, String lastName){
         Validation.nullCheck(firstName, "First Name");
         Validation.nullCheck(lastName, "Last Name");
 

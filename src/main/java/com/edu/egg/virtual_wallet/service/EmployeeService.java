@@ -11,7 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class EmployeeService {
 
-
+    private String Employee="El empleado ";
+//finish agus
     // QUESTION FOR TEAM:
     // Should employees create/delete employees? That should be the role of a Super Admin
     // Employees should only be able to edit their own profiles and customer accounts
@@ -21,7 +22,6 @@ public class EmployeeService {
     private EmployeeRepo employeeRepository;
 
     @Autowired
-
     private AppUserService userService;
 
 
@@ -59,16 +59,18 @@ public class EmployeeService {
     */
 
     @Transactional
-    public void editEmployee(Employee updatedEmployee) throws VirtualWalletException {
+    public void editEmployee(Employee updatedEmployee) throws InputException{
         if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {
             try {
                 userService.editUser(updatedEmployee.getUser());
                 employeeRepository.save(updatedEmployee);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+               // throw new VirtualWalletException(e.getMessage());
+                throw new InputException NotEdited(Employee);//falta hacer
             }
         } else {
-            throw new VirtualWalletException("Unable to find Employee");
+                throw  new InputException NotFound(Employee);
+            //throw new VirtualWalletException("Unable to find Employee");
         }
     }
 
@@ -81,10 +83,12 @@ public class EmployeeService {
                 employee.setUser(userService.returnUser(employee.getUser().getId()));
                 return employee;
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new InputException NotReturned(Employee);//falta hacer
+//                throw new VirtualWalletException(e.getMessage());
             }
         } else {
-            throw new VirtualWalletException("Unable to retrieve employee data");
+            throw  new InputException NotRetrievedData(Employee);
+           // throw new VirtualWalletException("Unable to retrieve employee data");
         }
     }
 }

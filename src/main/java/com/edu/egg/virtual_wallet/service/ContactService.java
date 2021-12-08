@@ -11,49 +11,58 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 
 public class ContactService {
+//finish agus
+    private String Contact="La informacion de contacto ";
 
     @Autowired
     private ContactRepo contactRepository;
 
     @Transactional
-    public void createContact(Contact newContact) throws VirtualWalletException {
+    public void createContact(Contact newContact) throws InputException {
         try {
             checkContact(newContact.getPhoneNumber(), newContact.getEmail());
             newContact.setActive(true);
             contactRepository.save(newContact);
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            //throw new VirtualWalletException(e.getMessage());
+            throw new InputException(e.getMessage());
         }
     }
 
     @Transactional
-    public void deactivateContact(Integer id) throws VirtualWalletException {
+    public void deactivateContact(Integer id) throws InputException {
         try {
             contactRepository.deleteById(id);
         } catch (Exception e) {
-            throw new VirtualWalletException("Unable to delete Customer. Failed to identify Contact Information.");
+           // throw new VirtualWalletException("Unable to delete Customer. Failed to identify Contact Information.");
+            throw  new InputException NotFound(Contact);//preguntar nombre
         }
     }
 
     @Transactional
-    public void editContact(Contact updatedContact) throws VirtualWalletException {
+    public void editContact(Contact updatedContact) throws InputException {
         if (contactRepository.findById(updatedContact.getId()).isPresent()) {
             try {
                 checkContact(updatedContact.getPhoneNumber(), updatedContact.getEmail());
                 contactRepository.save(updatedContact);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+               // throw new VirtualWalletException(e.getMessage());
+               // System.out.println();e.message();
+
+                throw  new InputException NotEdited(Contact);
             }
         } else {
-            throw new VirtualWalletException("Failed to identify Customers contact information");
+            //throw new VirtualWalletException("Failed to identify Customers contact information");
+            throw  new InputException NotFound(Contact);
         }
     }
 
-    public void checkContact(Long phoneNumber, String email) throws VirtualWalletException {
+    public void checkContact(Long phoneNumber, String email) throws InputException {
         Validation.validEmailCheck(email);
 
         if (contactRepository.existsContactByEmail(email)) {
-            throw new VirtualWalletException("Email '" + email +  "' is already taken");
+           // throw new VirtualWalletException("Email '" + email +  "' is already taken");
+            throw  new InputException UsedEmail(email);
         }
 
         Validation.validPhoneNumberCheck(phoneNumber);

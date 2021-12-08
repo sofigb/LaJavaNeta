@@ -11,8 +11,9 @@ import java.time.LocalDate;
 
 @Service
 public class AppUserService {
-
+//finish agus
     // Under Revision
+    private String appUser="El usuario ";
 
     @Autowired
     private AppUserRepo appUserRepository;
@@ -27,20 +28,21 @@ public class AppUserService {
     private LoginService loginService;
 
     @Transactional
-    public void createUser(AppUser newUser) throws VirtualWalletException {
+    public void createUser(AppUser newUser) throws InputException {
         try {
             nameService.createName(newUser.getFullName());
             loginService.createLogin(newUser.getLoginDetails());
             contactService.createContact(newUser.getContactInfo());
             newUser.setActive(true);
             appUserRepository.save(newUser);
-        } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+        } catch (InputException e) {
+            //throw new VirtualWalletException(e.getMessage());
+            throw  InputException NotCreated(appUser);
         }
     }
 
     @Transactional
-    public void deactivateUser(AppUser deletedUser) throws VirtualWalletException{ // ?
+    public void deactivateUser(AppUser deletedUser) throws InputException{ // ?
         try {
             nameService.deactivateName(deletedUser.getFullName().getId());
             loginService.deactivateLogin(deletedUser.getLoginDetails().getId());
@@ -48,40 +50,62 @@ public class AppUserService {
             appUserRepository.deleteById(deletedUser.getId());
             deletedUser.setDeactivationDate(LocalDate.now());
             appUserRepository.save(deletedUser);
-        } catch (Exception e) {
-            throw new VirtualWalletException("Unable to delete Customer");
+        } catch (InputException e) {
+           // throw new VirtualWalletException("Unable to delete Customer");se repite
+            throw  InputException NotDeleted(appUser);//preguntar si es asi
         }
     }
-
+//DOUBT
     @Transactional
-    public void editUser(AppUser updatedUser) throws VirtualWalletException {
+    public void editUser(AppUser updatedUser) throws InputException {
         if (appUserRepository.findById(updatedUser.getId()).isPresent()) {
             try {
                 nameService.editName(updatedUser.getFullName());
                 loginService.editLogin(updatedUser.getLoginDetails());
                 contactService.editContact(updatedUser.getContactInfo());
                 appUserRepository.save(updatedUser);
-            } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+            } catch (InputException e) {
+                //throw new VirtualWalletException(e.getMessage());
+                throw InputException NotEdited(appUser);
             }
         } else {
-            throw new VirtualWalletException("Unable to find Customer");
+           // throw new VirtualWalletException("Unable to find Customer");se repite
+            throw  InputException NotFound(appUser);
         }
     }
 
     @Transactional
-    public AppUser returnUser(Integer idUser) throws VirtualWalletException{
+    public AppUser returnUser(Integer idUser) throws InputException{
         if (appUserRepository.findById(idUser).isPresent()) {
             try {
                 AppUser appUser = appUserRepository.findById(idUser).get();
                 appUser.setFullName(appUser.getFullName());
                 appUser.setContactInfo(appUser.getContactInfo());
                 return appUser;
-            } catch (Exception e) {
-                throw new VirtualWalletException("Unable to retrieve user data");
+            } catch (InputException e) {
+                //throw new VirtualWalletException("Unable to retrieve user data");
+                throw  InputException NotRetrievedData(appUser);
             }
         } else {
-            throw new VirtualWalletException("Unable to retrieve user data");
+           // throw new VirtualWalletException("Unable to retrieve user data");
+            throw  InputException NotRetrievedData(appUser);
         }
+       /*
+
+
+
+
+
+
+
+        */
+
+
+
     }
+
+
+
+
+
 }

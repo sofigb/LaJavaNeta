@@ -10,6 +10,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CustomerService {
 
+    private String Customer="El cliente ";
+
     @Autowired
     private CustomerRepo customerRepository;
 
@@ -17,28 +19,30 @@ public class CustomerService {
     private AppUserService userService;
 
     @Transactional
-    public void createCustomer(Customer newCustomer) throws VirtualWalletException {
+    public void createCustomer(Customer newCustomer) throws InputException {
         try {
             userService.createUser(newCustomer.getUser());
             // createAccounts
             customerRepository.save(newCustomer);
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            throw  new InputException NotCreated(Customer);
         }
     }
 
     @Transactional
-    public void deactivateCustomer(Integer idCustomer) throws VirtualWalletException {
+    public void deactivateCustomer(Integer idCustomer) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 userService.deactivateUser(customerRepository.findById(idCustomer).get().getUser()); // ?
                 // deactivate account and payees.
                 customerRepository.deleteById(idCustomer);
-            } catch (Exception e) {
-                throw new VirtualWalletException("Unable to delete Customer");
+            } catch (Exception e ) {//preguntar si no se puede sacar eso
+                //throw new VirtualWalletException("Unable to delete Customer");repeticion
+               throw new InputException NotDeleted(Customer);
             }
         } else {
-            throw new VirtualWalletException("Unable to find Customer");
+           // throw new VirtualWalletException("Unable to find Customer");repeticion
+            throw new InputException NotFound(Customer);
         }
     }
 
@@ -47,31 +51,35 @@ public class CustomerService {
     // Transfers should be made by AccountService
 
     @Transactional
-    public void editCustomer(Customer updatedCustomer) throws VirtualWalletException {
+    public void editCustomer(Customer updatedCustomer) throws InputException{
         if (customerRepository.findById(updatedCustomer.getId()).isPresent()) {
             try {
                 userService.editUser(updatedCustomer.getUser());
                 customerRepository.save(updatedCustomer);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                //throw new VirtualWalletException(e.getMessage());
+                throw new InputException NotEdited(Customer);
             }
         } else {
-            throw new VirtualWalletException("Unable to find Customer");
+          //  throw new VirtualWalletException("Unable to find Customer");
+            throw  new InputException NotFound(Customer);
         }
     }
 
     @Transactional
-    public Customer returnCustomer(Integer idCustomer) throws VirtualWalletException {
+    public Customer returnCustomer(Integer idCustomer) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
                 customer.setUser(userService.returnUser(customer.getUser().getId()));
                 return customer;
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                //throw new VirtualWalletException(e.getMessage());
+                throw new InputException NotReturned(Customer);//falta hacer
             }
         } else {
-            throw new VirtualWalletException("Unable to retrieve customer data");
+            //throw new VirtualWalletException("Unable to retrieve customer data");
+            throw new  InputException NotRetrievedData(Customer);
         }
     }
 }
