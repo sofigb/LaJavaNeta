@@ -4,6 +4,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import org.hibernate.annotations.SQLDelete;
 
 @Entity
@@ -16,16 +18,29 @@ public class Payee {
     private Long accountNumber;
     private String name;
     private Boolean active;
+    
+//    @ManyToOne
+//    @JoinColumn(nullable = false)
+//    private Customer customer;
 
     public Payee() {
     }
 
-    public Payee(Integer id, Long accountNumber, String name, Boolean active) {
+    public Payee(Integer id, Long accountNumber, String name, Boolean active, Customer customer) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.name = name;
         this.active = active;
+//        this.customer = customer;
     }
+//
+//    public Customer getCustomer() {
+//        return customer;
+//    }
+//
+//    public void setCustomer(Customer customer) {
+//        this.customer = customer;
+//    }
 
     public Integer getId() {
         return id;

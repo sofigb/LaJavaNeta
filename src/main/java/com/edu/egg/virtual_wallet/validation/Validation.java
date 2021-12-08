@@ -104,9 +104,12 @@ public class Validation {
     }
 
     public static void validPhoneNumberCheck(Long phoneNumber) throws VirtualWalletException {
-        if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
-            throw new VirtualWalletException("Invalid phone number format!");
+        if (phoneNumber==null) {
+             throw new VirtualWalletException("Invalid phone number format!");
         }
+//        if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
+//            throw new VirtualWalletException("Invalid phone number format!");
+//        }
     }
 
     /*

@@ -12,6 +12,7 @@ import java.util.List;
 public class Customer {
 
     @Id
+    @Column(name="idCustomer")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -26,32 +27,36 @@ public class Customer {
     @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate dateOfBirth;
 
-    //@OneToMany(mappedBy = "accountOwner", fetch = FetchType.LAZY)
-    //private List<Account> accounts;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false,name = "fk_customer")
+    private List<Account> accounts;
 
-    //@OneToMany(fetch = FetchType.LAZY)
-    //private List<Payee> payees;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false,name = "fk_customer")
+    private List<Payee> payees;
 
-    /*************************************************************
-    ************************** CONSTRUCTOR ***********************
-    *************************************************************/
-
+    /**
+     * ***********************************************************
+     ************************** CONSTRUCTOR ***********************
+    ************************************************************
+     */
     public Customer(Integer id, AppUser user, Address addressInfo, LocalDate dateOfBirth/*, List<Account> accounts, List<Payee> payees*/) {
         this.id = id;
         this.user = user;
         this.addressInfo = addressInfo;
         this.dateOfBirth = dateOfBirth;
-        //this.accounts = accounts;
-        //this.payees = payees;
+        this.accounts = accounts;
+        this.payees = payees;
     }
 
     public Customer() {
     }
 
-    /************************************************************
-    *********************** GETTER AND SETTER *******************
-    ************************************************************/
-
+    /**
+     * **********************************************************
+     *********************** GETTER AND SETTER *******************
+    ***********************************************************
+     */
     public Integer getId() {
         return id;
     }
@@ -84,7 +89,6 @@ public class Customer {
         this.dateOfBirth = dateOfBirth;
     }
 
-    /*
     public List<Account> getAccounts() {
         return accounts;
     }
@@ -100,5 +104,5 @@ public class Customer {
     public void setPayees(List<Payee> payees) {
         this.payees = payees;
     }
-     */
+
 }

@@ -20,7 +20,7 @@ public class Account {
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private Long number;
 
     @Column(nullable = false)
@@ -47,9 +47,7 @@ public class Account {
     @JoinColumn(nullable = false)
     private List<Transaction> transactions;
 
-    // @ManyToOne
-    // private Customer accountOwner;
-
+          
     
     public Long getNumber() {
         return number;
@@ -130,5 +128,5 @@ public class Account {
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
-    
+
 }

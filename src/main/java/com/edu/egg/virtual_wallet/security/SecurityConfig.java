@@ -64,7 +64,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .expressionHandler(webExpressionHandler())
                     .antMatchers("/", "/login", "/register", "/register/check", "/css/*", "/images/*","/assets/*").permitAll()
-                    .antMatchers("/**").authenticated() //.permitAll() para poder usar sin login
+                    .antMatchers("/**").permitAll() //para poder usar sin login
                 .and()
                 .formLogin()
                     .loginPage("/login") // Route to HTML with login page - @GetMapping("/login")
