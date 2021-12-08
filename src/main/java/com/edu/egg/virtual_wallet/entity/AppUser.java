@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @SQLDelete(sql = "UPDATE Users u SET u.active = false WHERE u.id = ?")
 @Where(clause = "active = true")
-public class User {
+public class AppUser {
 
     // Under Revision
 
@@ -27,18 +27,13 @@ public class User {
     @JoinColumn(nullable = false)
     private Name fullName;
 
-    @OneToOne(fetch = FetchType.LAZY) // OR EAGER?
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private Contact contactInfo;
 
-    @Column(nullable = false, unique = true)
-    private String username;
-
-    @Column(nullable = false)
-    private String password;
-
-    @Column(nullable = false)
-    private String securityQuestion;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Login loginDetails;
 
     @Column(columnDefinition = "DATETIME", nullable = false)
     private LocalDateTime lastLoggedIn;
@@ -61,19 +56,20 @@ public class User {
     ************************** CONSTRUCTOR ************************
     **************************************************************/
 
-    public User(Name fullName, Contact contactInfo, String username, String password, String securityQuestion,
-                LocalDateTime lastLoggedIn, boolean active, LocalDate deactivationDate) {
+    public AppUser(Integer id, Name fullName, Contact contactInfo, Login loginDetails, LocalDateTime lastLoggedIn,
+                   boolean active, LocalDate activationDate, LocalDate deactivationDate, LocalDate modificationDate) {
+        this.id = id;
         this.fullName = fullName;
         this.contactInfo = contactInfo;
-        this.username = username;
-        this.password = password;
-        this.securityQuestion = securityQuestion;
+        this.loginDetails = loginDetails;
         this.lastLoggedIn = lastLoggedIn;
         this.active = active;
+        this.activationDate = activationDate;
         this.deactivationDate = deactivationDate;
+        this.modificationDate = modificationDate;
     }
 
-    public User() {
+    public AppUser() {
     }
 
     /**************************************************************
@@ -104,28 +100,12 @@ public class User {
         this.contactInfo = contactInfo;
     }
 
-    public String getUsername() {
-        return username;
+    public Login getLoginDetails() {
+        return loginDetails;
     }
 
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getSecurityQuestion() {
-        return securityQuestion;
-    }
-
-    public void setSecurityQuestion(String securityQuestion) {
-        this.securityQuestion = securityQuestion;
+    public void setLoginDetails(Login loginDetails) {
+        this.loginDetails = loginDetails;
     }
 
     public LocalDateTime getLastLoggedIn() {

@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class ContactService  {
+
+public class ContactService {
 
     @Autowired
     private ContactRepo contactRepository;
 
-    
     @Transactional
     public void createContact(Contact newContact) throws VirtualWalletException {
         try {
@@ -26,7 +26,6 @@ public class ContactService  {
         }
     }
 
-
     @Transactional
     public void deactivateContact(Integer id) throws VirtualWalletException {
         try {
@@ -35,7 +34,6 @@ public class ContactService  {
             throw new VirtualWalletException("Unable to delete Customer. Failed to identify Contact Information.");
         }
     }
-
 
     @Transactional
     public void editContact(Contact updatedContact) throws VirtualWalletException {
@@ -51,9 +49,13 @@ public class ContactService  {
         }
     }
 
-
     public void checkContact(Long phoneNumber, String email) throws VirtualWalletException {
         Validation.validEmailCheck(email);
+
+        if (contactRepository.existsContactByEmail(email)) {
+            throw new VirtualWalletException("Email '" + email + "' is already taken");
+        }
+
         Validation.validPhoneNumberCheck(phoneNumber);
     }
 }

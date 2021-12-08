@@ -7,13 +7,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service
-public class AddressService  {
+
+public class AddressService {
+
 
     @Autowired
     private AddressRepo addressRepository;
 
- 
     @Transactional
     public void createAddress(Address newAddress) throws VirtualWalletException {
         try {
@@ -23,7 +23,6 @@ public class AddressService  {
         }
     }
 
-   
     @Transactional
     public void deactivateAddress(Integer id) throws VirtualWalletException {
         try {
@@ -33,7 +32,6 @@ public class AddressService  {
         }
     }
 
-   
     @Transactional
     public void editAddress(Address updatedAddress) throws VirtualWalletException{
         if (addressRepository.findById(updatedAddress.getId()).isPresent()) {

@@ -9,12 +9,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class NameService  {
+
+public class NameService {
 
     @Autowired
     private NameRepo nameRepository;
 
-   
     @Transactional
     public void createName(Name newName) throws VirtualWalletException {
         try {
@@ -26,7 +26,6 @@ public class NameService  {
         }
     }
 
-    
     @Transactional
     public void deactivateName(Integer id) throws VirtualWalletException {
         try {
@@ -36,10 +35,9 @@ public class NameService  {
         }
     }
 
-
     @Transactional
     public void editName(Name updatedName) throws VirtualWalletException {
-        if(nameRepository.findById(updatedName.getId()).isPresent()) {
+        if (nameRepository.findById(updatedName.getId()).isPresent()) {
             try {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
                 nameRepository.save(updatedName);
@@ -51,8 +49,7 @@ public class NameService  {
         }
     }
 
-
-    public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException{
+    public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException {
         Validation.nullCheck(firstName, "First Name");
         Validation.nullCheck(lastName, "Last Name");
 

@@ -14,47 +14,21 @@ public class EmployeeService {
     // Should employees create/delete employees? That should be the role of a Super Admin
     // Employees should only be able to edit their own profiles and customer accounts
     // We could add a Super Amin later, but first, let's focus!
-
     @Autowired
     private EmployeeRepo employeeRepository;
 
     @Autowired
-    private UserService userService;
+
+    private AppUserService userService;
+
+    @Autowired
+    private UserRoleService userRoleService;
+
 
     /*
     @Autowired
     private CustomerService customerService; Will allow employee to edit/create customers
-    */
-
-    /*
-    @Override
-    @Transactional
-    public void createEmployee(Employee newEmployee) throws VirtualWalletException {
-        try {
-            userService.createUser(newEmployee.getUser());
-            employeeRepository.save(newEmployee);
-        } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
-        }
-    }
-
-    @Override
-    @Transactional
-    public void deactivateEmployee(Integer idEmployee) throws VirtualWalletException {
-        if (employeeRepository.findById(idEmployee).isPresent()) {
-            try {
-                userService.deactivateUser(employeeRepository.findById(idEmployee).get().getUser()); // ?
-                employeeRepository.deleteById(idEmployee);
-            } catch (Exception e) {
-                throw new VirtualWalletException("Unable to delete Employee");
-            }
-        } else {
-            throw new VirtualWalletException("Unable to find Employee");
-        }
-    }
-    */
-
-   
+     */
     @Transactional
     public void editEmployee(Employee updatedEmployee) throws VirtualWalletException {
         if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {
@@ -69,8 +43,6 @@ public class EmployeeService {
         }
     }
 
-
- 
     @Transactional
     public Employee returnEmployee(Integer idEmployee) throws VirtualWalletException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
