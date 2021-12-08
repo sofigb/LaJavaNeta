@@ -21,7 +21,8 @@ public class Validation {
         }
 
         Pattern patterString = Pattern.compile("^[a-zA-Z]+( [a-zA-Z]+)*$");
-        Matcher matcherName = patterString.matcher(name);
+       Matcher matcherName = patterString.matcher(name);
+
         if (!matcherName.matches()) {
             throw MyException.NameFormat();
         }
