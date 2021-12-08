@@ -16,7 +16,8 @@ public class PayeeService {
     @Autowired
     private PayeeRepository payeeRep;
     
-     private String mensaje = "No existe ningun contacto asociado con el nombre %s";
+     private  String mensaje = "No existe ningun contacto asociado con el nombre %s";
+
     @Transactional
     public void create(Payee payee) throws MyException {
         
@@ -26,7 +27,6 @@ public class PayeeService {
         Validation.validationName(payee.getName());
         payee.setActive(Boolean.TRUE);
         payeeRep.save(payee);
-        
         }
     @Transactional
     public void update(Payee payee) throws MyException  {
@@ -38,15 +38,12 @@ public class PayeeService {
          payee.setActive(Boolean.TRUE);
          //VALIDAR FORMATO CUENTA
         payeeRep.save(payee);
-
     }
 
-     
     @Transactional(readOnly = true)
     public List<Payee> findAll() {
         return payeeRep.findAll();
     }
-    
     
     @Transactional(readOnly = true)
     public List<Payee> findActiveOrNot(Boolean status) {

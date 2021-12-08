@@ -24,17 +24,17 @@ public class MyException extends Exception {
         return new MyException("El campo es obligatorio");
     }
     
-    
     public static MyException NotExist() {
 
         return new MyException("No existe contacto frecuente");
     }
     
-     public static MyException amountNotNullNegative() {
+     public static MyException amountNotNullNegative() {//NotPositive
 
         return new MyException("El monto ingresado debe ser mayor a 0");
     }
-     public static MyException insufficientBalance() {
+
+     public static MyException insufficientBalance() {//NotSufficientBalance
 
         return new MyException("El saldo de su cuenta es insuficiente para realizar la operación");
     }

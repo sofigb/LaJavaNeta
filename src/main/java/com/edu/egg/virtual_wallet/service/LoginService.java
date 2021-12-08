@@ -2,6 +2,7 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.UserRole;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -21,6 +22,8 @@ import java.util.Collections;
 @Service
 public class LoginService implements UserDetailsService {
 
+    private final String login="el login del cliente ";
+
     @Autowired
     private LoginRepo loginRepository;
 
@@ -28,37 +31,37 @@ public class LoginService implements UserDetailsService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public void createLogin(Login newLogin) throws VirtualWalletException {
+    public void createLogin(Login newLogin) throws InputException {
         try {
             checkLoginDetails(newLogin.getUsername(), newLogin.getPassword());
             newLogin.setPassword(passwordEncoder.encode(newLogin.getPassword()));
             newLogin.setActive(true);
             loginRepository.save(newLogin);
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            throw InputException.NotCreated(login);
         }
     }
 
     @Transactional
-    public void deactivateLogin(Integer id) throws VirtualWalletException {
+    public void deactivateLogin(Integer id) throws InputException {
         try {
             loginRepository.deleteById(id);
         } catch (Exception e) {
-            throw new VirtualWalletException("Unable to delete Customer. Failed to identify Login details.");
+            throw InputException.NotDeleted(login);
         }
     }
 
     @Transactional
-    public void editLogin(Login updatedLogin) throws VirtualWalletException {
+    public void editLogin(Login updatedLogin) throws InputException {
         if(loginRepository.findById(updatedLogin.getId()).isPresent()) {
             try {
                 checkLoginDetails(updatedLogin.getUsername(), updatedLogin.getPassword());
                 loginRepository.save(updatedLogin);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw InputException.NotEdited(login);
             }
         } else {
-            throw new VirtualWalletException("Failed to identify Customers Login details");
+            throw InputException.NotFound(login);
         }
     }
 

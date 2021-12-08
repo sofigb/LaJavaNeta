@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.AppUser;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.AppUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,9 +12,8 @@ import java.time.LocalDate;
 
 @Service
 public class AppUserService {
-//finish agus
-    // Under Revision
-    private String appUser="El usuario ";
+
+    private final String appUser="el usuario ";
 
     @Autowired
     private AppUserRepo appUserRepository;
@@ -35,14 +35,13 @@ public class AppUserService {
             contactService.createContact(newUser.getContactInfo());
             newUser.setActive(true);
             appUserRepository.save(newUser);
-        } catch (InputException e) {
-            //throw new VirtualWalletException(e.getMessage());
-            throw  InputException NotCreated(appUser);
+        } catch (Exception e) {
+            throw InputException.NotCreated(appUser);
         }
     }
 
     @Transactional
-    public void deactivateUser(AppUser deletedUser) throws InputException{ // ?
+    public void deactivateUser(AppUser deletedUser) throws InputException{
         try {
             nameService.deactivateName(deletedUser.getFullName().getId());
             loginService.deactivateLogin(deletedUser.getLoginDetails().getId());
@@ -50,12 +49,11 @@ public class AppUserService {
             appUserRepository.deleteById(deletedUser.getId());
             deletedUser.setDeactivationDate(LocalDate.now());
             appUserRepository.save(deletedUser);
-        } catch (InputException e) {
-           // throw new VirtualWalletException("Unable to delete Customer");se repite
-            throw  InputException NotDeleted(appUser);//preguntar si es asi
+        } catch (Exception e) {
+            throw InputException.NotDeleted(appUser);
         }
     }
-//DOUBT
+
     @Transactional
     public void editUser(AppUser updatedUser) throws InputException {
         if (appUserRepository.findById(updatedUser.getId()).isPresent()) {
@@ -64,13 +62,11 @@ public class AppUserService {
                 loginService.editLogin(updatedUser.getLoginDetails());
                 contactService.editContact(updatedUser.getContactInfo());
                 appUserRepository.save(updatedUser);
-            } catch (InputException e) {
-                //throw new VirtualWalletException(e.getMessage());
-                throw InputException NotEdited(appUser);
+            } catch (Exception e) {
+                throw InputException.NotEdited(appUser);
             }
         } else {
-           // throw new VirtualWalletException("Unable to find Customer");se repite
-            throw  InputException NotFound(appUser);
+            throw InputException.NotFound(appUser);
         }
     }
 
@@ -82,30 +78,12 @@ public class AppUserService {
                 appUser.setFullName(appUser.getFullName());
                 appUser.setContactInfo(appUser.getContactInfo());
                 return appUser;
-            } catch (InputException e) {
-                //throw new VirtualWalletException("Unable to retrieve user data");
-                throw  InputException NotRetrievedData(appUser);
+            } catch (Exception e) {
+                throw InputException.NotReturned(appUser);
             }
         } else {
-           // throw new VirtualWalletException("Unable to retrieve user data");
-            throw  InputException NotRetrievedData(appUser);
+            throw InputException.NotRetrievedData(appUser);
         }
-       /*
-
-
-
-
-
-
-
-        */
-
-
-
     }
-
-
-
-
 
 }

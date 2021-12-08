@@ -62,9 +62,7 @@ public class Validation {
               throw MyException.insufficientBalance();
         }
     }
-
     // Under Revision --DNA--
-
 
     public static void nullCheck(String userStringInput, String inputName) throws VirtualWalletException {
         if(userStringInput.trim().isEmpty() || userStringInput == null) {

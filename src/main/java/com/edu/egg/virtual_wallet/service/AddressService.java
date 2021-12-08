@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Address;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.AddressRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 
 public class AddressService {
-//finish agus
+
+    private String address = "la dirección ";
+
     @Autowired
     private AddressRepo addressRepository;
 
@@ -19,7 +22,7 @@ public class AddressService {
         try {
             addressRepository.save(newAddress);
         } catch (Exception e) {
-            throw new InputException NotCreated();
+            throw InputException.NotCreated(address);
         }
     }
 
@@ -28,8 +31,7 @@ public class AddressService {
         try {
             addressRepository.deleteById(id);
         } catch (Exception e) {
-            //throw new VirtualWalletException("Unable to delete Customer. Failed to identify Address");
-                throw  new InputException NotFound();
+            throw InputException.NotFound(address);
         }
     }
 
@@ -39,12 +41,10 @@ public class AddressService {
             try {
                 addressRepository.save(updatedAddress);
             } catch (Exception e) {
-               // throw new VirtualWalletException(e.getMessage());
-                throw new InputException NotEdited();
+                throw InputException.NotEdited(address);
             }
         } else {
-           // throw new VirtualWalletException("Failed to identify Customers Address information");
-            throw new InputException NotFound();
+            throw InputException.NotFound(address);
         }
     }
 }

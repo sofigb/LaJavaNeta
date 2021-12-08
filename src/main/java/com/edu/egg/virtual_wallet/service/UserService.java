@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.User;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.UserRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -12,9 +13,8 @@ import java.time.LocalDate;
 
 @Service
 public class UserService  {
-//finish agus
-    // Under Revision
-    private String User="El usuario ";
+
+    private final String user="el usuario ";
 
     @Autowired
     private UserRepo userRepository;
@@ -34,8 +34,7 @@ public class UserService  {
             newUser.setActive(true);
             userRepository.save(newUser);
         } catch (Exception e) {
-            throw new InputException NotCreated(User);//falta hacer
-            //throw new VirtualWalletException(e.getMessage());
+            throw InputException.NotCreated(user);
         }
     }
 
@@ -48,8 +47,7 @@ public class UserService  {
             deletedUser.setDeactivationDate(LocalDate.now());
             userRepository.save(deletedUser);
         } catch (Exception e) {
-            //throw new VirtualWalletException("Unable to delete Customer");repeticion
-            throw new InputException NotFound(User);
+            throw InputException.NotFound(user);
         }
     }
 
@@ -62,12 +60,10 @@ public class UserService  {
                 contactService.editContact(updatedUser.getContactInfo());
                 userRepository.save(updatedUser);
             } catch (Exception e) {
-               // throw new VirtualWalletException(e.getMessage());
-                throw new InputException NotEdited(User);//falta hacer
+                throw InputException.NotEdited(user);
             }
         } else {
-            // throw new VirtualWalletException("Unable to find Customer");repeticion
-            throw new InputException NotFound(User);
+            throw InputException.NotFound(user);
         }
     }
 
@@ -80,18 +76,14 @@ public class UserService  {
                 user.setContactInfo(user.getContactInfo());
                 return user;
             } catch (Exception e) {
-                //DOUBT , ASK TO DANITA
-                throw new InputException NotRetrievedData(User);
-                //throw new VirtualWalletException("Unable to retrieve user data");//repeticion
+                throw InputException.NotReturned(user);
             }
         } else {
-           // throw new VirtualWalletException("Unable to retrieve user data");//repeticion
-            //no existe el usuario
-            throw new InputException NotRetrievedData(User);
+            throw InputException.NotRetrievedData(user);
         }
     }
 
-    public void checkUser(String username, String password, String securityQuestion) {
+    public void checkUser(String username, String password, String securityQuestion) throws VirtualWalletException {
         // How to verify if username and email is unique?
         Validation.nullCheck(username, "Username");
         Validation.nullCheck(securityQuestion, "Security Question");

@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Contact;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.ContactRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -11,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 
 public class ContactService {
-//finish agus
-    private String Contact="La informacion de contacto ";
+
+    private final String contact="La información de contacto ";
 
     @Autowired
     private ContactRepo contactRepository;
@@ -24,8 +25,7 @@ public class ContactService {
             newContact.setActive(true);
             contactRepository.save(newContact);
         } catch (Exception e) {
-            //throw new VirtualWalletException(e.getMessage());
-            throw new InputException(e.getMessage());
+            throw  InputException.NotCreated(contact);
         }
     }
 
@@ -34,8 +34,7 @@ public class ContactService {
         try {
             contactRepository.deleteById(id);
         } catch (Exception e) {
-           // throw new VirtualWalletException("Unable to delete Customer. Failed to identify Contact Information.");
-            throw  new InputException NotFound(Contact);//preguntar nombre
+            throw  InputException.NotFound(contact);
         }
     }
 
@@ -46,25 +45,18 @@ public class ContactService {
                 checkContact(updatedContact.getPhoneNumber(), updatedContact.getEmail());
                 contactRepository.save(updatedContact);
             } catch (Exception e) {
-               // throw new VirtualWalletException(e.getMessage());
-               // System.out.println();e.message();
-
-                throw  new InputException NotEdited(Contact);
+                throw InputException.NotEdited(contact);
             }
         } else {
-            //throw new VirtualWalletException("Failed to identify Customers contact information");
-            throw  new InputException NotFound(Contact);
+            throw InputException.NotFound(contact);
         }
     }
 
-    public void checkContact(Long phoneNumber, String email) throws InputException {
+    public void checkContact(Long phoneNumber, String email) throws InputException, VirtualWalletException {
         Validation.validEmailCheck(email);
-
         if (contactRepository.existsContactByEmail(email)) {
-           // throw new VirtualWalletException("Email '" + email +  "' is already taken");
-            throw  new InputException UsedEmail(email);
+            throw InputException.UsedEmail(email);
         }
-
         Validation.validPhoneNumberCheck(phoneNumber);
     }
 }

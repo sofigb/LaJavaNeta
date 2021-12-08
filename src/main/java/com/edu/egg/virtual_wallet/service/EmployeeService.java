@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Employee;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class EmployeeService {
 
-    private String Employee="El empleado ";
-//finish agus
+    private final String employee="el empleado ";
     // QUESTION FOR TEAM:
     // Should employees create/delete employees? That should be the role of a Super Admin
     // Employees should only be able to edit their own profiles and customer accounts
@@ -34,27 +34,27 @@ public class EmployeeService {
     */
 
     @Transactional
-    public void createEmployee(Employee newEmployee) throws VirtualWalletException {
+    public void createEmployee(Employee newEmployee) throws InputException {
         try {
             newEmployee.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("EMPLOYEE"));
             userService.createUser(newEmployee.getUser());
             employeeRepository.save(newEmployee);
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            throw InputException.NotCreated(employee);
         }
     }
 
     @Transactional
-    public void deactivateEmployee(Integer idEmployee) throws VirtualWalletException {
+    public void deactivateEmployee(Integer idEmployee) throws InputException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 userService.deactivateUser(employeeRepository.findById(idEmployee).get().getUser()); // ?
                 employeeRepository.deleteById(idEmployee);
             } catch (Exception e) {
-                throw new VirtualWalletException("Unable to delete Employee");
+                throw InputException.NotDeleted(employee);
             }
         } else {
-            throw new VirtualWalletException("Unable to find Employee");
+            throw InputException.NotFound(employee);
         }
     }
 
@@ -65,30 +65,25 @@ public class EmployeeService {
                 userService.editUser(updatedEmployee.getUser());
                 employeeRepository.save(updatedEmployee);
             } catch (Exception e) {
-               // throw new VirtualWalletException(e.getMessage());
-                throw new InputException NotEdited(Employee);//falta hacer
+                throw InputException.NotEdited(employee);
             }
         } else {
-                throw  new InputException NotFound(Employee);
-            //throw new VirtualWalletException("Unable to find Employee");
+                throw InputException.NotFound(employee);
         }
     }
 
-
     @Transactional
-    public Employee returnEmployee(Integer idEmployee) throws VirtualWalletException {
+    public Employee returnEmployee(Integer idEmployee) throws InputException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 Employee employee = employeeRepository.findById(idEmployee).get();
                 employee.setUser(userService.returnUser(employee.getUser().getId()));
                 return employee;
             } catch (Exception e) {
-                throw new InputException NotReturned(Employee);//falta hacer
-//                throw new VirtualWalletException(e.getMessage());
+                throw InputException.NotReturned(employee);
             }
         } else {
-            throw  new InputException NotRetrievedData(Employee);
-           // throw new VirtualWalletException("Unable to retrieve employee data");
+            throw InputException.NotRetrievedData(employee);
         }
     }
 }

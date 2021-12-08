@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Customer;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class CustomerService {
 
-    private String Customer="El cliente ";
+    private final String customer="el cliente ";
 
     @Autowired
     private CustomerRepo customerRepository;
@@ -29,7 +30,7 @@ public class CustomerService {
             // createAccounts
             customerRepository.save(newCustomer);
         } catch (Exception e) {
-            throw  new InputException NotCreated(Customer);
+            throw InputException.NotCreated(customer);
         }
     }
 
@@ -40,13 +41,11 @@ public class CustomerService {
                 userService.deactivateUser(customerRepository.findById(idCustomer).get().getUser()); // ?
                 // deactivate account and payees.
                 customerRepository.deleteById(idCustomer);
-            } catch (Exception e ) {//preguntar si no se puede sacar eso
-                //throw new VirtualWalletException("Unable to delete Customer");repeticion
-               throw new InputException NotDeleted(Customer);
+            } catch (Exception e ) {
+                throw InputException.NotDeleted(customer);
             }
         } else {
-           // throw new VirtualWalletException("Unable to find Customer");repeticion
-            throw new InputException NotFound(Customer);
+            throw InputException.NotFound(customer);
         }
     }
 
@@ -61,12 +60,10 @@ public class CustomerService {
                 userService.editUser(updatedCustomer.getUser());
                 customerRepository.save(updatedCustomer);
             } catch (Exception e) {
-                //throw new VirtualWalletException(e.getMessage());
-                throw new InputException NotEdited(Customer);
+                throw InputException.NotEdited(customer);
             }
         } else {
-          //  throw new VirtualWalletException("Unable to find Customer");
-            throw  new InputException NotFound(Customer);
+            throw InputException.NotFound(customer);
         }
     }
 
@@ -78,12 +75,10 @@ public class CustomerService {
                 customer.setUser(userService.returnUser(customer.getUser().getId()));
                 return customer;
             } catch (Exception e) {
-                //throw new VirtualWalletException(e.getMessage());
-                throw new InputException NotReturned(Customer);//falta hacer
+                 throw InputException.NotReturned(customer);
             }
         } else {
-            //throw new VirtualWalletException("Unable to retrieve customer data");
-            throw new  InputException NotRetrievedData(Customer);
+            throw InputException.NotRetrievedData(customer);
         }
     }
 }

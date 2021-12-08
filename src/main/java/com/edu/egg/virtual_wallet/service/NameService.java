@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Name;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.NameRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -11,8 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 
 public class NameService {
-//finish agus
-    private String Name="El nombre ";
+
+    private final String name="el nombre ";
 
     @Autowired
     private NameRepo nameRepository;
@@ -24,8 +25,7 @@ public class NameService {
             newName.setActive(true);
             nameRepository.save(newName);
         } catch (Exception e) {
-            //   throw new VirtualWalletException(e.getMessage());
-            throw new InputException NotCreated(Name);
+            throw InputException.NotCreated(name);
         }
     }
 
@@ -34,8 +34,7 @@ public class NameService {
         try {
             nameRepository.deleteById(id);
         } catch (Exception e) {
-            //throw new VirtualWalletException("Unable to delete Customer. Failed to identify Name.");
-            throw new InputException NotFound(Name);
+            throw InputException.NotFound(name);
         }
     }
 
@@ -46,16 +45,14 @@ public class NameService {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
                 nameRepository.save(updatedName);
             } catch (Exception e) {
-               // throw new VirtualWalletException(e.getMessage());
-                throw new InputException NotEdited(Name);//falta hacer
+                throw InputException.NotEdited(name);
             }
         } else {
-            //throw new VirtualWalletException("Failed to identify Customers full name");
-            throw new InputException NotFound(Name);
+            throw InputException.NotFound(name);
         }
     }
 
-    public void checkName(String firstName, String middleName, String lastName){
+    public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException {
         Validation.nullCheck(firstName, "First Name");
         Validation.nullCheck(lastName, "Last Name");
 
