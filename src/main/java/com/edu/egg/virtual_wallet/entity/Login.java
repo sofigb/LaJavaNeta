@@ -4,6 +4,7 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity(name = "LoginInformation")
 @Table(name = "LoginInformation")
@@ -24,9 +25,11 @@ public class Login {
     @Column(nullable = false)
     private boolean active;
 
-    @ManyToMany
-    // Under revision. If we add a Super Admin role, then it will be a ManyToMany relationship, since a Super Admin does everything an Employee can
-    // If we only have Customer and Employee roles, then we should map the relationship as ManyToOne
+    @ManyToOne
+    /* The application wil have 3 roles: CUSTOMER, EMPLOYEE and ADMIN
+    - We will utilize role hierarchy to be able to assign a single role to each user.
+    - For example, a user with the ADMIN role will automatically have the authorisations of
+     the EMPLOYEE and CUSTOMER roles */
     @JoinColumn(nullable = false)
     private UserRole role;
 

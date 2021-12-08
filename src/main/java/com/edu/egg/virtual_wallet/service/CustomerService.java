@@ -18,9 +18,13 @@ public class CustomerService {
     @Autowired
     private AppUserService userService;
 
+    @Autowired
+    private UserRoleService userRoleService;
+
     @Transactional
     public void createCustomer(Customer newCustomer) throws InputException {
         try {
+            newCustomer.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("CUSTOMER")); // ?
             userService.createUser(newCustomer.getUser());
             // createAccounts
             customerRepository.save(newCustomer);

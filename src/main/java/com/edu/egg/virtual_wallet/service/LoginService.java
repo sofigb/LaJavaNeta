@@ -1,10 +1,13 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Login;
+import com.edu.egg.virtual_wallet.entity.UserRole;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -73,6 +76,9 @@ public class LoginService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Login loginDetails =  loginRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
-        return new User(loginDetails.getUsername(), loginDetails.getPassword(), Collections.emptyList());
+
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + loginDetails.getRole().getRoleName());
+
+        return new User(loginDetails.getUsername(), loginDetails.getPassword(), Collections.singletonList(grantedAuthority));
     }
 }

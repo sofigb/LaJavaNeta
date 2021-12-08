@@ -11,15 +11,15 @@ public class UserRole {
     private Integer id;
 
     @Column(nullable = false, unique = true)
-    private String role;
+    private String roleName;
 
     /**************************************************************
     ************************** CONSTRUCTOR ************************
     **************************************************************/
 
-    public UserRole(Integer id, String role) {
+    public UserRole(Integer id, String roleName) {
         this.id = id;
-        this.role = role;
+        this.roleName = roleName;
     }
 
     public UserRole() {
@@ -37,11 +37,11 @@ public class UserRole {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public String getRoleName() {
+        return roleName;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
     }
 }
