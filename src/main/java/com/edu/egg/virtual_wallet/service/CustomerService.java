@@ -1,8 +1,17 @@
 package com.edu.egg.virtual_wallet.service;
 
+import com.edu.egg.virtual_wallet.entity.Address;
+import com.edu.egg.virtual_wallet.entity.Contact;
+import com.edu.egg.virtual_wallet.entity.Login;
+import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.entity.Customer;
+
+import com.edu.egg.virtual_wallet.entity.Payee;
+import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,15 +26,26 @@ public class CustomerService {
     private AppUserService userService;
 
     @Autowired
-    private UserRoleService userRoleService;
+    private AddressService addressService;
 
+    @Autowired
+    private AccountService accountService;
+
+//    @Autowired
+//    private PayeeService payeeService;
     @Transactional
-    public void createCustomer(Customer newCustomer) throws VirtualWalletException {
+    public void createCustomer(Customer newCustomer, Address address, Contact contact, Name name,
+            Login login) throws VirtualWalletException {
         try {
-            newCustomer.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("CUSTOMER")); // ?
-            userService.createUser(newCustomer.getUser());
-            // createAccounts
-            customerRepository.save(newCustomer);
+            String role = "CUSTOMER";
+            Customer customer = new Customer();
+            //  customer.setId(newCustomer.getId());
+            //    saveFirstAccount(customer);
+            //   saveListPayee(customer);
+            customer.setDateOfBirth(newCustomer.getDateOfBirth());
+            customer.setAddressInfo(addressService.createAddress(address));
+            customer.setUser(userService.createUser(contact, name, login, role));
+            customerRepository.save(customer);
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }
@@ -49,7 +69,6 @@ public class CustomerService {
     // There should be a method for updating Customer personal information. This method should utilize UserService methods.
     // There should be another method for adding or deleting payees, and a different method for adding or deactivating Customers bank accounts
     // Transfers should be made by AccountService
-
     @Transactional
     public void editCustomer(Customer updatedCustomer) throws VirtualWalletException {
         if (customerRepository.findById(updatedCustomer.getId()).isPresent()) {
@@ -78,4 +97,41 @@ public class CustomerService {
             throw new VirtualWalletException("Unable to retrieve customer data");
         }
     }
+
+    @Transactional
+    public void saveFirstAccount(Customer customer) throws VirtualWalletException {
+        if (customerRepository.findById(customer.getId()).isPresent()) {
+            try {
+
+                accountService.createAccount(CurrencyType.PESO_ARG, customer);
+                customerRepository.save(customer);
+
+            } catch (Exception e) {
+                throw new VirtualWalletException(e.getMessage());
+            }
+
+        }
+    }
+
+    //no estoy muy segura que sirva 
+//    @Transactional
+//    public void saveListPayee(Customer customer) throws VirtualWalletException {
+//        if (customerRepository.findById(customer.getId()).isPresent()) {
+//            try {
+//
+//                customer.setPayees(payeeService.findByCustomerId(customer.getId()));
+//                customerRepository.save(customer);
+//
+//            } catch (Exception e) {
+//                throw new VirtualWalletException(e.getMessage());
+//            }
+//
+//        }
+//    }
+    @Transactional(readOnly = true)
+    public Optional<Customer> findById(Integer id) {
+        return customerRepository.findById(id);
+
+    }
+
 }

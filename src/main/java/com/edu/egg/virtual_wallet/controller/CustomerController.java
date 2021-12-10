@@ -1,7 +1,11 @@
 package com.edu.egg.virtual_wallet.controller;
 
+import com.edu.egg.virtual_wallet.entity.Address;
+import com.edu.egg.virtual_wallet.entity.AppUser;
+import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.Customer;
-import com.edu.egg.virtual_wallet.exception.MyException;
+import com.edu.egg.virtual_wallet.entity.Login;
+import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +25,7 @@ public class CustomerController {
 
 
     @Autowired
-    CustomerService cService;
+    private CustomerService cService;
 
 //    @GetMapping()
 //    public ModelAndView show() {
@@ -35,11 +39,15 @@ public class CustomerController {
 //        return mav;
 //    }
 
-    @GetMapping("/register")
+        @GetMapping("/register")
     public ModelAndView registrer() {
         ModelAndView mav = new ModelAndView("registerUser");
 
         mav.addObject("customer", new Customer());
+        mav.addObject("address", new Address());
+        mav.addObject("contact", new Contact());
+        mav.addObject("name", new Name());
+        mav.addObject("login", new Login());
         mav.addObject("action", "create");
 
         return mav;
@@ -75,14 +83,12 @@ public class CustomerController {
 //    }
 
     @PostMapping("/create")
-    public RedirectView create(@ModelAttribute("customer") Customer customer) throws VirtualWalletException {
-        try {
-            cService.createCustomer(customer);
+    public RedirectView create(@ModelAttribute("customer") Customer customer , @ModelAttribute("address") Address address,
+            @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name, @ModelAttribute("login") Login login) throws VirtualWalletException {
+    
+            cService.createCustomer(customer,address,contact,name,login);
 
-        } catch (VirtualWalletException e) {
-            
-        }
-        
+                
         return new RedirectView("/customer/register");
       
 

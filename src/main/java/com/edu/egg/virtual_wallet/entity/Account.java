@@ -46,8 +46,10 @@ public class Account {
     @OneToMany
     @JoinColumn(nullable = false)
     private List<Transaction> transactions;
-
-          
+    
+    
+   
+    
     
     public Long getNumber() {
         return number;

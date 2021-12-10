@@ -1,6 +1,8 @@
 package com.edu.egg.virtual_wallet.repository;
 
 import com.edu.egg.virtual_wallet.entity.Account;
+import com.edu.egg.virtual_wallet.entity.Customer;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -18,4 +20,8 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     boolean existsByCvu(String cvu);
 
     boolean existsByAlias(String alias);
+    
+    @Query(value = "SELECT * FROM Account a WHERE p.active = true AND p.fk_customer=:id", nativeQuery = true)
+    List<Account> findAllByIdCustomer(@Param("id") Integer id);
+
 }

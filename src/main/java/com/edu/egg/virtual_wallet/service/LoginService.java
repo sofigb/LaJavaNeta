@@ -1,9 +1,9 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Login;
-import com.edu.egg.virtual_wallet.entity.UserRole;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
+
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,17 +23,23 @@ public class LoginService implements UserDetailsService {
 
     @Autowired
     private LoginRepo loginRepository;
-
+    
+    @Autowired
+    private UserRoleService userRoleService;
+    
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public void createLogin(Login newLogin) throws VirtualWalletException {
+    public Login createLogin(Login newLogin, String role) throws VirtualWalletException {
         try {
             checkLoginDetails(newLogin.getUsername(), newLogin.getPassword());
             newLogin.setPassword(passwordEncoder.encode(newLogin.getPassword()));
             newLogin.setActive(true);
+            newLogin.setUsername(newLogin.getUsername());
+            newLogin.setRole(userRoleService.findUserRoleByRoleName(role));
             loginRepository.save(newLogin);
+            return newLogin;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }

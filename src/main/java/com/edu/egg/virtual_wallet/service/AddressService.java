@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
+@Service
 public class AddressService {
 
 
@@ -15,9 +15,11 @@ public class AddressService {
     private AddressRepo addressRepository;
 
     @Transactional
-    public void createAddress(Address newAddress) throws VirtualWalletException {
+    public Address createAddress(Address newAddress) throws VirtualWalletException {
         try {
+            newAddress.setActive(true);
             addressRepository.save(newAddress);
+            return newAddress;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }

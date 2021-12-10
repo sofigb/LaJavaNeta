@@ -16,11 +16,13 @@ public class NameService {
     private NameRepo nameRepository;
 
     @Transactional
-    public void createName(Name newName) throws VirtualWalletException {
+    public Name createName(Name newName) throws VirtualWalletException {
         try {
             checkName(newName.getFirstName(), newName.getMiddleName(), newName.getLastName());
             newName.setActive(true);
             nameRepository.save(newName);
+            
+            return newName;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }

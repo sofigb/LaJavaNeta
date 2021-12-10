@@ -71,15 +71,15 @@ public class PayeeController {
 
     }
 
-    @PostMapping("/create")
-    public RedirectView create(@ModelAttribute("payee") Payee payee) throws MyException {
-
-        pservice.create(payee);
-
-        return new RedirectView("/payee");
-      
-
-    }
+//    @PostMapping("/create")
+//    public RedirectView create(@ModelAttribute("payee") Payee payee) throws MyException {
+//
+//        pservice.create(payee);
+//
+//        return new RedirectView("/payee");
+//      
+//
+//    }
 
     @PostMapping("/save")
     public RedirectView saveChanges(@ModelAttribute("payee") Payee payee) throws MyException {

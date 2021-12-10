@@ -28,11 +28,11 @@ public class Customer {
     private LocalDate dateOfBirth;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false,name = "fk_customer")
+    @JoinColumn(/*nullable = false,*/name = "fk_customer")
     private List<Account> accounts;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false,name = "fk_customer")
+    @JoinColumn(/*nullable = false,*/name = "fk_customer")
     private List<Payee> payees;
 
     /**
@@ -40,7 +40,7 @@ public class Customer {
      ************************** CONSTRUCTOR ***********************
     ************************************************************
      */
-    public Customer(Integer id, AppUser user, Address addressInfo, LocalDate dateOfBirth/*, List<Account> accounts, List<Payee> payees*/) {
+    public Customer(Integer id, AppUser user, Address addressInfo, LocalDate dateOfBirth, List<Account> accounts, List<Payee> payees) {
         this.id = id;
         this.user = user;
         this.addressInfo = addressInfo;

@@ -40,53 +40,62 @@
                                     <h1 class="h4 text-gray-900 mb-4">Crear Contacto frecuente</h1>
                                 </div>
                                
-                                <form th:action="@{/customer/__${action}__}" method ="POST" class="user" th:object="${customer}">
+                                <form th:action="@{/customer/__${action}__}" method ="POST" class="user"                             
+                                >
                                   
                                     <div class="form-group row">
                                         <div class="col-sm-6 mb-3 mb-sm-0">
+                                            <div th:object="${customer}">
                                             <input  type="hidden"    name="id" th:value="${customer.id}" />
                                            
                                            <h1> DATE OF BIRTH</h1>  
-                                            <input  type="date"  class="form-control form-control-user"   name="dateOfBirth" 
+                                            <input  type="date"  class="form-control form-control-user"  name="dateOfBirth" 
                                                     placeholder="Fecha de Nacimiento" th:value="${customer.dateOfBirth}"/>
-                                          <h1>ADDRESS</h1>  
-                                          <input  type="hidden"    name="id" th:value="${customer.addressInfo?.id}" />
-                                            <input  type="number"  class="form-control form-control-user"   name="addressInfo" 
-                                                    placeholder="Numero" th:value="${customer.addressInfo?.houseNumber}"/>
-                                            <input  type="text"  class="form-control form-control-user"   name="addressInfo" 
-                                                    placeholder="Calle" th:value="${customer.addressInfo?.street}"/>
-                                            <input  type="text"  class="form-control form-control-user"   name="addressInfo" 
-                                                    placeholder="Codigo Postal" th:value="${customer.addressInfo?.postCode}"/>
-                                            <input  type="text"  class="form-control form-control-user"   name="addressInfo" 
-                                                    placeholder="Ciudad" th:value="${customer.addressInfo?.city}"/>
-                                            <input  type="text"  class="form-control form-control-user"   name="addressInfo" 
-                                                    placeholder="Pais" th:value="${customer.addressInfo?.country}"/>
+                                        </div>
+                                          
+                                          
+                                                    <h1>ADDRESS</h1>  
+                                          <div th:object="${address}">
+                                          <input  type="hidden"    name="id"    th:value="${address.id}" /> 
+                                            <input  type="number"  class="form-control form-control-user"   name="houseNumber" 
+                                                    placeholder="Numero" th:value="${address.houseNumber}"/>
+                                            <input  type="text"  class="form-control form-control-user"  name="street"  
+                                                    placeholder="Calle" th:value="${address.street}"/>
+                                            <input  type="text"  class="form-control form-control-user"    name="postCode" 
+                                                    placeholder="Codigo Postal" th:value="${address.postCode}"/>
+                                            <input  type="text"  class="form-control form-control-user"  name="city"   
+                                                    placeholder="Ciudad" th:value="${address.city}"/>
+                                            <input  type="text"  class="form-control form-control-user"  name="country" 
+                                                    placeholder="Pais" th:value="${address.country}"/>
+                                                </div>
 
 
                                             <h1>FULL NAME</h1>  
-                                            <input  type="hidden"    name="id" th:value="${customer.user?.id}" />
-                                            <input  type="hidden"    name="id" th:value="${customer.user?.fullName?.id}" />
+                                            <div th:object="${name}">
+                                            <input  type="hidden"    name="id"  th:value="${name.id}" />
                                             <input  type="text"  class="form-control form-control-user"   name="firstName" 
-                                                    placeholder="Nombre" th:value="${customer.user?.fullName?.firstName}"/>
+                                                    placeholder="Nombre" th:value="${name.firstName}"/>
                                             <input  type="text"  class="form-control form-control-user"   name="middleName" 
-                                                    placeholder="Nombre mitad" th:value="${customer.user?.fullName?.middleName}"/>
+                                                    placeholder="Nombre mitad" th:value="${name.middleName}"/>
                                            <input  type="text"  class="form-control form-control-user"   name="lastName" 
-                                                    placeholder="Apellido" th:value="${customer.user?.fullName?.lastName}"/>  
-                                                    
+                                                    placeholder="Apellido" th:value="${name.lastName}"/>  
+                                                </div>        
                                             <h1>  // CONTACT DETAILS</h1>
-                                            <input  type="hidden"    name="id" th:value="${customer.user?.contactInfo?.id}" />
+                                            <div th:object="${contact}">
+                                            <input  type="hidden"    name="id" th:value="${contact.id}" />
                                             <input  type="number"  class="form-control form-control-user"   name="phoneNumber" 
-                                                    placeholder="Telefono" th:value="${customer.user?.contactInfo?.phoneNumber}"/>
+                                                    placeholder="Telefono" th:value="${contact.phoneNumber}"/>
                                             <input  type="email"  class="form-control form-control-user"   name="email" 
-                                                    placeholder="Email" th:value="${customer.user?.contactInfo?.email}"/>
-                                            
+                                                    placeholder="Email" th:value="${contact.email}"/>
+                                                </div>
                                             <h1>  // LOGIN DETAILS</h1>
-                                            <input  type="hidden"    name="id" th:value="${customer.user?.loginDetails?.id}" />
+                                            <div th:object="${login}">
+                                            <input  type="hidden"    name="id" th:value="${login.id}" />
                                             <input  type="password"  class="form-control form-control-user"   name="password" 
-                                                    placeholder="Constraseña" th:value="${customer.user?.loginDetails?.password}"/>
+                                                    placeholder="Constraseña" th:value="${login.password}"/>
                                             <input  type="text"  class="form-control form-control-user"   name="username" 
-                                                    placeholder="Username" th:value="${customer.user?.loginDetails?.username}"/>
-                                           
+                                                    placeholder="Username" th:value="${login.username}"/>
+                                                </div>
                                         </div>
                                    
                                     </div>

@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Account;
+import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.repository.AccountRepository;
 import com.edu.egg.virtual_wallet.utility.Utilities;
@@ -10,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.stereotype.Service;
+
 @Service
 public class AccountService {
-    @Autowired(required=true)
+
+    @Autowired(required = true)
     private AccountRepository repository;
 
     @Transactional(readOnly = true)
@@ -21,17 +24,17 @@ public class AccountService {
     }
 
     @Transactional
-    public void createAccount(CurrencyType currency) {
+    public void createAccount(CurrencyType currency, Customer customer) {
         Account account = new Account();
 
         // VER CLASE UTILITIES DONDE SE GENERAN
-
         account.setNumber(createAccountNumber());
         account.setCvu(createAccountCvu());
         account.setAlias(createAccountAlias());
         account.setCurrency(currency);
         account.setBalance(0.0);
         account.setActive(true);
+   //     account.setCustomer(customer);
         repository.save(account);
     }
 
@@ -135,34 +138,23 @@ public class AccountService {
         repository.enableByAccountNumber(accountNumber);
     }
 
-    
     @Transactional
-    public void transaction(Long accountNumber,Double balance) throws Exception {
+    public void transaction(Long accountNumber, Double balance) throws Exception {
 
-       
         Account account = repository.findById(accountNumber).get();
 
         account.setBalance(balance);
 
-        repository.save(account); 
+        repository.save(account);
     }
-    
+
     @Transactional(readOnly = true)
-    public Optional <Account> findByNumber(Long number) {
+    public Optional<Account> findByNumber(Long number) {
         return repository.findById(number);
     }
-    
+
+    @Transactional(readOnly = true)
+    public List<Account> findByCustomerId(Integer id) {
+        return repository.findAllByIdCustomer(id);
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

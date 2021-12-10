@@ -1,6 +1,9 @@
 package com.edu.egg.virtual_wallet.service;
-
+import com.edu.egg.virtual_wallet.entity.Address;
+import com.edu.egg.virtual_wallet.entity.Name;
+import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.AppUser;
+import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.AppUserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Service
 public class AppUserService {
@@ -26,13 +30,18 @@ public class AppUserService {
     private LoginService loginService;
 
     @Transactional
-    public void createUser(AppUser newUser) throws VirtualWalletException {
+    public AppUser createUser( Contact contact, Name name,Login login, String role) throws VirtualWalletException {
         try {
-            nameService.createName(newUser.getFullName());
-            loginService.createLogin(newUser.getLoginDetails());
-            contactService.createContact(newUser.getContactInfo());
-            newUser.setActive(true);
-            appUserRepository.save(newUser);
+                      
+           
+            AppUser appUser=new AppUser();
+            appUser.setContactInfo(contactService.createContact(contact));
+            appUser.setFullName(nameService.createName(name));
+            appUser.setLoginDetails(loginService.createLogin(login , role));
+            appUser.setActive(true);
+            appUser.setLastLoggedIn(LocalDateTime.now());
+            appUserRepository.save(appUser);
+            return appUser;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }
