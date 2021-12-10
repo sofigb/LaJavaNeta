@@ -1,7 +1,8 @@
 package com.edu.egg.virtual_wallet.exception;
+
 public class InputException extends Exception {
 
-    public InputException(InputException e) {}
+    public InputException(InputException e){}
 
     public InputException(String ms) {super(ms);}
 
@@ -19,10 +20,10 @@ public class InputException extends Exception {
 
     public static InputException NotEdited(String entity){return new InputException( "No se ha podido  editar "+entity);}
 
-    public static InputException NotFoundName(String name){return new InputException("No se ha podido encontrar el nombre "+name);}
-
     public static InputException UsedEmail(String email){return new InputException("El Email " + email +  " ya fue utilizado");}
 
+    public static InputException RepeatedData(String entity){return new InputException(entity + " ya fue utilizado");}
 
-
+    //incorrect formatting
+    //public static InputException incorrectFormatting(String entity){return new InputException("Formato incorrecto "+entity);}
 }

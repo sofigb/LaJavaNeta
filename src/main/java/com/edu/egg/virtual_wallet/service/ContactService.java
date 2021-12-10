@@ -54,9 +54,9 @@ public class ContactService {
 
     public void checkContact(Long phoneNumber, String email) throws InputException, VirtualWalletException {
         Validation.validEmailCheck(email);
-        if (contactRepository.existsContactByEmail(email)) {
-            throw InputException.UsedEmail(email);
-        }
+        String usedEmail="El email "+email;
+        if (contactRepository.existsContactByEmail(email)) throw InputException.RepeatedData(email);
+
         Validation.validPhoneNumberCheck(phoneNumber);
     }
 }

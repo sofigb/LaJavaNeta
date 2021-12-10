@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.Login;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,7 +72,7 @@ public class AuthenticationController {
         try {
             loginService.createLogin(loginInfo);
             attributes.addFlashAttribute("registrationSuccessMessage", "Registration complete! Welcome!");
-        } catch (VirtualWalletException e) {
+        } catch (InputException e) {
             attributes.addFlashAttribute("username", loginInfo.getUsername());
             attributes.addFlashAttribute("password", loginInfo.getPassword());
             attributes.addFlashAttribute("registrationErrorMessage", e.getMessage());

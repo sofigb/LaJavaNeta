@@ -65,11 +65,13 @@ public class LoginService implements UserDetailsService {
         }
     }
 
-    public void checkLoginDetails(String username, String password) throws VirtualWalletException {
+    public void checkLoginDetails(String username, String password) throws VirtualWalletException,InputException{
         Validation.nullCheck(username, "Username");
 
         if (loginRepository.existsLoginByUsername(username)) {
-            throw new VirtualWalletException("Username '" + username +  "' is already taken");
+            String user="El usuario "+username;
+            //throw new VirtualWalletException("Username '" + username +  "' is already taken");
+            throw InputException.RepeatedData(user);
         }
 
         Validation.validPasswordCheck(password);

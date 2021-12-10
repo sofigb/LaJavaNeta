@@ -39,7 +39,7 @@ public class UserService  {
     }
 
     @Transactional
-    public void deactivateUser(User deletedUser) throws InputException{ // ?
+    public void deactivateUser(User deletedUser) throws InputException{
         try {
             nameService.deactivateName(deletedUser.getFullName().getId());
             contactService.deactivateContact(deletedUser.getContactInfo().getId());
