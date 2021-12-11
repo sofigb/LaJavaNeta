@@ -24,7 +24,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void createAccount(CurrencyType currency, Customer customer) {
+    public Account createAccount(CurrencyType currency) {
         Account account = new Account();
 
         // VER CLASE UTILITIES DONDE SE GENERAN
@@ -34,8 +34,10 @@ public class AccountService {
         account.setCurrency(currency);
         account.setBalance(0.0);
         account.setActive(true);
-   //     account.setCustomer(customer);
+
         repository.save(account);
+        return account;
+
     }
 
     private Long createAccountNumber() {

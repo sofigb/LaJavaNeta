@@ -28,7 +28,7 @@ public class Customer {
     private LocalDate dateOfBirth;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(/*nullable = false,*/name = "fk_customer")
+    @JoinColumn(nullable = false,name = "fk_customer")
     private List<Account> accounts;
 
     @OneToMany(fetch = FetchType.LAZY)
