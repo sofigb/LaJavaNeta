@@ -52,7 +52,7 @@ public class NameService {
         }
     }
 
-    public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException {
+    public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException, InputException {
         Validation.nullCheck(firstName, "First Name");
         Validation.nullCheck(lastName, "Last Name");
 

@@ -57,7 +57,6 @@ public class AccountService {
         String newAccountAlias;
         do {
             newAccountAlias = Utilities.generateAlias();
-
         } while (repository.existsByAlias(newAccountAlias));
 
         return newAccountAlias;
@@ -66,17 +65,11 @@ public class AccountService {
     @Transactional
     public void modifyAccountAliases(String alias, Long accountNumber) throws Exception {
 
-        if (repository.existsByAlias(alias)) {
-            throw new Exception("Ya existe el alias ingresado");
-        }
+        if (repository.existsByAlias(alias)) throw new Exception("Ya existe el alias ingresado");
 
-        if (alias.trim().isEmpty() || alias == null) {
-            throw new Exception("El alias no puede estar vacío");
-        }
+        if (alias.trim().isEmpty() || alias == null) throw new Exception("El alias no puede estar vacío");
 
-        if (alias.length() < 6 || alias.length() > 20) {
-            throw new Exception("Tamaño de alias inválido (MIN 6 - MAX 20)");
-        }
+        if (alias.length() < 6 || alias.length() > 20) throw new Exception("Tamaño de alias inválido (MIN 6 - MAX 20)");
 
         Account account = repository.findById(accountNumber).get();
 
@@ -88,13 +81,9 @@ public class AccountService {
     @Transactional
     public void deposit(Long accountNumber, Double amount) throws Exception {
 
-        if (amount < 0.0) {
-            throw new Exception("El monto ingresado no corresponde");
-        }
+        if (amount < 0.0) throw new Exception("El monto ingresado no corresponde");
 
-        if (!repository.existsByNumber(accountNumber)) {
-            throw new Exception("La cuenta no existe");
-        }
+        if (!repository.existsByNumber(accountNumber)) throw new Exception("La cuenta no existe");
 
         Account account = repository.findById(accountNumber).get();
 
@@ -106,19 +95,13 @@ public class AccountService {
     @Transactional
     public void withdraw(Long accountNumber, Double amount) throws Exception {
 
-        if (amount < 0.0) {
-            throw new Exception("El monto ingresado no corresponde");
-        }
+        if (amount < 0.0) throw new Exception("El monto ingresado no corresponde");
 
-        if (!repository.existsByNumber(accountNumber)) {
-            throw new Exception("La cuenta no existe");
-        }
+        if (!repository.existsByNumber(accountNumber)) throw new Exception("La cuenta no existe");
 
         Account account = repository.findById(accountNumber).get();
 
-        if (account.getBalance() < amount) {
-            throw new Exception("No posee la cantidad solicitada");
-        }
+        if (account.getBalance() < amount) throw new Exception("No posee la cantidad solicitada");
 
         account.setBalance(account.getBalance() - amount);
 
@@ -126,31 +109,20 @@ public class AccountService {
     }
 
     @Transactional
-    public void delete(Long accountNumber) {
-        repository.deleteById(accountNumber);
-    }
+    public void delete(Long accountNumber) {repository.deleteById(accountNumber);}
 
     @Transactional
-    public void enable(Long accountNumber) {
-        repository.enableByAccountNumber(accountNumber);
-    }
+    public void enable(Long accountNumber) {repository.enableByAccountNumber(accountNumber);}
 
-    
     @Transactional
     public void transaction(Long accountNumber,Double balance) throws Exception {
-
-       
         Account account = repository.findById(accountNumber).get();
-
         account.setBalance(balance);
-
-        repository.save(account); 
+        repository.save(account);
     }
     
     @Transactional(readOnly = true)
-    public Optional <Account> findByNumber(Long number) {
-        return repository.findById(number);
-    }
+    public Optional <Account> findByNumber(Long number) {return repository.findById(number);}
     
 }
 

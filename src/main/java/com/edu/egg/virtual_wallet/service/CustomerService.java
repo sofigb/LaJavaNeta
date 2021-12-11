@@ -5,6 +5,7 @@ import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,9 @@ public class CustomerService {
     @Autowired
     private UserRoleService userRoleService;
 
+    @Autowired
+    private EmailSenderService emailService;
+
     @Transactional
     public void createCustomer(Customer newCustomer) throws InputException {
         try {
@@ -29,6 +33,7 @@ public class CustomerService {
             userService.createUser(newCustomer.getUser());
             // createAccounts
             customerRepository.save(newCustomer);
+            emailService.send(newCustomer.getUser().getContactInfo().getEmail());
         } catch (Exception e) {
             throw InputException.NotCreated(customer);
         }

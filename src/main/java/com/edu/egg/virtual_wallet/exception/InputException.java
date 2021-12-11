@@ -20,10 +20,7 @@ public class InputException extends Exception {
 
     public static InputException NotEdited(String entity){return new InputException( "No se ha podido  editar "+entity);}
 
-    //public static InputException UsedEmail(String email){return new InputException("El Email " + email +  " ya fue utilizado");}
-
     public static InputException RepeatedData(String entity){return new InputException(entity + " ya fue utilizado");}
 
-    //incorrect formatting
-    //public static InputException incorrectFormatting(String entity){return new InputException("Formato incorrecto "+entity);}
+    public static InputException incorrectFormatting(String entity){return new InputException("Formato incorrecto "+entity);}
 }

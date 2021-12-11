@@ -29,7 +29,7 @@ public class MyException extends Exception {
         return new MyException("No existe contacto frecuente");
     }
     
-     public static MyException amountNotNullNegative() {//NotPositive
+     public static MyException amountNotNullNegative() {//NotPositiveBalance
 
         return new MyException("El monto ingresado debe ser mayor a 0");
     }
