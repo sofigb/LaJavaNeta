@@ -51,7 +51,7 @@
                                                                                                       <!-- DataTales Example -->
                                                                                                       <div class="card shadow mb-4">
                                         <div class="card-header py-3">
-                                            <a class="m-0 font-weight-bold text-primary" th:href="@{/payee/__${href}__}"><h6>+ Agregar nuev<span th:text="${title}"></h6></a>
+                                            <a class="m-0 font-weight-bold text-primary" th:href="@{/transaction/__${href}__}"><h6>+ Agregar nuev<span th:text="${title}"></h6></a>
 
                                         </div>
 
@@ -68,25 +68,27 @@
                                                     <thead>
                                                         <tr>
                                                             <th>Id</th>
-                                                            <th>Nombre</th>
-                                                            <th>Numero de Cuenta</th>
-                                                            <th>Acciones</th>
+                                                            <th>ID de contacto frecuente</th>
+                                                            <th>Contacto frecuente</th>
+                                                            <th>ID cuenta sender </th>
+                                                            <th>Fecha </th>
+                                                            <th>Referencia</th>
+                                                            <th>Tipo</th>
+                                                            <th>Monto</th>
+                                                            
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr th:each="obej : ${listaOb}">
+                                                        <tr th:each="obej : ${listT}">
                                                             <td th:text="${obej.id}"></td>
-                                                            <td th:text="${obej.name}"></td>
-                                                            <td th:text="${obej.accountNumber}"></td>
-
-                                                            <td > 
-                                                                <a   class="btn btn-info btn-circle btn-sm" th:href="@{__${href1}__/update/__${obej.id}__}" title="Modificar">  <i class="fas fa-info-circle"></i> </a>
-                                                                <div th:switch="${obej.active}">
-                                                                    <a  th:case="true" class="btn btn-danger btn-circle btn-sm" th:href="@{__${href1}__/delete/__${obej.id}__}" title="Deshabilitar" >  <i class="fas fa-trash"></i> </a>
-                                                                    <a  th:case="false" class="btn btn-success btn-circle btn-sm" th:href="@{__${href1}__/active/__${obej.id}__}" title="Habilitar" >  <i class="fas fa-check"></i> </a>
-                                                                </div>
-
-                                                            </td>        
+                                                            <td th:text="${obej.payee.id}"></td>
+                                                            <td th:text="${obej.payee.name}"></td>
+                                                            <td th:text="${obej.senderAccount.number}"></td>
+                                                            <td th:text="${obej.timeStamp}"></td>
+                                                            <td th:text="${obej.reference}"></td>
+                                                            <td th:text="${obej.type}"></td>
+                                                            <td th:text="${obej.amount}"></td>
+                                                           
                                                         </tr>
                                                     </tbody>
 

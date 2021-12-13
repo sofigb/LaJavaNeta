@@ -5,14 +5,17 @@ import java.time.LocalDateTime;
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EntityListeners;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 @Entity
+@EntityListeners(AuditingEntityListener.class)
 public class Transaction {
 
     @Id
@@ -25,12 +28,12 @@ public class Transaction {
     private String reference;
     private TransactionType type;
     private Double amount;
-    
+
     @ManyToOne
     @JoinColumn(nullable = false)
     private Payee payee;
     //NO VA A FUNCIONAR ASI, TENGO QUE TENER UN OBJETO CUENTA
-   // private Long senderAccountNumber;
+    // private Long senderAccountNumber;
     @ManyToOne
     @JoinColumn(nullable = false)
     private Account senderAccount;

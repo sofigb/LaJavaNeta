@@ -6,6 +6,7 @@ import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.entity.Customer;
+import com.edu.egg.virtual_wallet.entity.Payee;
 
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
@@ -28,9 +29,9 @@ public class CustomerService {
 
     @Autowired
     private AddressService addressService;
-
-    @Autowired
+     @Autowired
     private AccountService accountService;
+    
 
 //    @Autowired
 //    private PayeeService payeeService;
@@ -40,12 +41,13 @@ public class CustomerService {
         try {
             String role = "CUSTOMER";
             Customer customer = new Customer();
-            customer.setAccounts(saveAccount(customer));
+
             //   saveListPayee(customer);
             customer.setDateOfBirth(newCustomer.getDateOfBirth());
             customer.setAddressInfo(addressService.createAddress(address));
             customer.setUser(userService.createUser(contact, name, login, role));
             customerRepository.save(customer);
+            accountService.createAccount(CurrencyType.PESO_ARG, customer);
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }
@@ -98,46 +100,28 @@ public class CustomerService {
         }
     }
 
+//    no estoy muy segura que sirva 
     @Transactional
-    public List<Account> saveAccount(Customer customer) throws VirtualWalletException {
-        List<Account> accountList = new ArrayList();
-        try {
+    public void savePayeeinList(Integer idCustomer,  Payee payee) throws VirtualWalletException {
+        if (customerRepository.findById(idCustomer).isPresent()) {
+            try {
+                List<Payee> payeelist= ((customerRepository.findById(idCustomer)).get()).getPayees();
+                payeelist.add(payee);
+                Customer customer=(customerRepository.findById(idCustomer)).get();
+                customer.setPayees(payeelist);
+                customerRepository.save(customer);
 
-            if (customer.getAccounts().isEmpty()) {
-                accountList.add(accountService.createAccount(CurrencyType.PESO_ARG));
-                
-
-            } else {
-                accountList.add(accountService.createAccount(CurrencyType.DOLLAR));
-            
+            } catch (Exception e) {
+                throw new VirtualWalletException(e.getMessage());
             }
 
-            //customerRepository.save(customerRepository.findById(idCustomer).get());
-        } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
         }
-        return accountList;
     }
-
-    //no estoy muy segura que sirva 
-//    @Transactional
-//    public void saveListPayee(Customer customer) throws VirtualWalletException {
-//        if (customerRepository.findById(customer.getId()).isPresent()) {
-//            try {
-//
-//                customer.setPayees(payeeService.findByCustomerId(customer.getId()));
-//                customerRepository.save(customer);
-//
-//            } catch (Exception e) {
-//                throw new VirtualWalletException(e.getMessage());
-//            }
-//
-//        }
-//    }
     @Transactional(readOnly = true)
     public Optional<Customer> findById(Integer id) {
         return customerRepository.findById(id);
 
     }
+ 
 
 }

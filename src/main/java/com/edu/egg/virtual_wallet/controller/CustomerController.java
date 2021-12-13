@@ -1,7 +1,6 @@
 package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.Address;
-import com.edu.egg.virtual_wallet.entity.AppUser;
 import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.entity.Login;
@@ -26,6 +25,7 @@ public class CustomerController {
 
     @Autowired
     private CustomerService cService;
+   
 
 //    @GetMapping()
 //    public ModelAndView show() {
@@ -87,6 +87,7 @@ public class CustomerController {
             @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name, @ModelAttribute("login") Login login) throws VirtualWalletException {
     
             cService.createCustomer(customer,address,contact,name,login);
+            
 
                 
         return new RedirectView("/customer/register");
@@ -103,4 +104,7 @@ public class CustomerController {
 //
 //    }
 //}   
+    
+    
+    
 }

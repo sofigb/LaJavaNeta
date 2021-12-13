@@ -24,5 +24,8 @@ public interface PayeeRepository extends JpaRepository<Payee, Integer> {
     @Query(value = "SELECT * FROM Payee p WHERE p.active = true AND p.fk_customer=:id", nativeQuery = true)
     List<Payee> findAllByIdCustomer(@Param("id") Integer id);
 
+     
+    @Query(value = "SELECT p.fk_customer FROM Payee p WHERE p.id =:id", nativeQuery = true)
+    Integer idCustomer(@Param("id") Integer id);
         
 }

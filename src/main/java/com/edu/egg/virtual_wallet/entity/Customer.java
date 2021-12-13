@@ -27,9 +27,9 @@ public class Customer {
     @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate dateOfBirth;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(nullable = false,name = "fk_customer")
-    private List<Account> accounts;
+//    @OneToMany(fetch = FetchType.LAZY)
+//    @JoinColumn(nullable = false,name = "fk_customer")
+//    private List<Account> accounts;
 
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(/*nullable = false,*/name = "fk_customer")
@@ -40,12 +40,12 @@ public class Customer {
      ************************** CONSTRUCTOR ***********************
     ************************************************************
      */
-    public Customer(Integer id, AppUser user, Address addressInfo, LocalDate dateOfBirth, List<Account> accounts, List<Payee> payees) {
+    public Customer(Integer id, AppUser user, Address addressInfo, LocalDate dateOfBirth,  List<Payee> payees) {
         this.id = id;
         this.user = user;
         this.addressInfo = addressInfo;
         this.dateOfBirth = dateOfBirth;
-        this.accounts = accounts;
+//        this.accounts = accounts;
         this.payees = payees;
     }
 
@@ -89,13 +89,13 @@ public class Customer {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public List<Account> getAccounts() {
-        return accounts;
-    }
-
-    public void setAccounts(List<Account> accounts) {
-        this.accounts = accounts;
-    }
+//    public List<Account> getAccounts() {
+//        return accounts;
+//    }
+//
+//    public void setAccounts(List<Account> accounts) {
+//        this.accounts = accounts;
+//    }
 
     public List<Payee> getPayees() {
         return payees;

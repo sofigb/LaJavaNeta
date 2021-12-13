@@ -5,6 +5,7 @@ import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.repository.AccountRepository;
 import com.edu.egg.virtual_wallet.utility.Utilities;
+import java.time.LocalDateTime;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ public class AccountService {
     }
 
     @Transactional
-    public Account createAccount(CurrencyType currency) {
+    public void createAccount(CurrencyType currency, Customer customer) {
         Account account = new Account();
 
         // VER CLASE UTILITIES DONDE SE GENERAN
@@ -34,9 +35,9 @@ public class AccountService {
         account.setCurrency(currency);
         account.setBalance(0.0);
         account.setActive(true);
-
+        //account.setActivationDate(LocalDateTime.now());
+        account.setCustomer(customer);
         repository.save(account);
-        return account;
 
     }
 
@@ -69,7 +70,7 @@ public class AccountService {
     }
 
     @Transactional
-    public void modifyAccountAliases(String alias, Long accountNumber) throws Exception {
+    public void modifyAccountAliases(String alias, Long id) throws Exception {
 
         if (repository.existsByAlias(alias)) {
             throw new Exception("Ya existe el alias ingresado");
@@ -83,7 +84,7 @@ public class AccountService {
             throw new Exception("Tamaño de alias inválido (MIN 6 - MAX 20)");
         }
 
-        Account account = repository.findById(accountNumber).get();
+        Account account = repository.findById(id).get();
 
         account.setAlias(alias);
 
@@ -146,17 +147,28 @@ public class AccountService {
         Account account = repository.findById(accountNumber).get();
 
         account.setBalance(balance);
-
+        
         repository.save(account);
     }
 
     @Transactional(readOnly = true)
-    public Optional<Account> findByNumber(Long number) {
-        return repository.findById(number);
+    public Account findById(Long id) {
+        return repository.findById(id).get();
     }
 
     @Transactional(readOnly = true)
     public List<Account> findByCustomerId(Integer id) {
         return repository.findAllByIdCustomer(id);
     }
+
+    @Transactional(readOnly = true)
+    public void active(Long id) {
+        repository.active(id);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        repository.deleteById(id);
+    }
+    
 }
