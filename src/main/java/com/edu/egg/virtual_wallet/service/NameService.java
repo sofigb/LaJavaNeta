@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Name;
+import com.edu.egg.virtual_wallet.model.entity.Name;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.NameRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -15,11 +15,12 @@ public class NameService {
     private NameRepo nameRepository;
 
     @Transactional
-    public void createName(Name newName) throws VirtualWalletException {
+    public Name createName(Name newName) throws VirtualWalletException {
         try {
             checkName(newName.getFirstName(), newName.getMiddleName(), newName.getLastName());
             newName.setActive(true);
             nameRepository.save(newName);
+            return newName;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }
@@ -35,11 +36,12 @@ public class NameService {
     }
 
     @Transactional
-    public void editName(Name updatedName) throws VirtualWalletException {
+    public Name editName(Name updatedName) throws VirtualWalletException {
         if(nameRepository.findById(updatedName.getId()).isPresent()) {
             try {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
                 nameRepository.save(updatedName);
+                return updatedName;
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }

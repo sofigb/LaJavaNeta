@@ -1,4 +1,4 @@
-package com.edu.egg.virtual_wallet.entity;
+package com.edu.egg.virtual_wallet.model.entity;
 
 import javax.persistence.*;
 

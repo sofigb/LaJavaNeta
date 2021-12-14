@@ -1,10 +1,9 @@
-package com.edu.egg.virtual_wallet.entity;
+package com.edu.egg.virtual_wallet.model.entity;
 
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
 import java.time.LocalDate;
-import java.util.List;
 
 @Entity(name = "Customers")
 @Table(name = "Customers")
@@ -15,7 +14,7 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private AppUser user;
 

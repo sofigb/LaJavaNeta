@@ -1,10 +1,9 @@
-package com.edu.egg.virtual_wallet.entity;
+package com.edu.egg.virtual_wallet.model.entity;
 
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity(name = "LoginInformation")
 @Table(name = "LoginInformation")

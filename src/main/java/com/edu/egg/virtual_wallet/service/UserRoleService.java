@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.UserRole;
+import com.edu.egg.virtual_wallet.model.entity.UserRole;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.UserRoleRepo;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Customer;
+import com.edu.egg.virtual_wallet.model.entity.*;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +17,15 @@ public class CustomerService {
     private AppUserService userService;
 
     @Autowired
-    private UserRoleService userRoleService;
+    private AddressService addressService;
 
     @Transactional
     public void createCustomer(Customer newCustomer) throws VirtualWalletException {
         try {
-            newCustomer.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("CUSTOMER")); // ?
-            userService.createUser(newCustomer.getUser());
-            // createAccounts
+            newCustomer.setDateOfBirth(newCustomer.getDateOfBirth());
+            newCustomer.setAddressInfo(addressService.createAddress(newCustomer.getAddressInfo()));
+            userService.createUser(newCustomer.getUser(), "CUSTOMER");
+            // createAccount
             customerRepository.save(newCustomer);
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
@@ -64,12 +65,30 @@ public class CustomerService {
         }
     }
 
-    @Transactional
-    public Customer returnCustomer(Integer idCustomer) throws VirtualWalletException {
+    /******************** NEEDS TESTING *********************/
+
+    @Transactional(readOnly = true)
+    public Integer getIdCustomerByLoginId(Integer loginId) throws VirtualWalletException {
+        Integer id = customerRepository.findUserIdByLoginId(loginId);
+        if (id == null) {
+            throw new VirtualWalletException("Unable to retrieve customer by login information");
+        }
+        return id;
+    }
+
+    @Transactional(readOnly = true)
+    public Customer returnCustomer(Integer loginId) throws VirtualWalletException {
+        Integer idCustomer = getIdCustomerByLoginId(loginId);
+
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
-                customer.setUser(userService.returnUser(customer.getUser().getId()));
+                customer.setAddressInfo(customer.getAddressInfo());
+                AppUser appUser = customer.getUser();
+                appUser.setFullName(appUser.getFullName());
+                appUser.setContactInfo(appUser.getContactInfo());
+                appUser.setLoginDetails(appUser.getLoginDetails());
+                customer.setUser(appUser);
                 return customer;
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());

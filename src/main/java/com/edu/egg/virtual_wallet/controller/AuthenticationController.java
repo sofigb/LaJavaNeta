@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.controller;
 
-import com.edu.egg.virtual_wallet.entity.Login;
+import com.edu.egg.virtual_wallet.model.entity.Login;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,46 +37,9 @@ public class AuthenticationController {
         }
 
         if (principal != null) {
-            modelAndView.setViewName("redirect:/"); // Redirect to Customers profile
+            modelAndView.setViewName("redirect:/home"); // Redirect to Customers profile
         }
 
         return modelAndView;
-    }
-
-    // HOW TO REGISTER A CUSTOMER? Employees should not be able to register, they are given an account by a SuperAdmin
-
-    @GetMapping("/register")
-    private ModelAndView register(HttpServletRequest request, Principal principal) {
-        ModelAndView mav = new ModelAndView("register");
-
-        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
-        if (flashMap != null) {
-            mav.addObject("registrationSuccessMessage", flashMap.get("registrationSuccessMessage"));
-            mav.addObject("registrationErrorMessage", flashMap.get("registrationErrorMessage"));
-            mav.addObject("username", flashMap.get("username"));
-            mav.addObject("password", flashMap.get("password"));
-        } else {
-            mav.addObject("loginInfo", new Login());
-        }
-
-        if (principal != null) {
-            mav.setViewName("redirect:/login");
-        }
-
-        return mav;
-    }
-
-    @PostMapping("/register/check")
-    public RedirectView addUser(@ModelAttribute("loginInfo") Login loginInfo, RedirectAttributes attributes) {
-        try {
-            loginService.createLogin(loginInfo);
-            attributes.addFlashAttribute("registrationSuccessMessage", "Registration complete! Welcome!");
-        } catch (VirtualWalletException e) {
-            attributes.addFlashAttribute("username", loginInfo.getUsername());
-            attributes.addFlashAttribute("password", loginInfo.getPassword());
-            attributes.addFlashAttribute("registrationErrorMessage", e.getMessage());
-            return new RedirectView("/register");
-        }
-        return new RedirectView("/login");
     }
 }

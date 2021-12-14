@@ -1,7 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Login;
-import com.edu.egg.virtual_wallet.entity.UserRole;
+import com.edu.egg.virtual_wallet.model.entity.Login;
+import com.edu.egg.virtual_wallet.model.entity.UserRole;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -15,7 +15,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.util.Collections;
 
 @Service
@@ -25,15 +28,20 @@ public class LoginService implements UserDetailsService {
     private LoginRepo loginRepository;
 
     @Autowired
+    private UserRoleService userRoleService;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public void createLogin(Login newLogin) throws VirtualWalletException {
+    public Login createLogin(Login newLogin, String role) throws VirtualWalletException {
         try {
             checkLoginDetails(newLogin.getUsername(), newLogin.getPassword());
             newLogin.setPassword(passwordEncoder.encode(newLogin.getPassword()));
+            newLogin.setRole(userRoleService.findUserRoleByRoleName(role));
             newLogin.setActive(true);
             loginRepository.save(newLogin);
+            return newLogin;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }
@@ -49,11 +57,12 @@ public class LoginService implements UserDetailsService {
     }
 
     @Transactional
-    public void editLogin(Login updatedLogin) throws VirtualWalletException {
+    public Login editLogin(Login updatedLogin) throws VirtualWalletException {
         if(loginRepository.findById(updatedLogin.getId()).isPresent()) {
             try {
-                checkLoginDetails(updatedLogin.getUsername(), updatedLogin.getPassword());
+                // checkLoginDetails(updatedLogin.getUsername(), updatedLogin.getPassword());
                 loginRepository.save(updatedLogin);
+                return updatedLogin;
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }
@@ -78,6 +87,11 @@ public class LoginService implements UserDetailsService {
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
 
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + loginDetails.getRole().getRoleName());
+
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
+
+        session.setAttribute("id", loginDetails.getId());
 
         return new User(loginDetails.getUsername(), loginDetails.getPassword(), Collections.singletonList(grantedAuthority));
     }

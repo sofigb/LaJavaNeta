@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Address;
+import com.edu.egg.virtual_wallet.model.entity.Address;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.AddressRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +14,11 @@ public class AddressService {
     private AddressRepo addressRepository;
 
     @Transactional
-    public void createAddress(Address newAddress) throws VirtualWalletException {
+    public Address createAddress(Address newAddress) throws VirtualWalletException {
         try {
+            newAddress.setActive(true);
             addressRepository.save(newAddress);
+            return newAddress;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }
@@ -32,10 +34,11 @@ public class AddressService {
     }
 
     @Transactional
-    public void editAddress(Address updatedAddress) throws VirtualWalletException{
+    public Address editAddress(Address updatedAddress) throws VirtualWalletException{
         if (addressRepository.findById(updatedAddress.getId()).isPresent()) {
             try {
                 addressRepository.save(updatedAddress);
+                return updatedAddress;
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }

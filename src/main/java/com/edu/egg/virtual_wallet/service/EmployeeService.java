@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Employee;
+import com.edu.egg.virtual_wallet.model.entity.Employee;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
@@ -22,9 +22,6 @@ public class EmployeeService {
     @Autowired
     private AppUserService userService;
 
-    @Autowired
-    private UserRoleService userRoleService;
-
     /*
     @Autowired
     private CustomerService customerService; Will allow employee to edit/create customers
@@ -33,9 +30,8 @@ public class EmployeeService {
     @Transactional
     public void createEmployee(Employee newEmployee) throws VirtualWalletException {
         try {
-            newEmployee.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("EMPLOYEE"));
             newEmployee.getUser().getLoginDetails().setPassword(PasswordPolicyEnforcer.generatePassword());
-            userService.createUser(newEmployee.getUser());
+            userService.createUser(newEmployee.getUser(), "EMPLOYEE");
             employeeRepository.save(newEmployee);
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
@@ -69,6 +65,8 @@ public class EmployeeService {
             throw new VirtualWalletException("Unable to find Employee");
         }
     }
+
+    /******************** NEEDS TESTING *********************/
 
     @Transactional
     public Employee returnEmployee(Integer idEmployee) throws VirtualWalletException {

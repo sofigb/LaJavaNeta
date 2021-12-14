@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Contact;
+import com.edu.egg.virtual_wallet.model.entity.Contact;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.ContactRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -15,11 +15,12 @@ public class ContactService {
     private ContactRepo contactRepository;
 
     @Transactional
-    public void createContact(Contact newContact) throws VirtualWalletException {
+    public Contact createContact(Contact newContact) throws VirtualWalletException {
         try {
             checkContact(newContact.getPhoneNumber(), newContact.getEmail());
             newContact.setActive(true);
             contactRepository.save(newContact);
+            return newContact;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }
@@ -35,11 +36,12 @@ public class ContactService {
     }
 
     @Transactional
-    public void editContact(Contact updatedContact) throws VirtualWalletException {
+    public Contact editContact(Contact updatedContact) throws VirtualWalletException {
         if (contactRepository.findById(updatedContact.getId()).isPresent()) {
             try {
                 checkContact(updatedContact.getPhoneNumber(), updatedContact.getEmail());
                 contactRepository.save(updatedContact);
+                return updatedContact;
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }
