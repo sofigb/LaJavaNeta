@@ -25,7 +25,7 @@ public class Validation {
 
     }
 
-    public static void notNullNegativeAmout(Double amount) throws InputException {
+    public static void notNullNegativeAmount(Double amount) throws InputException {
         if (amount == null || amount <= 0) {
             String insufAmount= "El monto ingresado ";
             String help = ".Recuerde que debe ser mayor a cero";

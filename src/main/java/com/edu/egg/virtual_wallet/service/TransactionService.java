@@ -26,7 +26,7 @@ public class TransactionService {
     public void create(Transaction transaction, Long idAccount) throws InputException {
         try {
             Validation.checkReference(transaction.getReference());
-            Validation.notNullNegativeAmout(transaction.getAmount());
+            Validation.notNullNegativeAmount(transaction.getAmount());
             Transaction transactions = new Transaction();
             transactions.setReference(transaction.getReference());
             transactions.setTimeStamp(LocalDateTime.now());
