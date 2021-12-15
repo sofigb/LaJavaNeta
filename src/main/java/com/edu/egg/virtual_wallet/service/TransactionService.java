@@ -1,7 +1,5 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Account;
-import com.edu.egg.virtual_wallet.entity.Payee;
 import com.edu.egg.virtual_wallet.entity.Transaction;
 import com.edu.egg.virtual_wallet.exception.MyException;
 import com.edu.egg.virtual_wallet.repository.TransactionRepository;
@@ -19,50 +17,48 @@ public class TransactionService {
     private PayeeService payeeService;
 
     @Autowired(required = true)
-    private AccountService accountService;
+    private AccountService aService;
 
     @Autowired(required = true)
-    private TransactionRepository transactionRep;
+    private TransactionRepository tRepository;
 
     @Transactional
     public void create(Transaction transaction, Long idAccount) throws MyException, Exception {
-
-        Validation.checkReference(transaction.getReference());
-        Validation.notNullNegativeAmout(transaction.getAmount());
-        Transaction transactions = new Transaction();
-        transactions.setReference(transaction.getReference());
-        transactions.setTimeStamp(LocalDateTime.now());
-        transactions.setSenderAccountNumber(accountService.findById(idAccount));
-        Validation.insufficientBalance(transactions.getSenderAccount().getBalance(), transaction.getAmount());
-        transactions.setAmount(transaction.getAmount());
-        transactions.setPayee(transaction.getPayee());
-        transactions.setCurrency(transactions.getSenderAccount().getCurrency());
-        transactions.setType(transaction.getType());
+        try {
+            Validation.checkReference(transaction.getReference());
+            Validation.notNullNegativeAmout(transaction.getAmount());
+            Transaction transactions = new Transaction();
+            transactions.setReference(transaction.getReference());
+            transactions.setTimeStamp(LocalDateTime.now());
+            transactions.setSenderAccountNumber(aService.findById(idAccount));
+            Validation.insufficientBalance(transactions.getSenderAccount().getBalance(), transaction.getAmount());
+            transactions.setAmount(transaction.getAmount());
+            transactions.setPayee(transaction.getPayee());
+            transactions.setCurrency(transactions.getSenderAccount().getCurrency());
+            transactions.setType(transaction.getType());
 //        Validation.exitsPayee((payeeService.findById(transaction.getPayee().getId())), transaction.getPayee());
-//        Validation.exitsAccount((accountService.findByNumber(transaction.getSenderAccount().getNumber())), transaction.getPayee());
+//        Validation.exitsAccount((aService.findByNumber(transaction.getSenderAccount().getNumber())), transaction.getPayee());
 
-        switch (transactions.getType()) {
-            case WIRE_TRANSFER:
-                accountService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() - transactions.getAmount()));
-                break;
+            switch (transactions.getType()) {
+                case WIRE_TRANSFER:
+                    aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() - transactions.getAmount()));
+                    break;
 
-            case DEPOSIT:
-                accountService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
-                break;
+                case DEPOSIT:
+                    aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
+                    break;
 
-            case CHANGE_CURRENCY:
+            }
 
-                break;
-
+            tRepository.save(transactions);
+        } catch (Exception e) {
+            throw new MyException(e.getMessage());
         }
-
-        transactionRep.save(transactions);
-
     }
 
     @Transactional(readOnly = true)
     public List<Transaction> showAllByAccountId(Long id) {
-        return transactionRep.findAllByIdAccount(id);
+        return tRepository.findAllByIdAccount(id);
     }
 
 }

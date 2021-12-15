@@ -70,7 +70,7 @@ public class AccountController {
     @PostMapping("/save")
     public RedirectView saveChanges(@ModelAttribute("account") Account account, @ModelAttribute("customer") Customer customer) throws Exception {
 
-        aService.modifyAccountAliases(account.getAlias(), account.getId());
+        aService.updateAlias(account.getAlias(), account.getId());
         Integer idCustomer = (aService.findById(account.getId()).getCustomer().getId());
         return new RedirectView("/account/" + idCustomer);
 

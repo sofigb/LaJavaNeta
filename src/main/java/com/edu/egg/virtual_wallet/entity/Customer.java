@@ -32,7 +32,7 @@ public class Customer {
 //    private List<Account> accounts;
 
     @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(/*nullable = false,*/name = "fk_customer")
+    @JoinColumn(name = "fk_customer")
     private List<Payee> payees;
 
     /**
