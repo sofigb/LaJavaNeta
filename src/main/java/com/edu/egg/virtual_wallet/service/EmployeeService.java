@@ -2,7 +2,6 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Employee;
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -58,7 +57,7 @@ public class EmployeeService {
     }
 */
     @Transactional
-    public void editEmployee(Employee updatedEmployee) throws InputException{
+    public void editEmployee(Employee updatedEmployee) throws InputException {
         if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {
             try {
                 userService.editUser(updatedEmployee.getUser());

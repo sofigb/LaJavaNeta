@@ -1,6 +1,5 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Account;
 import com.edu.egg.virtual_wallet.entity.Address;
 import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.Login;
@@ -10,13 +9,11 @@ import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.entity.Payee;
 
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
-import java.util.ArrayList;
+
 import java.util.List;
 import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,12 +40,10 @@ public class CustomerService {
 //    @Autowired
 //    private PayeeService payeeService;
     @Transactional
-    public void createCustomer(Customer newCustomer, Address address, Contact contact, Name name,
-            Login login) throws InputException {
+    public void createCustomer(Customer newCustomer, Address address, Contact contact, Name name, Login login) throws InputException {
         try {
             String role = "CUSTOMER";
             Customer customer = new Customer();
-
             //   saveListPayee(customer);
             customer.setDateOfBirth(newCustomer.getDateOfBirth());
             customer.setAddressInfo(addressService.createAddress(address));
@@ -80,7 +75,7 @@ public class CustomerService {
     // There should be another method for adding or deleting payees, and a different method for adding or deactivating Customers bank accounts
     // Transfers should be made by AccountService
     @Transactional
-    public void editCustomer(Customer updatedCustomer) throws InputException{
+    public void editCustomer(Customer updatedCustomer) throws InputException {
         if (customerRepository.findById(updatedCustomer.getId()).isPresent()) {
             try {
                 userService.editUser(updatedCustomer.getUser());
@@ -110,7 +105,7 @@ public class CustomerService {
 
 //    no estoy muy segura que sirva 
     @Transactional
-    public void savePayeeinList(Integer idCustomer,  Payee payee) throws VirtualWalletException {
+    public void savePayeeinList(Integer idCustomer,  Payee payee) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 List<Payee> payeelist= ((customerRepository.findById(idCustomer)).get()).getPayees();
@@ -118,18 +113,12 @@ public class CustomerService {
                 Customer customer=(customerRepository.findById(idCustomer)).get();
                 customer.setPayees(payeelist);
                 customerRepository.save(customer);
-
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new InputException(e.getMessage());
             }
-
         }
     }
     @Transactional(readOnly = true)
-    public Optional<Customer> findById(Integer id) {
-        return customerRepository.findById(id);
-
-    }
- 
+    public Optional<Customer> findById(Integer id) {return customerRepository.findById(id);}
 
 }

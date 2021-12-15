@@ -2,7 +2,6 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.NameRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,12 +19,10 @@ public class NameService {
 
     @Transactional
     public Name createName(Name newName) throws InputException {
-
         try {
             checkName(newName.getFirstName(), newName.getMiddleName(), newName.getLastName());
             newName.setActive(true);
             nameRepository.save(newName);
-            
             return newName;
         } catch (Exception e) {
             throw InputException.NotCreated(name);
@@ -56,7 +53,7 @@ public class NameService {
         }
     }
 
-    public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException, InputException {
+    public void checkName(String firstName, String middleName, String lastName) throws InputException {
 
         Validation.nullCheck(firstName, "First Name");
         Validation.nullCheck(lastName, "Last Name");

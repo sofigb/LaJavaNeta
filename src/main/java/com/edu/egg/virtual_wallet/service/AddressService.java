@@ -2,7 +2,6 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Address;
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.AddressRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,7 +38,7 @@ public class AddressService {
     }
 
     @Transactional
-    public void editAddress(Address updatedAddress) throws InputException{
+    public void editAddress(Address updatedAddress) throws InputException {
         if (addressRepository.findById(updatedAddress.getId()).isPresent()) {
             try {
                 addressRepository.save(updatedAddress);

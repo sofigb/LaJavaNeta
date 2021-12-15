@@ -1,7 +1,6 @@
 package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.Transaction;
-import com.edu.egg.virtual_wallet.exception.MyException;
 import com.edu.egg.virtual_wallet.service.AccountService;
 import com.edu.egg.virtual_wallet.service.PayeeService;
 import com.edu.egg.virtual_wallet.service.TransactionService;

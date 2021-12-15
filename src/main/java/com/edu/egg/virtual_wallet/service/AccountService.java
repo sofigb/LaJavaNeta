@@ -3,8 +3,9 @@ package com.edu.egg.virtual_wallet.service;
 import com.edu.egg.virtual_wallet.entity.Account;
 import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.AccountRepository;
-import com.edu.egg.virtual_wallet.utility.Utility;
+import com.edu.egg.virtual_wallet.utility.Utilities;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
@@ -43,8 +44,10 @@ public class AccountService {
     @Transactional
     public void updateAlias(String alias, Long id) throws Exception {
 
-
-        if (aRepository.existsByAlias(alias)) throw new Exception("Ya existe el alias ingresado");
+         if (aRepository.existsByAlias(alias)){
+             String Alias = "El alias " + alias;
+             throw  InputException.RepeatedData(Alias);
+         }
 
 
         if (alias.trim().isEmpty() || alias == null) throw new Exception("El alias no puede estar vacío");
@@ -52,10 +55,7 @@ public class AccountService {
         if (alias.length() < 6 || alias.length() > 20) throw new Exception("Tamaño de alias inválido (MIN 6 - MAX 20)");
 
         Account account = aRepository.findById(id).get();
-
         account.setAlias(alias);
-
-
         aRepository.save(account);
     }
 
@@ -70,12 +70,9 @@ public class AccountService {
     }
 
     @Transactional
-    public void transaction(Long accountNumber, Double balance) throws Exception {
-
+    public void transaction(Long accountNumber, Double balance){
         Account account = aRepository.findById(accountNumber).get();
-
         account.setBalance(balance);
-
         aRepository.save(account);
     }
 
@@ -102,7 +99,7 @@ public class AccountService {
     private Long createAccountNumber() {
         Long newAccountNumber;
         do {
-            newAccountNumber = Utility.generateAccountNumber();
+            newAccountNumber = Utilities.generateAccountNumber();
         } while (aRepository.existsByNumber(newAccountNumber));
 
         return newAccountNumber;
@@ -111,7 +108,7 @@ public class AccountService {
     private String createAccountCvu() {
         String newAccountCvu;
         do {
-            newAccountCvu = Utility.generateAccountCvu();
+            newAccountCvu = Utilities.generateAccountCvu();
         } while (aRepository.existsByCvu(newAccountCvu));
 
         return newAccountCvu;
@@ -120,7 +117,7 @@ public class AccountService {
     private String createAccountAlias() {
         String newAccountAlias;
         do {
-            newAccountAlias = Utility.generateAlias();
+            newAccountAlias = Utilities.generateAlias();
 
         } while (aRepository.existsByAlias(newAccountAlias));
 

@@ -1,7 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Transaction;
-import com.edu.egg.virtual_wallet.exception.MyException;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.TransactionRepository;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class TransactionService {
     private TransactionRepository tRepository;
 
     @Transactional
-    public void create(Transaction transaction, Long idAccount) throws MyException, Exception {
+    public void create(Transaction transaction, Long idAccount) throws InputException {
         try {
             Validation.checkReference(transaction.getReference());
             Validation.notNullNegativeAmout(transaction.getAmount());
@@ -43,16 +43,13 @@ public class TransactionService {
                 case WIRE_TRANSFER:
                     aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() - transactions.getAmount()));
                     break;
-
                 case DEPOSIT:
                     aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
                     break;
-
             }
-
             tRepository.save(transactions);
         } catch (Exception e) {
-            throw new MyException(e.getMessage());
+            throw new InputException(e.getMessage());
         }
     }
 

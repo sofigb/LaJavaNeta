@@ -2,8 +2,6 @@ package com.edu.egg.virtual_wallet.controller;
 
 
 import com.edu.egg.virtual_wallet.entity.Payee;
-import com.edu.egg.virtual_wallet.exception.MyException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import com.edu.egg.virtual_wallet.service.PayeeService;
 import org.springframework.beans.factory.annotation.Autowired;

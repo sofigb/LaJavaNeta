@@ -23,4 +23,9 @@ public class InputException extends Exception {
     public static InputException RepeatedData(String entity){return new InputException(entity + " ya fue utilizado");}
 
     public static InputException incorrectFormatting(String entity){return new InputException("Formato incorrecto "+entity);}
+
+    public static InputException insufficient(String entity,String help){return new InputException( entity+ " no es suficiente "+help);}
+
+    public static InputException NotNull(String entity) {return new InputException("El campo "+entity +" es obligatorio");}
+
 }

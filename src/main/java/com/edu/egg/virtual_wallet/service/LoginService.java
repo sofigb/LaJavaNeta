@@ -2,11 +2,9 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Login;
 <<<<<<< HEAD
-import com.edu.egg.virtual_wallet.entity.UserRole;
 import com.edu.egg.virtual_wallet.exception.InputException;
 =======
 >>>>>>> 950d0a055ff587244b3f199cd28484fca416fb1c
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
 
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -75,7 +73,7 @@ public class LoginService implements UserDetailsService {
         }
     }
 
-    public void checkLoginDetails(String username, String password) throws VirtualWalletException,InputException{
+    public void checkLoginDetails(String username, String password) throws InputException {
         Validation.nullCheck(username, "Username");
 
         if (loginRepository.existsLoginByUsername(username)) {

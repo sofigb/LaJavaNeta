@@ -2,7 +2,6 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.ContactRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class ContactService {
         }
     }
 
-    public void checkContact(Long phoneNumber, String email) throws InputException, VirtualWalletException {
+    public void checkContact(Long phoneNumber, String email) throws InputException {
         Validation.validEmailCheck(email);
         String usedEmail="El email "+email;
         if (contactRepository.existsContactByEmail(email)) throw InputException.RepeatedData(email);

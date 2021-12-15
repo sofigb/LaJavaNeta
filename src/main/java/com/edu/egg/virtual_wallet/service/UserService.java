@@ -1,15 +1,10 @@
 package com.edu.egg.virtual_wallet.service;
 
 //import com.edu.egg.virtual_wallet.entity.User;
-import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 //import com.edu.egg.virtual_wallet.repository.UserRepo;
 //import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
 
 @Service
 public class UserService  {
