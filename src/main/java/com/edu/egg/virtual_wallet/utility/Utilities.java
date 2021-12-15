@@ -11,7 +11,6 @@ public class Utilities {
 
     public static String generateAccountCvu() {
         String lUUID = String.format("%040d", new BigInteger(UUID.randomUUID().toString().replace("-", ""), 16));
-
         return lUUID.substring(0, 22);
     }
 
