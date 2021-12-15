@@ -38,6 +38,7 @@ public class Validation {
     public static void insufficientBalance(Double balance , Double amount) throws MyException {
         if (balance == null || balance == 0 || balance < amount ) throw MyException.insufficientBalance();
     }
+
     public static void nullCheck(String userStringInput, String inputName) throws VirtualWalletException {
         if(userStringInput.trim().isEmpty() || userStringInput == null) throw new VirtualWalletException(inputName + " is a mandatory field");
     }
@@ -70,11 +71,16 @@ public class Validation {
         }
     }
 
+
     public static void validPhoneNumberCheck(Long phoneNumber) throws VirtualWalletException, InputException {
         if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
             String PhoneNumber =" del numero de telefono ";
             throw  InputException.incorrectFormatting(PhoneNumber);
-        }
+            // if (phoneNumber==null)
+
+//        if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
+//            throw new VirtualWalletException("Invalid phone number format!");
+//        }
     }
     /*
     Regex for phone number validation:

@@ -16,16 +16,17 @@ public class Payee {
     private Long accountNumber;
     private String name;
     private Boolean active;
-
+    
     public Payee() {
     }
 
-    public Payee(Integer id, Long accountNumber, String name, Boolean active) {
+    public Payee(Integer id, Long accountNumber, String name, Boolean active, Customer customer) {
         this.id = id;
         this.accountNumber = accountNumber;
         this.name = name;
         this.active = active;
     }
+
 
     public Integer getId() {
         return id;

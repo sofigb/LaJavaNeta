@@ -13,14 +13,15 @@ import java.util.List;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
-@SQLDelete(sql = "UPDATE Account a SET a.active = false WHERE a.number = ?")
+
+@SQLDelete(sql = "UPDATE Account a SET a.active = false WHERE a.id = ?")
 public class Account {
 
     @Id
     @Column(nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    
+
     private Long number;
 
     @Column(nullable = false)
@@ -44,12 +45,24 @@ public class Account {
     private Boolean active;
 
     @OneToMany
-    @JoinColumn(nullable = false)
+    @JoinColumn()
     private List<Transaction> transactions;
+    
+    
+    @ManyToOne
+    @JoinColumn(nullable = false)
+    private Customer customer;
 
-    // @ManyToOne
-    // private Customer accountOwner;
+    public Customer getCustomer() {
+        return customer;
+    }
 
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+    
+    
+    
     
     public Long getNumber() {
         return number;
@@ -130,5 +143,5 @@ public class Account {
     public void setTransactions(List<Transaction> transactions) {
         this.transactions = transactions;
     }
-    
+
 }

@@ -1,7 +1,10 @@
 package com.edu.egg.virtual_wallet.controller;
 
+
 import com.edu.egg.virtual_wallet.entity.Payee;
 import com.edu.egg.virtual_wallet.exception.MyException;
+import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
+import com.edu.egg.virtual_wallet.service.CustomerService;
 import com.edu.egg.virtual_wallet.service.PayeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,27 +21,28 @@ import org.springframework.web.servlet.view.RedirectView;
 public class PayeeController {
 
     @Autowired
-    PayeeService pservice;
+    PayeeService pService;
+    @Autowired
+    CustomerService cService;
+   
 
-    @GetMapping()
-    public ModelAndView show() {
+    @GetMapping("/{idCustomer}")
+    public ModelAndView show(@PathVariable Integer idCustomer) {
         ModelAndView mav = new ModelAndView("tables");
 
-        mav.addObject("listaOb", pservice.findActiveOrNot(Boolean.TRUE));
-        mav.addObject("href1", "payee");
-        mav.addObject("href", "register");
+        mav.addObject("listaOb", pService.findActiveOrNotList(Boolean.TRUE));
+        mav.addObject("href", "register/"+idCustomer);
         mav.addObject("title", "a Contactos Frecuentes");
         mav.addObject("title1", "Contactos Frecuentes");
         return mav;
     }
 
-    @GetMapping("/register")
-    public ModelAndView registrer() {
+    @GetMapping("/register/{idCustomer}")
+    public ModelAndView registrer(@PathVariable Integer idCustomer) {
         ModelAndView mav = new ModelAndView("registerPayee");
 
         mav.addObject("payee", new Payee());
-        mav.addObject("action", "create");
-
+        mav.addObject("action", "create/"+idCustomer);
         return mav;
     }
 
@@ -46,47 +50,39 @@ public class PayeeController {
     public ModelAndView update(@PathVariable Integer id) {
         ModelAndView mav = new ModelAndView("updatePayee");
 
-        mav.addObject("objeto", pservice.findById(id));
+        mav.addObject("objeto", pService.findById(id));
         mav.addObject("action", "save");
         mav.addObject("title1", " Cambios en Contacto frecuente");
-
         return mav;
     }
 
     @GetMapping("/active/{id}")
     public RedirectView active(@PathVariable Integer id) {
 
-        pservice.active(id);
-        return new RedirectView("/payee");
-
+        pService.active(id);
+        return new RedirectView("/payee"+pService.idCustomer(id));
     }
 
     @GetMapping("/delete/{id}")
     public RedirectView delete(@PathVariable Integer id) {
 
-        pservice.deleteById(id);
-
-        return new RedirectView("/payee");
- 
-
+        pService.deleteById(id);
+        return new RedirectView("/payee/"+pService.idCustomer(id));
     }
 
-    @PostMapping("/create")
-    public RedirectView create(@ModelAttribute("payee") Payee payee) throws MyException {
+    @PostMapping("/create/{idCustomer}")
+    public RedirectView create(@ModelAttribute("payee") Payee payee,@PathVariable Integer idCustomer) throws MyException, VirtualWalletException {
 
-        pservice.create(payee);
-
-        return new RedirectView("/payee");
-      
-
-    }
-
+        pService.create(payee, idCustomer);
+        return new RedirectView("/payee/"+idCustomer);
+       }
+    
     @PostMapping("/save")
     public RedirectView saveChanges(@ModelAttribute("payee") Payee payee) throws MyException {
 
-        pservice.update(payee);
-
+        pService.update(payee);
         return new RedirectView("/payee");
-
     }
+
+    
 }

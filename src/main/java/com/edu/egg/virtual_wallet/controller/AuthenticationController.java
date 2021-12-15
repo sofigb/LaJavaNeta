@@ -22,6 +22,7 @@ import java.util.Map;
 @Controller
 public class AuthenticationController {
 
+
     @Autowired
     private LoginService loginService;
 
@@ -80,4 +81,5 @@ public class AuthenticationController {
         }
         return new RedirectView("/login");
     }
+
 }

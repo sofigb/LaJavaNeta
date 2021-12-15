@@ -10,20 +10,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-
 public class NameService {
 
     private final String name="el nombre ";
+
 
     @Autowired
     private NameRepo nameRepository;
 
     @Transactional
-    public void createName(Name newName) throws InputException {
+    public Name createName(Name newName) throws InputException {
+
         try {
             checkName(newName.getFirstName(), newName.getMiddleName(), newName.getLastName());
             newName.setActive(true);
             nameRepository.save(newName);
+            
+            return newName;
         } catch (Exception e) {
             throw InputException.NotCreated(name);
         }
@@ -41,6 +44,7 @@ public class NameService {
     @Transactional
     public void editName(Name updatedName) throws InputException {
         if(nameRepository.findById(updatedName.getId()).isPresent()) {
+
             try {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
                 nameRepository.save(updatedName);
@@ -53,6 +57,7 @@ public class NameService {
     }
 
     public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException, InputException {
+
         Validation.nullCheck(firstName, "First Name");
         Validation.nullCheck(lastName, "Last Name");
 

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<html lang="es" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <!-- BOOTSTRAP -->
+        <link rel="stylesheet" th:href="@{/assets/bootstrap.min.css}"/>
+        <!-- CSS -->
+        <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    </head>
+    <body>
+        <nav th:replace="fragmentos :: navbar"></nav>
+        <div class="alert alert-danger" th:if="${errorLibroCreado != null}" th:text="${errorLibroCreado}"></div>
+
+        <form th:action="@{/libros/__${action}__}" method="post" th:object="${libro}" autocomplete="off" class="row g-3 needs-validation" id="formulario" novalidate>
+
+            <div class="form-floating mb-3 col-xl-6">
+                <input type="hidden" id="id" th:field="*{id}">
+                <label for="id"></label>
+            </div>
+            <!--
+             <div class="form-group">
+                                <label for="nombreEditorial" class="form-label">First name</label>
+                                <input type="text" class="form-control" id="nombreEditorial" required placeholder="Nombre" th:field="*{nombre}">
+                            </div> 
+            -->
+            <div class="form-group">
+                <label for="nroIsbn" class="form-label">ISBN</label>
+                <input type="number" id="nroIsbn" th:field="*{isbn}" class="form-control" placeholder="ISBN" required>
+            </div>
+
+
+            <div class="form-group">
+                <label for="titulo" class="form-label">Titulo</label>
+                <input type="text" id="titulo" th:field="*{titulo}" class="form-control" placeholder="Titulo" required>
+            </div>
+
+            <div class="form-group">
+                <label for="anio" class="form-label">Anio</label>
+                <input type="number" id="anio"  th:field="*{anio}" class="form-control" placeholder="Anio" required>
+                <!-- pattern="\d{4}" adentro del input-->
+            </div>
+            
+            <div class="form-group">
+                <label for="ejs" class="form-label">Ejemplares</label>
+                <input type="number" id="ejs" th:field="*{ejemplares}" class="form-control" placeholder="Ejemplares" required>
+            </div> 
+
+            <div  class="form-group">
+                <label for="ejsPrestados" class="form-label">Ejemplares Prestados </label>
+                <input type="number" id="ejsPrestados" th:field="*{ejemplaresPrestados}" class="form-control" placeholder="Ejemplares Prestados" required>
+            </div>
+            <br>
+            <div class="col-md-4">
+                <label for="aut"></label>
+                <select name="Autor" id="aut" th:field="*{autor}" required="required" >
+                    <option value=""  disabled="disabled">Seleccione el autor</option>
+                    <option th:each="autor:${autores}" th:text="${autor.nombre}" th:value="${autor.id}"  selected="selected" > </option>
+                </select>
+                <div class="invalid-feedback">El autor es obligatorio</div>
+            </div>
+            <br>
+            <div class="col-md-4">
+                <label for="edit"></label>
+                <select id="edit"  th:field="*{editorial}" required="required" >
+                    <option value=""  disabled="disabled">Seleccione la editorial</option>
+                    <option th:each="editorial:${editoriales}" th:text="${editorial.nombre}" th:value="${editorial.id}" selected="selected"> </option>
+                </select>
+                <div class="invalid-feedback">La editorial es obligatoria</div>
+            </div>
+            <br>
+
+            <div class="row">
+                <div class="col-xl-3">
+                    <button th:text="${action == 'guardar'} ? 'Crear Libro' : 'Guardar Libro'"
+                            type="submit" class="btn btn-success"></button>
+                </div>  
+            </div>
+        </form>
+
+
+
+
+        <!-- JS -->
+        <!--<footer class="footer fixed-bottom" style="background-color: #3e4551">
+            <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2)">
+                Agus  Â© 2021 Copyright:
+            </div>
+        </footer>-->
+        <script th:src="@{/assets/bootstrap.bundle.min.js}"></script>
+    </body>
+</html>

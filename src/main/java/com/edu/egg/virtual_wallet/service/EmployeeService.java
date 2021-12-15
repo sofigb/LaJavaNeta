@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-
 public class EmployeeService {
 
     private final String employee="el empleado ";
@@ -17,7 +16,6 @@ public class EmployeeService {
     // Should employees create/delete employees? That should be the role of a Super Admin
     // Employees should only be able to edit their own profiles and customer accounts
     // We could add a Super Amin later, but first, let's focus!
-
     @Autowired
     private EmployeeRepo employeeRepository;
 
@@ -33,6 +31,7 @@ public class EmployeeService {
     private CustomerService customerService; Will allow employee to edit/create customers
     */
 
+    /*
     @Transactional
     public void createEmployee(Employee newEmployee) throws InputException {
         try {
@@ -57,7 +56,7 @@ public class EmployeeService {
             throw InputException.NotFound(employee);
         }
     }
-
+*/
     @Transactional
     public void editEmployee(Employee updatedEmployee) throws InputException{
         if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {

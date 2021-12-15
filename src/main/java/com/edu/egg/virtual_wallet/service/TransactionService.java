@@ -4,6 +4,8 @@ import com.edu.egg.virtual_wallet.entity.Transaction;
 import com.edu.egg.virtual_wallet.exception.MyException;
 import com.edu.egg.virtual_wallet.repository.TransactionRepository;
 import com.edu.egg.virtual_wallet.validation.Validation;
+import java.time.LocalDateTime;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,38 +16,49 @@ public class TransactionService {
     @Autowired
     private PayeeService payeeService;
 
-    @Autowired(required=true)
-    private AccountService accountService;
-    
-    @Autowired(required=true)
-    private TransactionRepository transactionRep;
+    @Autowired(required = true)
+    private AccountService aService;
+
+    @Autowired(required = true)
+    private TransactionRepository tRepository;
 
     @Transactional
-    public void create(Transaction transaction) throws MyException, Exception {
-
-        Validation.checkReference(transaction.getReference());
-        Validation.notNullNegativeAmout(transaction.getAmount());
-        Validation.insufficientBalance(transaction.getSenderAccount().getBalance(), transaction.getAmount());
+    public void create(Transaction transaction, Long idAccount) throws MyException, Exception {
+        try {
+            Validation.checkReference(transaction.getReference());
+            Validation.notNullNegativeAmout(transaction.getAmount());
+            Transaction transactions = new Transaction();
+            transactions.setReference(transaction.getReference());
+            transactions.setTimeStamp(LocalDateTime.now());
+            transactions.setSenderAccountNumber(aService.findById(idAccount));
+            Validation.insufficientBalance(transactions.getSenderAccount().getBalance(), transaction.getAmount());
+            transactions.setAmount(transaction.getAmount());
+            transactions.setPayee(transaction.getPayee());
+            transactions.setCurrency(transactions.getSenderAccount().getCurrency());
+            transactions.setType(transaction.getType());
 //        Validation.exitsPayee((payeeService.findById(transaction.getPayee().getId())), transaction.getPayee());
-//        Validation.exitsAccount((accountService.findByNumber(transaction.getSenderAccount().getNumber())), transaction.getPayee());
+//        Validation.exitsAccount((aService.findByNumber(transaction.getSenderAccount().getNumber())), transaction.getPayee());
 
-        switch (transaction.getType()) {
-            case WIRE_TRANSFER:
-                accountService.transaction(transaction.getSenderAccount().getNumber(), (transaction.getSenderAccount().getBalance() - transaction.getAmount()));
-                break;
+            switch (transactions.getType()) {
+                case WIRE_TRANSFER:
+                    aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() - transactions.getAmount()));
+                    break;
 
-            case DEPOSIT:
-                accountService.transaction(transaction.getSenderAccount().getNumber(), (transaction.getSenderAccount().getBalance() + transaction.getAmount()));
-                break;
+                case DEPOSIT:
+                    aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
+                    break;
 
-            case CHANGE_CURRENCY:
+            }
 
-                break;
-
+            tRepository.save(transactions);
+        } catch (Exception e) {
+            throw new MyException(e.getMessage());
         }
+    }
 
-        transactionRep.save(transaction);
-
+    @Transactional(readOnly = true)
+    public List<Transaction> showAllByAccountId(Long id) {
+        return tRepository.findAllByIdAccount(id);
     }
 
 }

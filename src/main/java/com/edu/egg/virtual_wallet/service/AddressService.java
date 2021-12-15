@@ -18,9 +18,12 @@ public class AddressService {
     private AddressRepo addressRepository;
 
     @Transactional
-    public void createAddress(Address newAddress) throws InputException {
+
+    public Address createAddress(Address newAddress) throws InputException {
         try {
+            newAddress.setActive(true);
             addressRepository.save(newAddress);
+            return newAddress;
         } catch (Exception e) {
             throw InputException.NotCreated(address);
         }

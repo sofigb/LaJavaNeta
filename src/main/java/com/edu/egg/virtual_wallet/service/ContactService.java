@@ -15,15 +15,17 @@ public class ContactService {
 
     private final String contact="La información de contacto ";
 
+
     @Autowired
     private ContactRepo contactRepository;
 
     @Transactional
-    public void createContact(Contact newContact) throws InputException {
+    public Contact createContact(Contact newContact) throws InputException {
         try {
             checkContact(newContact.getPhoneNumber(), newContact.getEmail());
             newContact.setActive(true);
             contactRepository.save(newContact);
+            return newContact;
         } catch (Exception e) {
             throw  InputException.NotCreated(contact);
         }

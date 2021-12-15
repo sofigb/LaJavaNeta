@@ -1,45 +1,109 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Account;
+import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.repository.AccountRepository;
-import com.edu.egg.virtual_wallet.utility.Utilities;
+import com.edu.egg.virtual_wallet.utility.Utility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.util.List;
-import java.util.Optional;
 import org.springframework.stereotype.Service;
+
 @Service
 public class AccountService {
-    @Autowired(required=true)
-    private AccountRepository repository;
+
+    @Autowired(required = true)
+    private AccountRepository aRepository;
 
     @Transactional(readOnly = true)
     public List<Account> accountList() {
-        return repository.findAll();
+        return aRepository.findAll();
     }
 
     @Transactional
-    public void createAccount(CurrencyType currency) {
+    public void createAccount(CurrencyType currency, Customer customer) {
+
         Account account = new Account();
 
         // VER CLASE UTILITIES DONDE SE GENERAN
-
         account.setNumber(createAccountNumber());
         account.setCvu(createAccountCvu());
         account.setAlias(createAccountAlias());
         account.setCurrency(currency);
         account.setBalance(0.0);
         account.setActive(true);
-        repository.save(account);
+
+        //account.setActivationDate(LocalDateTime.now());
+        account.setCustomer(customer);
+        aRepository.save(account);
+
+    }
+
+    @Transactional
+    public void updateAlias(String alias, Long id) throws Exception {
+
+
+        if (aRepository.existsByAlias(alias)) throw new Exception("Ya existe el alias ingresado");
+
+
+        if (alias.trim().isEmpty() || alias == null) throw new Exception("El alias no puede estar vacío");
+
+        if (alias.length() < 6 || alias.length() > 20) throw new Exception("Tamaño de alias inválido (MIN 6 - MAX 20)");
+
+        Account account = aRepository.findById(id).get();
+
+        account.setAlias(alias);
+
+
+        aRepository.save(account);
+    }
+
+    @Transactional
+    public void delete(Long accountNumber) {
+        aRepository.deleteById(accountNumber);
+    }
+
+    @Transactional
+    public void enable(Long accountNumber) {
+        aRepository.enableByAccountNumber(accountNumber);
+    }
+
+    @Transactional
+    public void transaction(Long accountNumber, Double balance) throws Exception {
+
+        Account account = aRepository.findById(accountNumber).get();
+
+        account.setBalance(balance);
+
+        aRepository.save(account);
+    }
+
+    @Transactional(readOnly = true)
+    public Account findById(Long id) {
+        return aRepository.findById(id).get();
+    }
+
+    @Transactional(readOnly = true)
+    public List<Account> findByCustomerId(Integer id) {
+        return aRepository.findAllByIdCustomer(id);
+    }
+
+    @Transactional(readOnly = true)
+    public void active(Long id) {
+        aRepository.active(id);
+    }
+
+    @Transactional
+    public void deleteById(Long id) {
+        aRepository.deleteById(id);
     }
 
     private Long createAccountNumber() {
         Long newAccountNumber;
         do {
-            newAccountNumber = Utilities.generateAccountNumber();
-        } while (repository.existsByNumber(newAccountNumber));
+            newAccountNumber = Utility.generateAccountNumber();
+        } while (aRepository.existsByNumber(newAccountNumber));
 
         return newAccountNumber;
     }
@@ -47,8 +111,8 @@ public class AccountService {
     private String createAccountCvu() {
         String newAccountCvu;
         do {
-            newAccountCvu = Utilities.generateAccountCvu();
-        } while (repository.existsByCvu(newAccountCvu));
+            newAccountCvu = Utility.generateAccountCvu();
+        } while (aRepository.existsByCvu(newAccountCvu));
 
         return newAccountCvu;
     }
@@ -56,85 +120,10 @@ public class AccountService {
     private String createAccountAlias() {
         String newAccountAlias;
         do {
-            newAccountAlias = Utilities.generateAlias();
-        } while (repository.existsByAlias(newAccountAlias));
+            newAccountAlias = Utility.generateAlias();
+
+        } while (aRepository.existsByAlias(newAccountAlias));
 
         return newAccountAlias;
     }
-
-    @Transactional
-    public void modifyAccountAliases(String alias, Long accountNumber) throws Exception {
-
-        if (repository.existsByAlias(alias)) throw new Exception("Ya existe el alias ingresado");
-
-        if (alias.trim().isEmpty() || alias == null) throw new Exception("El alias no puede estar vacío");
-
-        if (alias.length() < 6 || alias.length() > 20) throw new Exception("Tamaño de alias inválido (MIN 6 - MAX 20)");
-
-        Account account = repository.findById(accountNumber).get();
-
-        account.setAlias(alias);
-
-        repository.save(account);
-    }
-
-    @Transactional
-    public void deposit(Long accountNumber, Double amount) throws Exception {
-
-        if (amount < 0.0) throw new Exception("El monto ingresado no corresponde");
-
-        if (!repository.existsByNumber(accountNumber)) throw new Exception("La cuenta no existe");
-
-        Account account = repository.findById(accountNumber).get();
-
-        account.setBalance(account.getBalance() + amount);
-
-        repository.save(account);
-    }
-
-    @Transactional
-    public void withdraw(Long accountNumber, Double amount) throws Exception {
-
-        if (amount < 0.0) throw new Exception("El monto ingresado no corresponde");
-
-        if (!repository.existsByNumber(accountNumber)) throw new Exception("La cuenta no existe");
-
-        Account account = repository.findById(accountNumber).get();
-
-        if (account.getBalance() < amount) throw new Exception("No posee la cantidad solicitada");
-
-        account.setBalance(account.getBalance() - amount);
-
-        repository.save(account);
-    }
-
-    @Transactional
-    public void delete(Long accountNumber) {repository.deleteById(accountNumber);}
-
-    @Transactional
-    public void enable(Long accountNumber) {repository.enableByAccountNumber(accountNumber);}
-
-    @Transactional
-    public void transaction(Long accountNumber,Double balance) throws Exception {
-        Account account = repository.findById(accountNumber).get();
-        account.setBalance(balance);
-        repository.save(account);
-    }
-    
-    @Transactional(readOnly = true)
-    public Optional <Account> findByNumber(Long number) {return repository.findById(number);}
-    
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

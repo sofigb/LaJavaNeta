@@ -1,10 +1,10 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.User;
+//import com.edu.egg.virtual_wallet.entity.User;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
-import com.edu.egg.virtual_wallet.repository.UserRepo;
-import com.edu.egg.virtual_wallet.validation.Validation;
+//import com.edu.egg.virtual_wallet.repository.UserRepo;
+//import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,15 +16,15 @@ public class UserService  {
 
     private final String user="el usuario ";
 
-    @Autowired
-    private UserRepo userRepository;
+//    @Autowired
+//    private UserRepo userRepository;
 
     @Autowired
     private NameService nameService;
 
     @Autowired
     private ContactService contactService;
-
+/*
     @Transactional
     public void createUser(User newUser) throws InputException {
         try {
@@ -89,4 +89,5 @@ public class UserService  {
         Validation.nullCheck(securityQuestion, "Security Question");
         Validation.validPasswordCheck(password);
     }
+    */
 }

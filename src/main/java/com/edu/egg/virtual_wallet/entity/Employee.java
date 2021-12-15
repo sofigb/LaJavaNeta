@@ -6,7 +6,6 @@ import javax.persistence.*;
 @Table(name = "Employees")
 public class Employee {
 
-    // Under Revision
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,8 +14,8 @@ public class Employee {
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(nullable = false)
 
-    private AppUser user;
 
+    private AppUser user;
 
     /***************************************************************
     ************************** CONSTRUCTOR *************************

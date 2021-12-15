@@ -50,10 +50,7 @@
 
                                                                                                       <!-- DataTales Example -->
                                                                                                       <div class="card shadow mb-4">
-                                        <div class="card-header py-3">
-                                            <a class="m-0 font-weight-bold text-primary" th:href="@{/payee/__${href}__}"><h6>+ Agregar nuev<span th:text="${title}"></h6></a>
-
-                                        </div>
+                                       
 
                                         <div class="card-body">
 
@@ -68,26 +65,43 @@
                                                     <thead>
                                                         <tr>
                                                             <th>Id</th>
-                                                            <th>Nombre</th>
-                                                            <th>Numero de Cuenta</th>
-                                                            <th>Acciones</th>
+                                                            <th>Numero de cuenta</th>
+                                                            <th>CBU</th>
+                                                            <th>ALIAS</th>
+                                                            <th>Tipo de moneda</th>
+                                                            <th>Fecha de activacion</th>
+                                                            <th>saldo</th>
+                                                             <th>Acciones</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                         <tr th:each="obej : ${listaOb}">
                                                             <td th:text="${obej.id}"></td>
-                                                            <td th:text="${obej.name}"></td>
-                                                            <td th:text="${obej.accountNumber}"></td>
+                                                            <td th:text="${obej.number}"></td>
+                                                            <td th:text="${obej.cvu}"></td>
+                                                            <td th:text="${obej.alias}"></td>
+                                                            <td th:text="${obej.currency}"></td>
+                                                            <td th:text="${obej.balance}"></td>
+                                                            <td th:text="${obej.activationDate}"></td>
 
                                                             <td > 
-                                                                <a   class="btn btn-info btn-circle btn-sm" th:href="@{__${href1}__/update/__${obej.id}__}" title="Modificar">  <i class="fas fa-info-circle"></i> </a>
+                                                                <a class="btn btn-primary" th:href="@{update/__${obej.id}__}" role="button">Modificar</a>
+                                                              
                                                                 <div th:switch="${obej.active}">
-                                                                    <a  th:case="true" class="btn btn-danger btn-circle btn-sm" th:href="@{__${href1}__/delete/__${obej.id}__}" title="Deshabilitar" >  <i class="fas fa-trash"></i> </a>
-                                                                    <a  th:case="false" class="btn btn-success btn-circle btn-sm" th:href="@{__${href1}__/active/__${obej.id}__}" title="Habilitar" >  <i class="fas fa-check"></i> </a>
+                                                                    <a  th:case="true" class="btn btn-primary" th:href="@{delete/__${obej.id}__}" role="button" >  Deshabilitar </a>
+                                                                    <a  th:case="false" class="btn btn-primary" th:href="@{active/__${obej.id}__}" role="button" > Habilitar</a>
+                                                                   
                                                                 </div>
-
-                                                            </td>        
+                                                                
+                                                                
+                                                            </td>   
+                                                            
                                                         </tr>
+                                                        <div class="card-header py-3" th:object="${customer}">
+                                                        
+                                                            <a class="m-0 font-weight-bold text-primary" th:href="@{/account/createAccount/__${customer.id}__}"><h6>+ Agregar nuev<span th:text="${title}"></h6></a>
+                
+                                                        </div>     
                                                     </tbody>
 
                                                 </table>
