@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Employee;
+import com.edu.egg.virtual_wallet.entity.*;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
@@ -20,10 +20,13 @@ public class EmployeeService {
     private EmployeeRepo employeeRepository;
 
     @Autowired
-    private AppUserService userService;
+    private NameService nameService;
 
     @Autowired
-    private UserRoleService userRoleService;
+    private LoginService loginService;
+
+    @Autowired
+    private ContactService contactService;
 
     /*
     @Autowired
@@ -31,11 +34,12 @@ public class EmployeeService {
     */
 
     @Transactional
-    public void createEmployee(Employee newEmployee) throws VirtualWalletException {
+    public void createEmployee(Employee newEmployee, Contact contact,Name name,
+                               Login login) throws VirtualWalletException {
         try {
-            newEmployee.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("EMPLOYEE"));
-            newEmployee.getUser().getLoginDetails().setPassword(PasswordPolicyEnforcer.generatePassword());
-            userService.createUser(newEmployee.getUser());
+            newEmployee.setContactInfo(contactService.createContact(contact));
+            newEmployee.setFullName(nameService.createName(name));
+            newEmployee.setLoginInfo(loginService.createLogin(login, "EMPLOYEE"));;
             employeeRepository.save(newEmployee);
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
@@ -46,7 +50,10 @@ public class EmployeeService {
     public void deactivateEmployee(Integer idEmployee) throws VirtualWalletException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
-                userService.deactivateUser(employeeRepository.findById(idEmployee).get().getUser()); // ?
+                Employee employee = employeeRepository.findById(idEmployee).get();
+                nameService.deactivateName(employee.getFullName().getId());
+                loginService.deactivateLogin(employee.getLoginInfo().getId());
+                contactService.deactivateContact(employee.getContactInfo().getId());
                 employeeRepository.deleteById(idEmployee);
             } catch (Exception e) {
                 throw new VirtualWalletException("Unable to delete Employee");
@@ -57,10 +64,13 @@ public class EmployeeService {
     }
 
     @Transactional
-    public void editEmployee(Employee updatedEmployee) throws VirtualWalletException {
+    public void editEmployee(Employee updatedEmployee, Contact contact, Name name,
+                             Login login) throws VirtualWalletException {
         if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {
             try {
-                userService.editUser(updatedEmployee.getUser());
+                nameService.editName(name);
+                contactService.editContact(contact);
+                loginService.editLogin(login);
                 employeeRepository.save(updatedEmployee);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
@@ -75,7 +85,9 @@ public class EmployeeService {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 Employee employee = employeeRepository.findById(idEmployee).get();
-                employee.setUser(userService.returnUser(employee.getUser().getId()));
+                employee.setLoginInfo(employee.getLoginInfo());
+                employee.setContactInfo(employee.getContactInfo());
+                employee.setFullName(employee.getFullName());
                 return employee;
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());

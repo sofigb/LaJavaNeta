@@ -15,11 +15,12 @@ public class ContactService {
     private ContactRepo contactRepository;
 
     @Transactional
-    public void createContact(Contact newContact) throws VirtualWalletException {
+    public Contact createContact(Contact newContact) throws VirtualWalletException {
         try {
             checkContact(newContact.getPhoneNumber(), newContact.getEmail());
             newContact.setActive(true);
             contactRepository.save(newContact);
+            return newContact;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }

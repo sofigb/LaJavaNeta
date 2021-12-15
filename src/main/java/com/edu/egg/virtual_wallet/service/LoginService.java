@@ -4,6 +4,7 @@ import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.UserRole;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
+import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Collections;
 
 @Service
@@ -25,15 +27,22 @@ public class LoginService implements UserDetailsService {
     private LoginRepo loginRepository;
 
     @Autowired
+    private UserRoleService userRoleService;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public void createLogin(Login newLogin) throws VirtualWalletException {
+    public Login createLogin(Login newLogin, String role) throws VirtualWalletException {
         try {
+            if(role.equals("EMPLOYEE")) { newLogin.setPassword(PasswordPolicyEnforcer.generatePassword()); }
             checkLoginDetails(newLogin.getUsername(), newLogin.getPassword());
             newLogin.setPassword(passwordEncoder.encode(newLogin.getPassword()));
+            newLogin.setRole(userRoleService.findUserRoleByRoleName(role));
+            newLogin.setLastLoggedIn(LocalDateTime.now());
             newLogin.setActive(true);
             loginRepository.save(newLogin);
+            return newLogin;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
         }

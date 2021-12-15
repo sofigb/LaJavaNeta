@@ -1,11 +1,13 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Customer;
+import com.edu.egg.virtual_wallet.entity.*;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
 
 @Service
 public class CustomerService {
@@ -14,17 +16,26 @@ public class CustomerService {
     private CustomerRepo customerRepository;
 
     @Autowired
-    private AppUserService userService;
+    private NameService nameService;
 
     @Autowired
-    private UserRoleService userRoleService;
+    private LoginService loginService;
+
+    @Autowired
+    private ContactService contactService;
+
+    @Autowired
+    private AddressService addressService;
 
     @Transactional
-    public void createCustomer(Customer newCustomer) throws VirtualWalletException {
+    public void createCustomer(Customer newCustomer, Address address, Contact contact,
+                               Name name, Login login) throws VirtualWalletException {
         try {
-            newCustomer.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("CUSTOMER")); // ?
-            userService.createUser(newCustomer.getUser());
-            // createAccounts
+            newCustomer.setAddressInfo(addressService.createAddress(address));
+            newCustomer.setFullName(nameService.createName(name));
+            newCustomer.setContactInfo(contactService.createContact(contact));
+            newCustomer.setLoginInfo(loginService.createLogin(login, "CUSTOMER"));
+            newCustomer.setActive(true);
             customerRepository.save(newCustomer);
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
@@ -35,7 +46,11 @@ public class CustomerService {
     public void deactivateCustomer(Integer idCustomer) throws VirtualWalletException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
-                userService.deactivateUser(customerRepository.findById(idCustomer).get().getUser()); // ?
+                Customer customer = customerRepository.findById(idCustomer).get();
+                addressService.deactivateAddress(customer.getAddressInfo().getId());
+                nameService.deactivateName(customer.getFullName().getId());
+                loginService.deactivateLogin(customer.getLoginInfo().getId());
+                contactService.deactivateContact(customer.getContactInfo().getId());
                 // deactivate account and payees.
                 customerRepository.deleteById(idCustomer);
             } catch (Exception e) {
@@ -51,10 +66,14 @@ public class CustomerService {
     // Transfers should be made by AccountService
 
     @Transactional
-    public void editCustomer(Customer updatedCustomer) throws VirtualWalletException {
+    public void editCustomer(Customer updatedCustomer, Address address, Contact contact,
+                             Name name, Login login) throws VirtualWalletException {
         if (customerRepository.findById(updatedCustomer.getId()).isPresent()) {
             try {
-                userService.editUser(updatedCustomer.getUser());
+                addressService.editAddress(address);
+                nameService.editName(name);
+                contactService.editContact(contact);
+                loginService.editLogin(login);
                 customerRepository.save(updatedCustomer);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
@@ -69,7 +88,10 @@ public class CustomerService {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
-                customer.setUser(userService.returnUser(customer.getUser().getId()));
+                customer.setLoginInfo(customer.getLoginInfo());
+                customer.setContactInfo(customer.getContactInfo());
+                customer.setFullName(customer.getFullName());
+                customer.setAddressInfo(customer.getAddressInfo());
                 return customer;
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
