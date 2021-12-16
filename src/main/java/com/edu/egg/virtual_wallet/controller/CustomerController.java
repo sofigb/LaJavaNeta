@@ -48,17 +48,16 @@ public class CustomerController {
     @GetMapping("/myDashboard")
     public ModelAndView customerDashboard(HttpSession session) throws VirtualWalletException {
         ModelAndView mav = new ModelAndView("myDashboard");
-        mav.addObject("customer", customerService.returnCustomer(1));
+        Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+        mav.addObject("customer", customerService.returnCustomer(idCustomer));
         return mav;
     }
 
-    @GetMapping("/profile/{idCustomer}")
-    public ModelAndView customerProfile(HttpSession session, @PathVariable Integer idCustomer) throws VirtualWalletException {
+    @GetMapping("/profile")
+    public ModelAndView customerProfile(HttpSession session) throws VirtualWalletException {
         ModelAndView mav = new ModelAndView("editCustomerProfile");
 
-        //(Integer) session.getAttribute("id")
-        //Customer customer = customerService.returnCustomer(idCustomer);
-
+        Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
         Customer customer = customerRepo.findById(idCustomer).get();
 
         mav.addObject("customer", customer);
@@ -70,20 +69,25 @@ public class CustomerController {
         return mav;
     }
 
-    /*
-    @ModelAttribute("address") Address address,
+    @PostMapping("/profile/edit")
+    public RedirectView editCustomerProfile(@ModelAttribute Customer customer, @ModelAttribute Address address,
                                             @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name,
-                                            @ModelAttribute("login") Login login,
-
-                                             address, contact, name, login
-     */
-
-    @GetMapping("/profile/edit/{idCustomer}")
-    public RedirectView editCustomerProfile(@ModelAttribute Customer customer, @PathVariable Integer idCustomer,
-                                            @ModelAttribute Address address, @ModelAttribute("contact") Contact  contact,
-                                            @ModelAttribute("name") Name name, @ModelAttribute("login") Login login)
+                                            @ModelAttribute("login") Login login, HttpSession session)
             throws VirtualWalletException {
-        customerService.editCustomer(customer, idCustomer, address, contact, name, login);
-        return new RedirectView("/profile/" + idCustomer);
+
+        Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+        customerService.editCustomer(customer, idCustomer, address, contact, name, login, true);
+        return new RedirectView("/myDashboard");
     }
+
+    /*@PostMapping("/profile/delete")
+    public RedirectView deleteAccount(@ModelAttribute Customer customer, @ModelAttribute Address address,
+                                      @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name,
+                                      @ModelAttribute("login") Login login, HttpSession session) throws VirtualWalletException{
+
+        Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+        customerService.editCustomer(customer, idCustomer, address, contact, name, login, true);
+        //customerService.deactivateCustomer(idCustomer, false);
+        return new RedirectView("/login?logout=true");
+    }*/
 }

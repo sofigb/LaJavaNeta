@@ -10,7 +10,7 @@ import java.util.List;
 @Entity(name = "LoginInformation")
 @Table(name = "LoginInformation")
 @SQLDelete(sql = "UPDATE LoginInformation l SET l.active = false WHERE l.id = ?")
-@Where(clause = "active = true")
+//@Where(clause = "active = true")
 public class Login {
 
     @Id

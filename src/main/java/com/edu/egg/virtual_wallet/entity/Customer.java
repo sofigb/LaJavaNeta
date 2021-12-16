@@ -14,7 +14,7 @@ import java.util.List;
 @Table(name = "Customers")
 @EntityListeners(AuditingEntityListener.class)
 @SQLDelete(sql = "UPDATE Customers c SET c.active = false WHERE c.id = ?")
-@Where(clause = "active = true")
+//@Where(clause = "active = true")
 public class Customer {
 
     @Id

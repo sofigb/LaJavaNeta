@@ -28,8 +28,4 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
 
     @Query("SELECT c.addressInfo.id FROM Customers c WHERE c.id = :id")
     Integer findAddressIdByCustomerId(@Param("id") Integer id);
-
-    @Modifying
-    @Query("UPDATE Customers c SET c.dni = :dni, c.dateOfBirth = :dateOfBirth WHERE c.id = :id")
-    void updateCustomer(@Param("dni") Long dni, @Param("dateOfBirth")LocalDate dateOfBirth, @Param("id") Integer id);
 }

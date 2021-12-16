@@ -37,12 +37,12 @@ public class ContactService {
     }
 
     @Transactional
-    public void editContact(Contact updatedContact, Integer idContact) throws VirtualWalletException {
+    public void editContact(Contact updatedContact, Integer idContact, boolean delete) throws VirtualWalletException {
         if (contactRepository.findById(idContact).isPresent()) {
             try {
                 checkContact(updatedContact.getPhoneNumber(), updatedContact.getEmail());
                 updatedContact.setId(idContact);
-                updatedContact.setActive(true);
+                updatedContact.setActive(delete);
                 contactRepository.save(updatedContact);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());

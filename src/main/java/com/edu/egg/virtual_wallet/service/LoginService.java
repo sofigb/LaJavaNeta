@@ -62,7 +62,7 @@ public class LoginService implements UserDetailsService {
     }
 
     @Transactional
-    public void editLogin(Login updatedLogin, Integer idLogin) throws VirtualWalletException {
+    public void editLogin(Login updatedLogin, Integer idLogin, boolean delete) throws VirtualWalletException {
         if(loginRepository.findById(idLogin).isPresent()) {
             try {
                 checkLoginDetails(updatedLogin.getUsername(), updatedLogin.getPassword());
@@ -70,8 +70,8 @@ public class LoginService implements UserDetailsService {
                 Login login = loginRepository.findById(idLogin).get();
                 login.setPassword(updatedLogin.getPassword());
                 login.setUsername(updatedLogin.getUsername());
-                //updatedLogin.setId(idLogin);
-                //updatedLogin.setActive(true);
+                login.setActive(delete);
+
                 loginRepository.save(login);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());

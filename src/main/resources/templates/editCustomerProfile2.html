@@ -129,6 +129,17 @@
       </div>
       <button type="submit">SAVE</button>
     </form>
+    <form
+      method="post"
+      th:action="@{/keeper/publishers/delete/__${publisher.idPublisher}__}"
+    >
+      <input
+        th:value="*{aboutPublisher.idDescription}"
+        type="hidden"
+        name="idDescription"
+      />
+      <button class="btn btn-dark mt-3" type="submit">DELETE</button>
+    </form>
     <br />
     <a class="button" th:href="@{/myDashboard}">GO BACK TO DASHBOARD</a>
   </body>

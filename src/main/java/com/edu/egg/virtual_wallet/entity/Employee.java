@@ -13,7 +13,7 @@ import java.time.LocalDate;
 @Table(name = "Employees")
 @EntityListeners(AuditingEntityListener.class)
 @SQLDelete(sql = "UPDATE Employees e SET e.active = false WHERE e.id = ?")
-@Where(clause = "active = true")
+//@Where(clause = "active = true")
 public class Employee {
 
     @Id

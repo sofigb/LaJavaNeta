@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity(name = "Addresses")
 @Table(name = "Addresses")
 @SQLDelete(sql = "UPDATE Addresses a SET a.active = false WHERE a.id = ?")
-@Where(clause = "active = true")
+//@Where(clause = "active = true")
 public class Address {
 
     @Id

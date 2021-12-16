@@ -28,18 +28,20 @@ public class AddressService {
     @Transactional
     public void deactivateAddress(Integer id) throws VirtualWalletException {
         try {
-            addressRepository.deleteById(id);
+            Address address = addressRepository.findById(id).get();
+            address.setActive(false);
+            addressRepository.save(address);
         } catch (Exception e) {
             throw new VirtualWalletException("Unable to delete Customer. Failed to identify Address");
         }
     }
 
     @Transactional
-    public void editAddress(Address updatedAddress, Integer idAddress) throws VirtualWalletException{
+    public void editAddress(Address updatedAddress, Integer idAddress, boolean delete) throws VirtualWalletException{
         if (addressRepository.findById(idAddress).isPresent()) {
             try {
                 updatedAddress.setId(idAddress);
-                updatedAddress.setActive(true);
+                updatedAddress.setActive(delete);
                 addressRepository.save(updatedAddress);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
