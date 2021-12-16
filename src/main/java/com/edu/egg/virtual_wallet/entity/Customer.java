@@ -1,5 +1,9 @@
 package com.edu.egg.virtual_wallet.entity;
 
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.Where;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
@@ -8,17 +12,26 @@ import java.util.List;
 
 @Entity(name = "Customers")
 @Table(name = "Customers")
-@EntityListeners(AuditingEntityListener.class) // ?
+@EntityListeners(AuditingEntityListener.class)
+@SQLDelete(sql = "UPDATE Customers c SET c.active = false WHERE c.id = ?")
+//@Where(clause = "active = true")
 public class Customer {
 
     @Id
-    @Column(name="idCustomer")
+    @Column(name = "idCustomer")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @Column(nullable = false, unique = true)
+    private Long dni;
+
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    private AppUser user;
+    private Name fullName;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Contact contactInfo;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
@@ -27,10 +40,24 @@ public class Customer {
     @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate dateOfBirth;
 
-//    @OneToMany(fetch = FetchType.LAZY)
-//    @JoinColumn(nullable = false,name = "fk_customer")
-//    private List<Account> accounts;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private Login loginInfo;
 
+    @Column(nullable = false)
+    private boolean active;
+
+    @CreatedDate
+    @Column(columnDefinition = "DATE", nullable = false, updatable = false)
+    private LocalDate activationDate;
+
+    @Column(columnDefinition = "DATE")
+    private LocalDate deactivationDate;
+
+    @LastModifiedDate
+    @Column(columnDefinition = "DATE", nullable = false)
+    private LocalDate modificationDate;
+    
     @OneToMany(fetch = FetchType.LAZY)
     @JoinColumn(name = "fk_customer")
     private List<Payee> payees;
@@ -40,23 +67,37 @@ public class Customer {
      ************************** CONSTRUCTOR ***********************
     ************************************************************
      */
-    public Customer(Integer id, AppUser user, Address addressInfo, LocalDate dateOfBirth,  List<Payee> payees) {
+    public Customer(Integer id, Long dni, Name fullName, Contact contactInfo, Address addressInfo,
+            LocalDate dateOfBirth, Login loginInfo, boolean active, LocalDate activationDate,
+            LocalDate deactivationDate, LocalDate modificationDate,List<Payee> payees) {
+
         this.id = id;
-        this.user = user;
+        this.dni = dni;
+        this.fullName = fullName;
+        this.contactInfo = contactInfo;
         this.addressInfo = addressInfo;
         this.dateOfBirth = dateOfBirth;
-//        this.accounts = accounts;
-        this.payees = payees;
+
+        this.loginInfo = loginInfo;
+        this.active = active;
+        this.activationDate = activationDate;
+        this.deactivationDate = deactivationDate;
+        this.modificationDate = modificationDate;
+         this.payees = payees;
+
     }
 
     public Customer() {
     }
 
-    /**
-     * **********************************************************
-     *********************** GETTER AND SETTER *******************
-    ***********************************************************
-     */
+    public List<Payee> getPayees() {
+        return payees;
+    }
+
+    public void setPayees(List<Payee> payees) {
+        this.payees = payees;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -65,12 +106,28 @@ public class Customer {
         this.id = id;
     }
 
-    public AppUser getUser() {
-        return user;
+    public Long getDni() {
+        return dni;
     }
 
-    public void setUser(AppUser user) {
-        this.user = user;
+    public void setDni(Long dni) {
+        this.dni = dni;
+    }
+
+    public Name getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(Name fullName) {
+        this.fullName = fullName;
+    }
+
+    public Contact getContactInfo() {
+        return contactInfo;
+    }
+
+    public void setContactInfo(Contact contactInfo) {
+        this.contactInfo = contactInfo;
     }
 
     public Address getAddressInfo() {
@@ -89,20 +146,49 @@ public class Customer {
         this.dateOfBirth = dateOfBirth;
     }
 
-//    public List<Account> getAccounts() {
-//        return accounts;
-//    }
-//
-//    public void setAccounts(List<Account> accounts) {
-//        this.accounts = accounts;
-//    }
-
-    public List<Payee> getPayees() {
-        return payees;
+    public Login getLoginInfo() {
+        return loginInfo;
     }
 
-    public void setPayees(List<Payee> payees) {
-        this.payees = payees;
+    public void setLoginInfo(Login loginInfo) {
+        this.loginInfo = loginInfo;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
+    public LocalDate getActivationDate() {
+        return activationDate;
+    }
+
+    public void setActivationDate(LocalDate activationDate) {
+        this.activationDate = activationDate;
+    }
+
+    public LocalDate getDeactivationDate() {
+        return deactivationDate;
+    }
+
+    public void setDeactivationDate(LocalDate deactivationDate) {
+        this.deactivationDate = deactivationDate;
+    }
+
+    public LocalDate getModificationDate() {
+        return modificationDate;
+    }
+
+    public void setModificationDate(LocalDate modificationDate) {
+        this.modificationDate = modificationDate;
+    }
+
+    /**
+     * **********************************************************
+     *********************** GETTER AND SETTER *******************
+     * **********************************************************
+     */
 }

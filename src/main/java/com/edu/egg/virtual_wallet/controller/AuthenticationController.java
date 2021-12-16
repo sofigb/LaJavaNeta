@@ -1,19 +1,13 @@
 package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.Login;
-import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.service.LoginService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
-import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.security.Principal;
@@ -39,13 +33,14 @@ public class AuthenticationController {
         }
 
         if (principal != null) {
-            modelAndView.setViewName("redirect:/"); // Redirect to Customers profile
+            modelAndView.setViewName("redirect:/myDashboard"); // Redirect to Customers profile
         }
 
         return modelAndView;
     }
 
     // HOW TO REGISTER A CUSTOMER? Employees should not be able to register, they are given an account by a SuperAdmin
+
 
     @GetMapping("/register")
     private ModelAndView register(HttpServletRequest request, Principal principal) {
@@ -81,5 +76,6 @@ public class AuthenticationController {
 //        }
 //        return new RedirectView("/login");
 //    }
+
 
 }

@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Address;
+
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.AddressRepo;
@@ -20,6 +21,7 @@ public class AddressService {
     @Transactional
 
     public Address createAddress(Address newAddress) throws InputException {
+
         try {
             newAddress.setActive(true);
             addressRepository.save(newAddress);
@@ -32,22 +34,40 @@ public class AddressService {
     @Transactional
     public void deactivateAddress(Integer id) throws InputException {
         try {
-            addressRepository.deleteById(id);
+            Address address = addressRepository.findById(id).get();
+            address.setActive(false);
+            addressRepository.save(address);
         } catch (Exception e) {
             throw InputException.NotFound(address);
         }
     }
 
-    @Transactional
-    public void editAddress(Address updatedAddress) throws InputException{
-        if (addressRepository.findById(updatedAddress.getId()).isPresent()) {
+
+    public void editAddress(Address updatedAddress, Integer idAddress, boolean delete) throws InputException{
+        if (addressRepository.findById(idAddress).isPresent()) {
+
             try {
+                updatedAddress.setId(idAddress);
+                updatedAddress.setActive(delete);
                 addressRepository.save(updatedAddress);
             } catch (Exception e) {
                 throw InputException.NotEdited(address);
             }
         } else {
             throw InputException.NotFound(address);
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Address returnAddress(Integer idAddress) throws VirtualWalletException {
+        if (addressRepository.findById(idAddress).isPresent()) {
+            try {
+                return addressRepository.getById(idAddress); // RETURNS NULL VALUES
+            } catch (Exception e) {
+                throw new VirtualWalletException(e.getMessage());
+            }
+        } else {
+            throw new VirtualWalletException("Address not found");
         }
     }
 }

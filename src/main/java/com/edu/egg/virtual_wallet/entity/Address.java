@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity(name = "Addresses")
 @Table(name = "Addresses")
 @SQLDelete(sql = "UPDATE Addresses a SET a.active = false WHERE a.id = ?")
-@Where(clause = "active = true")
+//@Where(clause = "active = true")
 public class Address {
 
     @Id
@@ -28,21 +28,17 @@ public class Address {
     private String city;
 
     @Column(nullable = false)
-    private String country;
-
-    @Column(nullable = false)
     private boolean active;
 
     /*****************************************************************
     *************************** CONSTRUCTOR **************************
     *****************************************************************/
 
-    public Address(String street, Integer houseNumber, String postCode, String city, String country, boolean active) {
+    public Address(String street, Integer houseNumber, String postCode, String city, boolean active) {
         this.street = street;
         this.houseNumber = houseNumber;
         this.postCode = postCode;
         this.city = city;
-        this.country = country;
         this.active = active;
     }
 
@@ -91,14 +87,6 @@ public class Address {
 
     public void setCity(String city) {
         this.city = city;
-    }
-
-    public String getCountry() {
-        return country;
-    }
-
-    public void setCountry(String country) {
-        this.country = country;
     }
 
     public boolean isActive() {

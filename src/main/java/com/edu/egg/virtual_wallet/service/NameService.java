@@ -1,5 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
+import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
@@ -19,13 +20,14 @@ public class NameService {
     private NameRepo nameRepository;
 
     @Transactional
+
     public Name createName(Name newName) throws InputException {
 
         try {
             checkName(newName.getFirstName(), newName.getMiddleName(), newName.getLastName());
             newName.setActive(true);
             nameRepository.save(newName);
-            
+
             return newName;
         } catch (Exception e) {
             throw InputException.NotCreated(name);
@@ -42,11 +44,14 @@ public class NameService {
     }
 
     @Transactional
-    public void editName(Name updatedName) throws InputException {
-        if(nameRepository.findById(updatedName.getId()).isPresent()) {
+
+    public void editName(Name updatedName, Integer idName, boolean delete) throws InputException {
+        if(nameRepository.findById(idName).isPresent()) {
 
             try {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
+                updatedName.setId(idName);
+                updatedName.setActive(delete);
                 nameRepository.save(updatedName);
             } catch (Exception e) {
                 throw InputException.NotEdited(name);
@@ -65,4 +70,18 @@ public class NameService {
         Validation.validNameCheck(middleName, "Middle Name");
         Validation.validNameCheck(lastName, "Last Name");
     }
+
+    @Transactional(readOnly = true)
+    public Name returnName(Integer idName) throws VirtualWalletException {
+        if (nameRepository.findById(idName).isPresent()) {
+            try {
+                return nameRepository.getById(idName); // RETURNS NULL VALUES
+            } catch (Exception e) {
+                throw new VirtualWalletException(e.getMessage());
+            }
+        } else {
+            throw new VirtualWalletException("Name not found");
+        }
+    }
 }
+
