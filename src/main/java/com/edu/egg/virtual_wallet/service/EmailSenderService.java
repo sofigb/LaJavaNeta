@@ -5,13 +5,15 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EmailSenderService {
 
     @Autowired
     private JavaMailSender sender;
 
-    @Value("${USERNAME}")
+    @Value("sgonzalezbodello@gmail.com")
     private String from;
 
     private static final String SUBJECT = "Correo de bienvenida";

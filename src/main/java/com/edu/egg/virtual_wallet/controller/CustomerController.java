@@ -35,7 +35,6 @@ public class CustomerController {
         mav.addObject("contact", new Contact());
         mav.addObject("name", new Name());
         mav.addObject("login", new Login());
-        mav.addObject("action", "create");
 
 
         return mav;
