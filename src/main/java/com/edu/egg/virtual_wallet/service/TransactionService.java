@@ -32,6 +32,7 @@ public class TransactionService {
             transactions.setTimeStamp(LocalDateTime.now());
             transactions.setSenderAccountNumber(aService.findById(idAccount));
             Validation.insufficientBalance(transactions.getSenderAccount().getBalance(), transaction.getAmount());
+
             transactions.setAmount(transaction.getAmount());
             transactions.setPayee(transaction.getPayee());
             transactions.setCurrency(transactions.getSenderAccount().getCurrency());

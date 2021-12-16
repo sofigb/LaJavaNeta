@@ -4,6 +4,7 @@ import com.edu.egg.virtual_wallet.entity.Employee;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,7 +25,7 @@ public class EmployeeService {
     @Autowired
     private UserRoleService userRoleService;
 
-
+    private JavaMailSender sender;
     /*
     @Autowired
     private CustomerService customerService; Will allow employee to edit/create customers
@@ -37,6 +38,7 @@ public class EmployeeService {
             newEmployee.getUser().getLoginDetails().setRole(userRoleService.findUserRoleByRoleName("EMPLOYEE"));
             userService.createUser(newEmployee.getUser());
             employeeRepository.save(newEmployee);
+            sender.sendEspecialEmail(newEmployee.getUser().getName().getEmail(),// password ,newEmployee.getUser().getName().getFirstName());
         } catch (Exception e) {
             throw InputException.NotCreated(employee);
         }
