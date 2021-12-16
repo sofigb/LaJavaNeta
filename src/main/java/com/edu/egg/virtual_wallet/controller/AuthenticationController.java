@@ -68,18 +68,18 @@ public class AuthenticationController {
         return mav;
     }
 
-    @PostMapping("/register/check")
-    public RedirectView addUser(@ModelAttribute("loginInfo") Login loginInfo, RedirectAttributes attributes) {
-        try {
-            loginService.createLogin(loginInfo);
-            attributes.addFlashAttribute("registrationSuccessMessage", "Registration complete! Welcome!");
-        } catch (InputException e) {
-            attributes.addFlashAttribute("username", loginInfo.getUsername());
-            attributes.addFlashAttribute("password", loginInfo.getPassword());
-            attributes.addFlashAttribute("registrationErrorMessage", e.getMessage());
-            return new RedirectView("/register");
-        }
-        return new RedirectView("/login");
-    }
+//    @PostMapping("/register/check")
+//    public RedirectView addUser(@ModelAttribute("loginInfo") Login loginInfo, RedirectAttributes attributes) {
+//        try {
+//            loginService.createLogin(loginInfo);
+//            attributes.addFlashAttribute("registrationSuccessMessage", "Registration complete! Welcome!");
+//        } catch (InputException e) {
+//            attributes.addFlashAttribute("username", loginInfo.getUsername());
+//            attributes.addFlashAttribute("password", loginInfo.getPassword());
+//            attributes.addFlashAttribute("registrationErrorMessage", e.getMessage());
+//            return new RedirectView("/register");
+//        }
+//        return new RedirectView("/login");
+//    }
 
 }

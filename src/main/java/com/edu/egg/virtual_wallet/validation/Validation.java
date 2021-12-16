@@ -87,12 +87,14 @@ public class Validation {
     https://stackoverflow.com/questions/42104546/java-regular-expressions-to-validate-phone-numbers/42105140
     https://www.baeldung.com/java-regex-validate-phone-numbers
      */
-    public static void validPasswordCheck(String password) throws VirtualWalletException, InputException {
-        nullCheck(password, "Password");
-        if (!password.trim().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")) {
-            String pass =" de la contraseña. Asegurese de cumplir con la politica de contraseñas ";
-            throw   InputException.incorrectFormatting(pass);
-        }
-    }
+//    public static void validPasswordCheck(String password) throws  InputException {
+//        nullCheck(password, "Password");
+//        if (!password.trim().matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,}$")) {
+//            String pass =" de la contraseña. Asegurese de cumplir con la politica de contraseñas ";
+//            throw   InputException.incorrectFormatting(pass);
+//        }
+//    }
     //---DANA
+
+    }
 }

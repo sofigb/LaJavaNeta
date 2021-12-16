@@ -5,6 +5,7 @@ import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.Name;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -84,7 +85,7 @@ public class CustomerController {
 
     @PostMapping("/create")
     public RedirectView create(@ModelAttribute("customer") Customer customer , @ModelAttribute("address") Address address,
-            @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name, @ModelAttribute("login") Login login) throws VirtualWalletException {
+            @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name, @ModelAttribute("login") Login login) throws VirtualWalletException, InputException {
     
             cService.createCustomer(customer,address,contact,name,login);
             
