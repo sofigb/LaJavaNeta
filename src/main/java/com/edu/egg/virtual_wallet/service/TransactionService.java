@@ -58,4 +58,10 @@ public class TransactionService {
         return tRepository.findAllByIdAccount(id);
     }
 
+    @Transactional(readOnly = true)
+    public List<Transaction> obtainTransactions() {
+        return tRepository.findAll();
+    }
+
+
 }

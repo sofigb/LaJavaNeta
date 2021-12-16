@@ -2,6 +2,7 @@ package com.edu.egg.virtual_wallet.controller;
 
 
 import com.edu.egg.virtual_wallet.entity.Payee;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import com.edu.egg.virtual_wallet.service.PayeeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,14 +70,14 @@ public class PayeeController {
     }
 
     @PostMapping("/create/{idCustomer}")
-    public RedirectView create(@ModelAttribute("payee") Payee payee,@PathVariable Integer idCustomer) throws MyException, VirtualWalletException {
+    public RedirectView create(@ModelAttribute("payee") Payee payee,@PathVariable Integer idCustomer) throws  InputException {
 
         pService.create(payee, idCustomer);
         return new RedirectView("/payee/"+idCustomer);
        }
     
     @PostMapping("/save")
-    public RedirectView saveChanges(@ModelAttribute("payee") Payee payee) throws MyException {
+    public RedirectView saveChanges(@ModelAttribute("payee") Payee payee) throws InputException {
 
         pService.update(payee);
         return new RedirectView("/payee");
