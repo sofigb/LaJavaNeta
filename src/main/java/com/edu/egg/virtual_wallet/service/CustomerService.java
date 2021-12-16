@@ -65,16 +65,25 @@ public class CustomerService {
     // There should be another method for adding or deleting payees, and a different method for adding or deactivating Customers bank accounts
     // Transfers should be made by AccountService
 
+    //  Address address, Contact contact,
+    //                             Name name, Login login
+
     @Transactional
-    public void editCustomer(Customer updatedCustomer, Address address, Contact contact,
-                             Name name, Login login) throws VirtualWalletException {
-        if (customerRepository.findById(updatedCustomer.getId()).isPresent()) {
+    public void editCustomer(Customer updatedCustomer, Integer idCustomer, Address address,  Contact contact, Name name, Login login) throws VirtualWalletException {
+        customerRepository.findById(idCustomer).orElseThrow(() -> new VirtualWalletException("EDIT NULL" + updatedCustomer.getId()));
+
+        // updatedCustomer.getId()
+        if (customerRepository.findById(idCustomer).isPresent()) {
             try {
-                addressService.editAddress(address);
-                nameService.editName(name);
-                contactService.editContact(contact);
-                loginService.editLogin(login);
-                customerRepository.save(updatedCustomer);
+                Customer customer = customerRepository.findById(idCustomer).get();
+
+                addressService.editAddress(address, customerRepository.findAddressIdByCustomerId(idCustomer));
+                nameService.editName(name, customerRepository.findNameIdByCustomerId(idCustomer));
+                contactService.editContact(contact, customerRepository.findContactIdByCustomerId(idCustomer));
+                loginService.editLogin(login, customerRepository.findLoginIdByCustomerId(idCustomer));
+                customer.setDni(updatedCustomer.getDni());
+                customer.setDateOfBirth(updatedCustomer.getDateOfBirth());
+               customerRepository.save(customer);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }
@@ -83,15 +92,17 @@ public class CustomerService {
         }
     }
 
-    @Transactional
-    public Customer returnCustomer(Integer idCustomer) throws VirtualWalletException {
-        if (customerRepository.findById(idCustomer).isPresent()) {
+    @Transactional(readOnly = true)
+    public Customer returnCustomer(Integer idCustomer) throws VirtualWalletException { // THIS IS THE PROBLEM
+        customerRepository.findById(idCustomer).orElseThrow(() -> new VirtualWalletException("RETURN NULL" + idCustomer));
+
+        if (customerRepository.findById( idCustomer).isPresent()) {
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
-                customer.setLoginInfo(customer.getLoginInfo());
-                customer.setContactInfo(customer.getContactInfo());
-                customer.setFullName(customer.getFullName());
-                customer.setAddressInfo(customer.getAddressInfo());
+               // customer.setLoginInfo(loginService.returnLogin(customerRepository.findLoginIdByCustomerId(idCustomer)));
+             //   customer.setContactInfo(contactService.returnContact(customerRepository.findContactIdByCustomerId(idCustomer)));
+              //  customer.setFullName(nameService.returnName(customerRepository.findNameIdByCustomerId(idCustomer)));
+             //   customer.setAddressInfo(addressService.returnAddress(customerRepository.findAddressIdByCustomerId(idCustomer)));
                 return customer;
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());

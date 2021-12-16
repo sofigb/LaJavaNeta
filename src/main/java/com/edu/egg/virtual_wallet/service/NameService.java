@@ -1,5 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
+import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.NameRepo;
@@ -36,10 +37,12 @@ public class NameService {
     }
 
     @Transactional
-    public void editName(Name updatedName) throws VirtualWalletException {
-        if(nameRepository.findById(updatedName.getId()).isPresent()) {
+    public void editName(Name updatedName, Integer idName) throws VirtualWalletException {
+        if(nameRepository.findById(idName).isPresent()) {
             try {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
+                updatedName.setId(idName);
+                updatedName.setActive(true);
                 nameRepository.save(updatedName);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
@@ -56,5 +59,18 @@ public class NameService {
         Validation.validNameCheck(firstName, "First Name");
         Validation.validNameCheck(middleName, "Middle Name");
         Validation.validNameCheck(lastName, "Last Name");
+    }
+
+    @Transactional(readOnly = true)
+    public Name returnName(Integer idName) throws VirtualWalletException {
+        if (nameRepository.findById(idName).isPresent()) {
+            try {
+                return nameRepository.getById(idName); // RETURNS NULL VALUES
+            } catch (Exception e) {
+                throw new VirtualWalletException(e.getMessage());
+            }
+        } else {
+            throw new VirtualWalletException("Name not found");
+        }
     }
 }

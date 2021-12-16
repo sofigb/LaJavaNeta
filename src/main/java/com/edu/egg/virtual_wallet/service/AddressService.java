@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Address;
+import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.AddressRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,15 +35,30 @@ public class AddressService {
     }
 
     @Transactional
-    public void editAddress(Address updatedAddress) throws VirtualWalletException{
-        if (addressRepository.findById(updatedAddress.getId()).isPresent()) {
+    public void editAddress(Address updatedAddress, Integer idAddress) throws VirtualWalletException{
+        if (addressRepository.findById(idAddress).isPresent()) {
             try {
+                updatedAddress.setId(idAddress);
+                updatedAddress.setActive(true);
                 addressRepository.save(updatedAddress);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }
         } else {
             throw new VirtualWalletException("Failed to identify Customers Address information");
+        }
+    }
+
+    @Transactional(readOnly = true)
+    public Address returnAddress(Integer idAddress) throws VirtualWalletException {
+        if (addressRepository.findById(idAddress).isPresent()) {
+            try {
+                return addressRepository.getById(idAddress); // RETURNS NULL VALUES
+            } catch (Exception e) {
+                throw new VirtualWalletException(e.getMessage());
+            }
+        } else {
+            throw new VirtualWalletException("Address not found");
         }
     }
 }

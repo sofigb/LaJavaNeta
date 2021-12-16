@@ -1,5 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
+import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.UserRole;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
@@ -16,7 +17,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 import java.util.Collections;
 
@@ -58,11 +62,17 @@ public class LoginService implements UserDetailsService {
     }
 
     @Transactional
-    public void editLogin(Login updatedLogin) throws VirtualWalletException {
-        if(loginRepository.findById(updatedLogin.getId()).isPresent()) {
+    public void editLogin(Login updatedLogin, Integer idLogin) throws VirtualWalletException {
+        if(loginRepository.findById(idLogin).isPresent()) {
             try {
                 checkLoginDetails(updatedLogin.getUsername(), updatedLogin.getPassword());
-                loginRepository.save(updatedLogin);
+
+                Login login = loginRepository.findById(idLogin).get();
+                login.setPassword(updatedLogin.getPassword());
+                login.setUsername(updatedLogin.getUsername());
+                //updatedLogin.setId(idLogin);
+                //updatedLogin.setActive(true);
+                loginRepository.save(login);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }
@@ -88,6 +98,24 @@ public class LoginService implements UserDetailsService {
 
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority("ROLE_" + loginDetails.getRole().getRoleName());
 
+        ServletRequestAttributes attributes = (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
+        HttpSession session = attributes.getRequest().getSession(true);
+
+        session.setAttribute("id", loginDetails.getId());
+
         return new User(loginDetails.getUsername(), loginDetails.getPassword(), Collections.singletonList(grantedAuthority));
+    }
+
+    @Transactional(readOnly = true)
+    public Login returnLogin(Integer idLogin) throws VirtualWalletException {
+        if (loginRepository.findById(idLogin).isPresent()) {
+            try {
+                return loginRepository.getById(idLogin); // RETURNS NULL VALUES
+            } catch (Exception e) {
+                throw new VirtualWalletException(e.getMessage());
+            }
+        } else {
+            throw new VirtualWalletException("Login not found");
+        }
     }
 }

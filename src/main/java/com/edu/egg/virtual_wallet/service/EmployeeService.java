@@ -68,9 +68,9 @@ public class EmployeeService {
                              Login login) throws VirtualWalletException {
         if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {
             try {
-                nameService.editName(name);
-                contactService.editContact(contact);
-                loginService.editLogin(login);
+               // nameService.editName(name);
+               // contactService.editContact(contact);
+               // loginService.editLogin(login);
                 employeeRepository.save(updatedEmployee);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
