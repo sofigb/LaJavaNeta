@@ -4,12 +4,13 @@ import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity(name = "LoginInformation")
 @Table(name = "LoginInformation")
 @SQLDelete(sql = "UPDATE LoginInformation l SET l.active = false WHERE l.id = ?")
-@Where(clause = "active = true")
+//@Where(clause = "active = true")
 public class Login {
 
     @Id
@@ -21,6 +22,9 @@ public class Login {
 
     @Column(nullable = false)
     private String password;
+
+    @Column(columnDefinition = "DATETIME", nullable = false)
+    private LocalDateTime lastLoggedIn;
 
     @Column(nullable = false)
     private boolean active;
@@ -42,10 +46,11 @@ public class Login {
     ************************** CONSTRUCTOR ************************
     **************************************************************/
 
-    public Login(Integer id, String username, String password, boolean active, UserRole role) {
+    public Login(Integer id, String username, String password, LocalDateTime lastLoggedIn, boolean active, UserRole role) {
         this.id = id;
         this.username = username;
         this.password = password;
+        this.lastLoggedIn = lastLoggedIn;
         this.active = active;
         this.role = role;
     }
@@ -95,5 +100,13 @@ public class Login {
 
     public void setRole(UserRole role) {
         this.role = role;
+    }
+
+    public LocalDateTime getLastLoggedIn() {
+        return lastLoggedIn;
+    }
+
+    public void setLastLoggedIn(LocalDateTime lastLoggedIn) {
+        this.lastLoggedIn = lastLoggedIn;
     }
 }

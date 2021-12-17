@@ -71,7 +71,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .loginProcessingUrl("/login/check") // th:action url - @PostMapping("/login/check")
                         .usernameParameter("username") // Overriding username and password parameters
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/home", true) // Success URL - Should redirect to Customers profile
+                        .defaultSuccessUrl("/myDashboard", true) // Success URL - Should redirect to Customers profile
                         .failureUrl("/login?error=true")
                         .permitAll()
                 .and()

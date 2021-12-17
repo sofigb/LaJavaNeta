@@ -1,5 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
+import com.edu.egg.virtual_wallet.entity.Address;
 import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.ContactRepo;
@@ -19,7 +20,9 @@ public class ContactService {
     private ContactRepo contactRepository;
 
     @Transactional
+
     public Contact createContact(Contact newContact) throws InputException {
+
         try {
             checkContact(newContact.getPhoneNumber(), newContact.getEmail());
             newContact.setActive(true);
@@ -40,10 +43,15 @@ public class ContactService {
     }
 
     @Transactional
-    public void editContact(Contact updatedContact) throws InputException {
-        if (contactRepository.findById(updatedContact.getId()).isPresent()) {
+
+ 
+    public void editContact(Contact updatedContact, Integer idContact, boolean delete) throws InputException {
+        if (contactRepository.findById(idContact).isPresent()) {
+
             try {
                 checkContact(updatedContact.getPhoneNumber(), updatedContact.getEmail());
+                updatedContact.setId(idContact);
+                updatedContact.setActive(delete);
                 contactRepository.save(updatedContact);
             } catch (Exception e) {
                 throw InputException.NotEdited(contact);
@@ -60,4 +68,19 @@ public class ContactService {
 
         Validation.validPhoneNumberCheck(phoneNumber);
     }
+
+
+    @Transactional(readOnly = true)
+    public Contact returnContact(Integer idContact) throws InputException {
+        if (contactRepository.findById(idContact).isPresent()) {
+            try {
+                return contactRepository.getById(idContact); // RETURNS NULL VALUES
+            } catch (Exception e) {
+                throw new InputException(e.getMessage());
+            }
+        } else {
+            throw new InputException("Contact not found");
+        }
+    }
 }
+

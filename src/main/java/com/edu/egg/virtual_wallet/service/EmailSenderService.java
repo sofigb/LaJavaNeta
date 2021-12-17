@@ -13,7 +13,8 @@ public class EmailSenderService {
     @Autowired
     private JavaMailSender sender;
 
-    @Value("garciariveros@@gmail.com")
+
+    @Value("${USERNAME}")
     private String from;
 
     private static  String SUBJECT = "Correo de bienvenida";
