@@ -33,4 +33,5 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
     @Query(value = "SELECT a FROM Account a WHERE a.active = true AND a.customer.id=:id AND a.currency=:currency")
     Account findAllByIdCustomer(@Param("id") Integer id,@Param("currency") CurrencyType currency);
 
+
 }

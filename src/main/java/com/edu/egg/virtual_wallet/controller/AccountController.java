@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpSession;
+
 @RestController
 @RequestMapping("/account")
 public class AccountController {
@@ -25,12 +27,13 @@ public class AccountController {
     @Autowired
     private CustomerService cService;
 
-    @GetMapping("/{id}")
-    public ModelAndView show(@PathVariable Integer id) {
+    @GetMapping("")
+    public ModelAndView show(HttpSession session) throws InputException {
         ModelAndView mav = new ModelAndView("tablesAccount");
-
-        mav.addObject("listaOb", aService.findByCustomerId(id));
-        mav.addObject("customer", cService.findById(id).get());
+        Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+        mav.addObject("accountPeso", aService.findByCustomerIdCurrency(idCustomer, CurrencyType.PESO_ARG));
+        mav.addObject("accountDollar", aService.findByCustomerIdCurrency(idCustomer, CurrencyType.DOLLAR));
+        mav.addObject("customer", cService.findById(idCustomer).get());
         mav.addObject("href1", "account");
         mav.addObject("href", "new");
         mav.addObject("title", "Mis Cuentas");
@@ -48,43 +51,39 @@ public class AccountController {
 
         return mav;
     }
-    
 
     @GetMapping("/delete/{id}")
     public RedirectView delete(@PathVariable Long id) {
-        Integer idCustomer = (aService.findById(id).getCustomer().getId());
         aService.deleteById(id);
 
-        return new RedirectView("/account/"+idCustomer);
+        return new RedirectView("/myDashboard");
 
     }
 
-    @GetMapping("/createAccount/{id}")
-    public RedirectView create(@PathVariable Integer id) {
+    @GetMapping("/createAccount")
+    public RedirectView create(HttpSession session) throws InputException {
+        Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+        aService.createAccount(CurrencyType.DOLLAR, cService.findById(idCustomer).get());
 
-        aService.createAccount(CurrencyType.DOLLAR, cService.findById(id).get());
-
-        return new RedirectView("/account/{id}");
+        return new RedirectView("/myDashboard");
 
     }
 
     @PostMapping("/save")
-    public RedirectView saveChanges(@ModelAttribute("account") Account account, @ModelAttribute("customer") Customer customer) throws Exception {
+    public RedirectView saveChanges(@ModelAttribute("account") Account account) throws Exception {
 
         aService.updateAlias(account.getAlias(), account.getId());
-        Integer idCustomer = (aService.findById(account.getId()).getCustomer().getId());
-        return new RedirectView("/account/" + idCustomer);
+
+        return new RedirectView("/myDashboard");
 
     }
-    
-    
+
     //ALGO QUE HACE EL SUPER ADMIN
-    @GetMapping("/active/{id}")
+    @GetMapping("/active/{id}" + "" + "")
     public RedirectView active(@PathVariable Long id) {
 
         aService.active(id);
-        Integer idCustomer = (aService.findById(id).getCustomer().getId());
-        return new RedirectView("/account/" + idCustomer);
+        return new RedirectView("/myDashboard");
 
     }
 }

@@ -44,7 +44,7 @@
 								<div class="d-flex justify-content-evenly">
 									<a href="">Depositar</a>
 									<a href="">Retirar</a>
-									<a href="">Transferir</a>
+									<a th:href="@{/transaction/register/__${accountPeso.id}__}">Transferir</a>
 								</div>
 
 									
@@ -55,14 +55,18 @@
 			    
 				    <div class="col-12 col-lg-5">
 					    <div class="app-card app-card-stat shadow-sm h-100">
-						    <div class="app-card-body p-3 p-lg-4">
+
+						    <div class="app-card-body p-3 p-lg-4" th:object="${accountDollar}">
 
 							    <h4 class="stats-type mb-1">CUENTA DOLARES</h4>
-							    <div class="stats-figure">$2,250</div>
+								<a class="btn app-btn-secondary" th:unless="${accountDollar != null}" th:href="@{/account/createAccount/}"></a>
+<!--							    <div class="stats-figure" th:text="'$ ' + ${accountDollar.balance}"></div>
+	-->
 								<hr>
 								<div class="">
 									<a href="">Últimos movimientos</a>
-									
+
+
 								</div>
 							    
 						    </div><!--//app-card-body-->
