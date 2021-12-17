@@ -22,6 +22,11 @@ public class AccountService {
         return aRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
+    public Account findByCustomerIdCurrency(Integer id,CurrencyType currency) {
+        return aRepository.findAllByIdCustomer(id, currency);
+    }
+
     @Transactional
     public void createAccount(CurrencyType currency, Customer customer) {
 

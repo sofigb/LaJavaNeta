@@ -62,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         httpSecurity
                 .authorizeRequests()
                 .expressionHandler(webExpressionHandler())
-                    .antMatchers("/", "/login", "/register", "/register/check", "/css/*", "/images/*","/assets/*").permitAll()
+                    .antMatchers("/", "/login", "/register", "/register/check","/assets/**").permitAll()
                     .antMatchers("/**").authenticated() //para poder usar sin login
                 .and()
                 .formLogin()
