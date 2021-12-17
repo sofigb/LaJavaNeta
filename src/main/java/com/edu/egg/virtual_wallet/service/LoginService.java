@@ -1,9 +1,12 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Login;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
+
 import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
+
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -25,23 +28,23 @@ import java.util.Collections;
 @Service
 public class LoginService implements UserDetailsService {
 
+    private final String login = "el login del cliente ";
+
     @Autowired
     private LoginRepo loginRepository;
-
+    
     @Autowired
     private UserRoleService userRoleService;
-
+    
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional
-    public Login createLogin(Login newLogin, String role) throws VirtualWalletException {
+    public Login createLogin(Login newLogin, String role) throws InputException {
         try {
             if(role.equals("EMPLOYEE")) {
                 newLogin.setPassword(PasswordPolicyEnforcer.generatePassword());
                 System.out.println("PASSWORD");
-                System.out.println(newLogin.getPassword());
-                System.out.println(newLogin.getPassword());
                 System.out.println(newLogin.getPassword());
             }
 
@@ -51,25 +54,26 @@ public class LoginService implements UserDetailsService {
             newLogin.setRole(userRoleService.findUserRoleByRoleName(role));
             newLogin.setLastLoggedIn(LocalDateTime.now());
             newLogin.setActive(true);
+            newLogin.setRole(userRoleService.findUserRoleByRoleName(role));
             loginRepository.save(newLogin);
 
             return newLogin;
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            throw InputException.NotCreated(login);
         }
     }
 
     @Transactional
-    public void deactivateLogin(Integer id) throws VirtualWalletException {
+    public void deactivateLogin(Integer id) throws InputException {
         try {
             loginRepository.deleteById(id);
         } catch (Exception e) {
-            throw new VirtualWalletException("Unable to delete Customer. Failed to identify Login details.");
+            throw InputException.NotDeleted(login);
         }
     }
 
     @Transactional
-    public void editUsername(String username, Integer idLogin) throws VirtualWalletException {
+    public void editUsername(String username, Integer idLogin) throws InputException {
         if(loginRepository.findById(idLogin).isPresent()) {
             try {
                 Login login = loginRepository.findById(idLogin).get();
@@ -77,10 +81,10 @@ public class LoginService implements UserDetailsService {
                 login.setUsername(username);
                 loginRepository.save(login);
             } catch (Exception e) {
-                throw new VirtualWalletException("Unable to edit username");
+                throw InputException.NotEdited(login);
             }
         } else {
-            throw new VirtualWalletException("Failed to identify Customers Login details");
+            throw InputException.NotFound(login);
         }
     }
 
@@ -94,7 +98,8 @@ public class LoginService implements UserDetailsService {
 
                 if (newPassword.equals(confirmNewPassword)){
 
-                    Validation.validPasswordCheck(newPassword);
+                    //Validation.validPasswordCheck(newPassword);
+                    PasswordPolicyEnforcer.validatePassword(newPassword);
                     login.setPassword(passwordEncoder.encode(newPassword));
                     loginRepository.save(login);
 
@@ -109,14 +114,16 @@ public class LoginService implements UserDetailsService {
         }
     }
 
-    public void checkLoginDetails(String username, String password) throws VirtualWalletException {
+    public void checkLoginDetails(String username, String password) throws InputException, VirtualWalletException {
         Validation.nullCheck(username, "Username");
 
         if (loginRepository.existsLoginByUsername(username)) {
-            throw new VirtualWalletException("Username '" + username +  "' is already taken");
+            String user= "El usuario "+ username;
+            //throw new VirtualWalletException("Username '" + username +  "' is already taken");
+            throw InputException.RepeatedData(user);
         }
 
-        Validation.validPasswordCheck(password);
+//        Validation.validPasswordCheck(password);
     }
 
     @Transactional(readOnly = true)

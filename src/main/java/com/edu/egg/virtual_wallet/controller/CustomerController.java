@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.*;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,13 +37,13 @@ public class CustomerController {
     @PostMapping("/register/check")
     public RedirectView checkRegistration(@ModelAttribute("customer") Customer customer, @ModelAttribute("address") Address address,
                                           @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name,
-                                          @ModelAttribute("login") Login login) throws VirtualWalletException {
+                                          @ModelAttribute("login") Login login) throws VirtualWalletException, InputException {
         customerService.createCustomer(customer, address, contact, name, login);
         return new RedirectView("/login");
     }
 
     @GetMapping("/myDashboard")
-    public ModelAndView customerDashboard(HttpSession session) throws VirtualWalletException {
+    public ModelAndView customerDashboard(HttpSession session) throws VirtualWalletException, InputException {
         ModelAndView mav = new ModelAndView("myDashboard");
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
         mav.addObject("customer", customerService.returnCustomer(idCustomer));
@@ -50,7 +51,7 @@ public class CustomerController {
     }
 
     @GetMapping("/profile")
-    public ModelAndView customerProfile(HttpSession session) throws VirtualWalletException {
+    public ModelAndView customerProfile(HttpSession session) throws VirtualWalletException, InputException {
         ModelAndView mav = new ModelAndView("editCustomerProfile");
 
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
@@ -69,7 +70,7 @@ public class CustomerController {
     public RedirectView editCustomerProfile(@ModelAttribute Customer customer, @ModelAttribute Address address,
                                             @ModelAttribute("contact") Contact contact, @ModelAttribute("name") Name name,
                                             @RequestParam String username, HttpSession session)
-            throws VirtualWalletException {
+            throws InputException, VirtualWalletException {
 
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
         customerService.editCustomer(customer, idCustomer, address, contact, name, username);
@@ -77,7 +78,7 @@ public class CustomerController {
     }
 
     @PostMapping("/profile/delete")
-    public RedirectView deleteAccount(HttpSession session) throws VirtualWalletException {
+    public RedirectView deleteAccount(HttpSession session) throws VirtualWalletException, InputException {
 
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
         customerService.deactivateCustomer(idCustomer);
@@ -98,8 +99,8 @@ public class CustomerController {
 
     @PostMapping("/profile/changePassword/check")
     public RedirectView verifyChangedPassword(@RequestParam String currentPassword, @RequestParam String newPassword,
-                                              @RequestParam String confirmNewPassword, HttpSession session) throws VirtualWalletException {
-
+                                              @RequestParam String confirmNewPassword, HttpSession session)
+            throws VirtualWalletException, InputException {
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
         customerService.editCustomerPassword(idCustomer, currentPassword, newPassword, confirmNewPassword);
         return new RedirectView("/profile");

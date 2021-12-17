@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.*;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import com.edu.egg.virtual_wallet.service.EmployeeService;
@@ -41,13 +42,13 @@ public class EmployeeController {
     // ADMIN
     @PostMapping("/workDashboard/addEmployee/check")
     public RedirectView checkEmployeeData(@ModelAttribute("employee") Employee employee, @ModelAttribute("contact") Contact  contact,
-                                          @ModelAttribute("name") Name name, @ModelAttribute("login") Login login) throws VirtualWalletException {
+                                          @ModelAttribute("name") Name name, @ModelAttribute("login") Login login) throws InputException {
         employeeService.createEmployee(employee, contact, name, login);
         return new RedirectView("/workDashboard/addEmployee");
     }
 
     @GetMapping("/workDashboard")
-    public ModelAndView employeeDashboard(HttpSession session) throws VirtualWalletException {
+    public ModelAndView employeeDashboard(HttpSession session) throws VirtualWalletException, InputException {
         ModelAndView mav = new ModelAndView("workDashboard");
         Integer idEmployee = employeeService.findSessionIdEmployee((Integer) session.getAttribute("id"));
         mav.addObject("employee", employeeService.returnEmployee(idEmployee));
@@ -56,7 +57,7 @@ public class EmployeeController {
 
     // ADMIN
     @GetMapping("/workDashboard/employeeData")
-    public ModelAndView employeeProfile(HttpSession session) throws VirtualWalletException {
+    public ModelAndView employeeProfile(HttpSession session) throws VirtualWalletException, InputException {
         ModelAndView mav = new ModelAndView("employeeInfoForm");
 
         Integer idEmployee = employeeService.findSessionIdEmployee((Integer) session.getAttribute("id"));
@@ -75,7 +76,7 @@ public class EmployeeController {
     @PostMapping("/workDashboard/employeeData/edit")
     public RedirectView editEmployeeProfile(@ModelAttribute Employee employee, @ModelAttribute("contact") Contact contact,
                                             @ModelAttribute("name") Name name, @RequestParam String username,
-                                            HttpSession session) throws VirtualWalletException {
+                                            HttpSession session) throws VirtualWalletException, InputException {
 
         Integer idEmployee = employeeService.findSessionIdEmployee((Integer) session.getAttribute("id"));
         employeeService.editEmployee(employee, idEmployee, contact, name, username);
@@ -119,7 +120,7 @@ public class EmployeeController {
     @PostMapping("/workDashboard/registerCustomer/check")
     public RedirectView saveNewCustomer(@ModelAttribute("customer") Customer customer, @ModelAttribute("address") Address address,
                                         @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name,
-                                        @RequestParam String username) throws VirtualWalletException {
+                                        @RequestParam String username) throws InputException {
         Login login = new Login();
         login.setUsername(username);
 

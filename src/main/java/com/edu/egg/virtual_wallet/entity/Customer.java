@@ -18,6 +18,7 @@ import java.util.List;
 public class Customer {
 
     @Id
+    @Column(name = "idCustomer")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
@@ -56,14 +57,18 @@ public class Customer {
     @LastModifiedDate
     @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate modificationDate;
+    
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fk_customer")
+    private List<Payee> payees;
 
-    /*************************************************************
-    ************************** CONSTRUCTOR ***********************
-    *************************************************************/
+    /**************************************************************
+    ************************** CONSTRUCTOR ************************
+    **************************************************************/
 
     public Customer(Integer id, Long dni, Name fullName, Contact contactInfo, Address addressInfo,
-                    LocalDate dateOfBirth, Login loginInfo, boolean active, LocalDate activationDate,
-                    LocalDate deactivationDate, LocalDate modificationDate) {
+            LocalDate dateOfBirth, Login loginInfo,List<Payee> payees) {
+
         this.id = id;
         this.dni = dni;
         this.fullName = fullName;
@@ -71,18 +76,23 @@ public class Customer {
         this.addressInfo = addressInfo;
         this.dateOfBirth = dateOfBirth;
         this.loginInfo = loginInfo;
-        this.active = active;
-        this.activationDate = activationDate;
-        this.deactivationDate = deactivationDate;
-        this.modificationDate = modificationDate;
+        this.payees = payees;
     }
 
     public Customer() {
     }
 
-    /************************************************************
-    *********************** GETTER AND SETTER *******************
-    ************************************************************/
+    /*************************************************************
+    *********************** GETTER AND SETTER ********************
+    *************************************************************/
+
+    public List<Payee> getPayees() {
+        return payees;
+    }
+
+    public void setPayees(List<Payee> payees) {
+        this.payees = payees;
+    }
 
     public Integer getId() {
         return id;
@@ -148,27 +158,11 @@ public class Customer {
         this.active = active;
     }
 
-    public LocalDate getActivationDate() {
-        return activationDate;
-    }
-
-    public void setActivationDate(LocalDate activationDate) {
-        this.activationDate = activationDate;
-    }
-
     public LocalDate getDeactivationDate() {
         return deactivationDate;
     }
 
     public void setDeactivationDate(LocalDate deactivationDate) {
         this.deactivationDate = deactivationDate;
-    }
-
-    public LocalDate getModificationDate() {
-        return modificationDate;
-    }
-
-    public void setModificationDate(LocalDate modificationDate) {
-        this.modificationDate = modificationDate;
     }
 }

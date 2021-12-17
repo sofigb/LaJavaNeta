@@ -1,6 +1,11 @@
 package com.edu.egg.virtual_wallet.service;
 
+
+import com.edu.egg.virtual_wallet.entity.Employee;
+import com.edu.egg.virtual_wallet.exception.InputException;
+
 import com.edu.egg.virtual_wallet.entity.*;
+
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
@@ -10,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeService {
+
+    private final String employee = "el empleado ";
 
     @Autowired
     private EmployeeRepo employeeRepository;
@@ -25,7 +32,7 @@ public class EmployeeService {
 
     @Transactional
     public void createEmployee(Employee newEmployee, Contact contact,Name name,
-                               Login login) throws VirtualWalletException {
+                               Login login) throws InputException {
         try {
             newEmployee.setContactInfo(contactService.createContact(contact));
             newEmployee.setFullName(nameService.createName(name));
@@ -35,12 +42,12 @@ public class EmployeeService {
 
             // ADD EMAIL SENDER METHOD
         } catch (Exception e) {
-            throw new VirtualWalletException(e.getMessage());
+            throw InputException.NotCreated(employee);
         }
     }
 
     @Transactional
-    public void deactivateEmployee(Integer idEmployee) throws VirtualWalletException {
+    public void deactivateEmployee(Integer idEmployee) throws InputException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 Employee employee = employeeRepository.findById(idEmployee).get();
@@ -51,16 +58,17 @@ public class EmployeeService {
 
                 employeeRepository.deleteById(idEmployee);
             } catch (Exception e) {
-                throw new VirtualWalletException("Unable to delete Employee");
+                throw InputException.NotDeleted(employee);
             }
         } else {
-            throw new VirtualWalletException("Unable to find Employee");
+            throw InputException.NotFound(employee);
         }
     }
 
     @Transactional
     public void editEmployee(Employee updatedEmployee, Integer idEmployee, Contact contact,
-                             Name name, String username) throws VirtualWalletException {
+                             Name name, String username) throws InputException {
+
         if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {
             try {
                 nameService.editName(name, employeeRepository.findNameIdByEmployeeId(idEmployee));
@@ -70,10 +78,10 @@ public class EmployeeService {
                 updatedEmployee.setId(idEmployee);
                 employeeRepository.save(updatedEmployee);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw InputException.NotEdited(employee);
             }
         } else {
-            throw new VirtualWalletException("Unable to find Employee");
+                throw InputException.NotFound(employee);
         }
     }
 
@@ -91,7 +99,7 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public Employee returnEmployee(Integer idEmployee) throws VirtualWalletException {
+    public Employee returnEmployee(Integer idEmployee) throws InputException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 Employee employee = employeeRepository.findById(idEmployee).get();
@@ -102,10 +110,10 @@ public class EmployeeService {
 
                 return employee;
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw InputException.NotReturned(employee);
             }
         } else {
-            throw new VirtualWalletException("Unable to retrieve employee data");
+            throw InputException.NotRetrievedData(employee);
         }
     }
 

@@ -17,6 +17,22 @@ spring:
   mvc:
     format:
       date: yyy-MM-dd
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ggg
+    password: ggg
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+  main:
+    allow-circular-reference: true
 logging:
   level:
     org:

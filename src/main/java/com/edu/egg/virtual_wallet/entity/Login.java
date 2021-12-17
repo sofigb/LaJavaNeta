@@ -30,17 +30,8 @@ public class Login {
     private boolean active;
 
     @ManyToOne
-    /* The application wil have 3 roles: CUSTOMER, EMPLOYEE and ADMIN
-    - We will utilize role hierarchy to be able to assign a single role to each user.
-    - For example, a user with the ADMIN role will automatically have the authorisations of
-     the EMPLOYEE and CUSTOMER roles */
     @JoinColumn(nullable = false)
     private UserRole role;
-
-    /*
-    @Column(nullable = false)
-    private String securityQuestion;
-    */
 
     /**************************************************************
     ************************** CONSTRUCTOR ************************

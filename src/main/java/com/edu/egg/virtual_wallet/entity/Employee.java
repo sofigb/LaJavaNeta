@@ -22,6 +22,7 @@ public class Employee {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+
     private Name fullName;
 
     @OneToOne(fetch = FetchType.LAZY)
