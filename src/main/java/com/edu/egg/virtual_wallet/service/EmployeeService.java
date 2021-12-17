@@ -4,25 +4,19 @@ package com.edu.egg.virtual_wallet.service;
 import com.edu.egg.virtual_wallet.entity.Employee;
 import com.edu.egg.virtual_wallet.exception.InputException;
 
-
 import com.edu.egg.virtual_wallet.entity.*;
-
 
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class EmployeeService {
 
-    private final String employee="el empleado ";
-    // QUESTION FOR TEAM:
-    // Should employees create/delete employees? That should be the role of a Super Admin
-    // Employees should only be able to edit their own profiles and customer accounts
-    // We could add a Super Amin later, but first, let's focus!
+    private final String employee = "el empleado ";
+
     @Autowired
     private EmployeeRepo employeeRepository;
 
@@ -35,26 +29,17 @@ public class EmployeeService {
     @Autowired
     private ContactService contactService;
 
-    private JavaMailSender sender;
-    /*
-    @Autowired
-    private CustomerService customerService; Will allow employee to edit/create customers
-    */
-
-    /*
     @Transactional
-
-    public void createEmployee(Employee newEmployee) throws InputException {
-=======
     public void createEmployee(Employee newEmployee, Contact contact,Name name,
-                               Login login) throws VirtualWalletException {
-
+                               Login login) throws InputException {
         try {
             newEmployee.setContactInfo(contactService.createContact(contact));
             newEmployee.setFullName(nameService.createName(name));
-            newEmployee.setLoginInfo(loginService.createLogin(login, "EMPLOYEE"));;
+            newEmployee.setLoginInfo(loginService.createLogin(login, "EMPLOYEE"));
+            newEmployee.setActive(true);
             employeeRepository.save(newEmployee);
-            sender.sendEspecialEmail(newEmployee.getUser().getName().getEmail(),// password ,newEmployee.getUser().getName().getFirstName());
+
+            // ADD EMAIL SENDER METHOD
         } catch (Exception e) {
             throw InputException.NotCreated(employee);
         }
@@ -65,9 +50,11 @@ public class EmployeeService {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 Employee employee = employeeRepository.findById(idEmployee).get();
-                nameService.deactivateName(employee.getFullName().getId());
-                loginService.deactivateLogin(employee.getLoginInfo().getId());
-                contactService.deactivateContact(employee.getContactInfo().getId());
+
+                nameService.deactivateName(employeeRepository.findNameIdByEmployeeId(idEmployee));
+                loginService.deactivateLogin(employeeRepository.findLoginIdByEmployeeId(idEmployee));
+                contactService.deactivateContact(employeeRepository.findContactIdByEmployeeId(idEmployee));
+
                 employeeRepository.deleteById(idEmployee);
             } catch (Exception e) {
                 throw InputException.NotDeleted(employee);
@@ -76,32 +63,50 @@ public class EmployeeService {
             throw InputException.NotFound(employee);
         }
     }
-*/
+
     @Transactional
-    public void editEmployee(Employee updatedEmployee, Contact contact, Name name,
-                             Login login) throws InputException {
+    public void editEmployee(Employee updatedEmployee, Integer idEmployee, Contact contact,
+                             Name name, String username) throws InputException {
+
         if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {
             try {
-               // nameService.editName(name);
-               // contactService.editContact(contact);
-               // loginService.editLogin(login);
+                nameService.editName(name, employeeRepository.findNameIdByEmployeeId(idEmployee));
+                contactService.editContact(contact, employeeRepository.findContactIdByEmployeeId(idEmployee));
+                loginService.editUsername(username, employeeRepository.findLoginIdByEmployeeId(idEmployee));
+
+                updatedEmployee.setId(idEmployee);
                 employeeRepository.save(updatedEmployee);
             } catch (Exception e) {
                 throw InputException.NotEdited(employee);
             }
         } else {
-                throw InputException.NotFound(employee);
+            throw InputException.NotFound(employee);
         }
     }
 
     @Transactional
+    public void editEmployeePassword(Integer idEmployee, String currentPassword, String newPassword, String confirmNewPassword) throws InputException {
+        if (employeeRepository.findById(idEmployee).isPresent()) {
+            try {
+                loginService.editPassword(employeeRepository.findLoginIdByEmployeeId(idEmployee), currentPassword, newPassword, confirmNewPassword);
+            } catch (Exception e) {
+                throw new InputException(e.getMessage());
+            }
+        } else {
+            throw new InputException("Unable to find Employee");
+        }
+    }
+
+    @Transactional(readOnly = true)
     public Employee returnEmployee(Integer idEmployee) throws InputException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 Employee employee = employeeRepository.findById(idEmployee).get();
-                employee.setLoginInfo(employee.getLoginInfo());
-                employee.setContactInfo(employee.getContactInfo());
-                employee.setFullName(employee.getFullName());
+
+                employee.getLoginInfo().setUsername(loginService.returnUsername(employeeRepository.findLoginIdByEmployeeId(idEmployee)));
+                employee.setContactInfo(contactService.returnContact(employeeRepository.findContactIdByEmployeeId(idEmployee)));
+                employee.setFullName(nameService.returnName(employeeRepository.findNameIdByEmployeeId(idEmployee)));
+
                 return employee;
             } catch (Exception e) {
                 throw InputException.NotReturned(employee);
@@ -109,5 +114,11 @@ public class EmployeeService {
         } else {
             throw InputException.NotRetrievedData(employee);
         }
+    }
+
+    @Transactional(readOnly = true)
+    public Integer findSessionIdEmployee(Integer idLogin) throws InputException {
+        return employeeRepository.findEmployeeIdByLoginId(idLogin)
+                .orElseThrow(() -> new InputException("Current Employee session not found"));
     }
 }

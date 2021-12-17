@@ -42,17 +42,17 @@ public class AccountService {
     }
 
     @Transactional
-    public void updateAlias(String alias, Long id) throws Exception {
+    public void updateAlias(String alias, Long id) throws Exception,InputException {
 
          if (aRepository.existsByAlias(alias)){
              String Alias = "El alias " + alias;
              throw  InputException.RepeatedData(Alias);
          }
 
+        //PASAR A INPUT EXCEPTION
+        if (alias.trim().isEmpty() || alias == null) throw new InputException("El alias no puede estar vacío");
 
-        if (alias.trim().isEmpty() || alias == null) throw new Exception("El alias no puede estar vacío");
-
-        if (alias.length() < 6 || alias.length() > 20) throw new Exception("Tamaño de alias inválido (MIN 6 - MAX 20)");
+        if (alias.length() < 6 || alias.length() > 20) throw new InputException("Tamaño de alias inválido (MIN 6 - MAX 20)");
 
         Account account = aRepository.findById(id).get();
         account.setAlias(alias);

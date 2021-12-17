@@ -16,7 +16,6 @@ import java.time.LocalDate;
 //@Where(clause = "active = true")
 public class Employee {
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -47,7 +46,6 @@ public class Employee {
     @LastModifiedDate
     @Column(columnDefinition = "DATE", nullable = false)
     private LocalDate modificationDate;
-
 
     /***************************************************************
     ************************** CONSTRUCTOR *************************

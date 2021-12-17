@@ -9,18 +9,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-
 public class AddressService {
 
-    private String address = "la dirección ";
+    private String address = "la dirección "; // exception message
 
     @Autowired
     private AddressRepo addressRepository;
 
     @Transactional
-
     public Address createAddress(Address newAddress) throws InputException {
-
         try {
             newAddress.setActive(true);
             addressRepository.save(newAddress);
@@ -33,21 +30,18 @@ public class AddressService {
     @Transactional
     public void deactivateAddress(Integer id) throws InputException {
         try {
-            Address address = addressRepository.findById(id).get();
-            address.setActive(false);
-            addressRepository.save(address);
+            addressRepository.deleteById(id);
         } catch (Exception e) {
             throw InputException.NotFound(address);
         }
     }
 
 
-
-    public void editAddress(Address updatedAddress, Integer idAddress, boolean delete) throws InputException{
+    @Transactional
+    public void editAddress(Address updatedAddress, Integer idAddress) throws InputException {
         if (addressRepository.findById(idAddress).isPresent()) {
             try {
                 updatedAddress.setId(idAddress);
-                updatedAddress.setActive(delete);
                 addressRepository.save(updatedAddress);
             } catch (Exception e) {
                 throw InputException.NotEdited(address);

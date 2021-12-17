@@ -12,8 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class NameService {
 
-    private final String name="el nombre ";
-
+    private final String name = "el nombre ";
 
     @Autowired
     private NameRepo nameRepository;
@@ -40,14 +39,11 @@ public class NameService {
     }
 
     @Transactional
-
-    public void editName(Name updatedName, Integer idName, boolean delete) throws InputException {
+    public void editName(Name updatedName, Integer idName) throws InputException {
         if(nameRepository.findById(idName).isPresent()) {
-
             try {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
                 updatedName.setId(idName);
-                updatedName.setActive(delete);
                 nameRepository.save(updatedName);
             } catch (Exception e) {
                 throw InputException.NotEdited(name);
@@ -58,7 +54,6 @@ public class NameService {
     }
 
     public void checkName(String firstName, String middleName, String lastName) throws InputException {
-
         Validation.nullCheck(firstName, "First Name");
         Validation.nullCheck(lastName, "Last Name");
 
@@ -71,7 +66,7 @@ public class NameService {
     public Name returnName(Integer idName) throws InputException {
         if (nameRepository.findById(idName).isPresent()) {
             try {
-                return nameRepository.getById(idName); // RETURNS NULL VALUES
+                return nameRepository.getById(idName);
             } catch (Exception e) {
                 throw new InputException(e.getMessage());
             }
@@ -80,4 +75,3 @@ public class NameService {
         }
     }
 }
-

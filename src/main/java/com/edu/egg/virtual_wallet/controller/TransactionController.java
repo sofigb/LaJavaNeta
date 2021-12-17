@@ -36,7 +36,6 @@ public class TransactionController {
     @GetMapping("/{idAccount}")
     public ModelAndView show(@PathVariable Long idAccount) {
         ModelAndView mav = new ModelAndView("tablesTransaction");
-
         mav.addObject("listT", tService.showAllByAccountId(idAccount));
                 mav.addObject("href", "register/" + idAccount);
         mav.addObject("title", "Transacciones");
@@ -58,9 +57,7 @@ public class TransactionController {
     public RedirectView create(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
         tService.create(transaction, idAccount);
         return new RedirectView("/transaction/" + idAccount);
-
     }
-
     @GetMapping("/export/pdf")
     public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
         response.setContentType("application/pdf");

@@ -5,7 +5,6 @@ package com.edu.egg.virtual_wallet.validation;
 import com.edu.egg.virtual_wallet.exception.InputException;
 
 
-
 public class Validation {
     private final String name=" del nombre .Recuerde que solo puede contener letras ";
 
@@ -70,14 +69,14 @@ public class Validation {
     public static void validEmailCheck(String userEmail) throws InputException {
         nullCheck(userEmail, "Email Address");
         if (!userEmail.trim().matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
-            String email =" del email . Verifique que escribio su dirección de mail correctamente";
+            String email =" del email . Verifique que escribió su dirección de mail correctamente";
             throw   InputException.incorrectFormatting(email);
         }
     }
 
     public static void validPhoneNumberCheck(Long phoneNumber) throws InputException {
         if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
-            String PhoneNumber =" del numero de telefono ";
+            String PhoneNumber =" del numero de teléfono ";
             throw  InputException.incorrectFormatting(PhoneNumber);
         }
     }

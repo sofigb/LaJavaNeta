@@ -62,14 +62,12 @@ public class Customer {
     @JoinColumn(name = "fk_customer")
     private List<Payee> payees;
 
-    /**
-     * ***********************************************************
-     ************************** CONSTRUCTOR ***********************
-    ************************************************************
-     */
+    /**************************************************************
+    ************************** CONSTRUCTOR ************************
+    **************************************************************/
+
     public Customer(Integer id, Long dni, Name fullName, Contact contactInfo, Address addressInfo,
-            LocalDate dateOfBirth, Login loginInfo, boolean active, LocalDate activationDate,
-            LocalDate deactivationDate, LocalDate modificationDate,List<Payee> payees) {
+            LocalDate dateOfBirth, Login loginInfo,List<Payee> payees) {
 
         this.id = id;
         this.dni = dni;
@@ -77,18 +75,16 @@ public class Customer {
         this.contactInfo = contactInfo;
         this.addressInfo = addressInfo;
         this.dateOfBirth = dateOfBirth;
-
         this.loginInfo = loginInfo;
-        this.active = active;
-        this.activationDate = activationDate;
-        this.deactivationDate = deactivationDate;
-        this.modificationDate = modificationDate;
-         this.payees = payees;
-
+        this.payees = payees;
     }
 
     public Customer() {
     }
+
+    /*************************************************************
+    *********************** GETTER AND SETTER ********************
+    *************************************************************/
 
     public List<Payee> getPayees() {
         return payees;
@@ -162,14 +158,6 @@ public class Customer {
         this.active = active;
     }
 
-    public LocalDate getActivationDate() {
-        return activationDate;
-    }
-
-    public void setActivationDate(LocalDate activationDate) {
-        this.activationDate = activationDate;
-    }
-
     public LocalDate getDeactivationDate() {
         return deactivationDate;
     }
@@ -177,18 +165,4 @@ public class Customer {
     public void setDeactivationDate(LocalDate deactivationDate) {
         this.deactivationDate = deactivationDate;
     }
-
-    public LocalDate getModificationDate() {
-        return modificationDate;
-    }
-
-    public void setModificationDate(LocalDate modificationDate) {
-        this.modificationDate = modificationDate;
-    }
-
-    /**
-     * **********************************************************
-     *********************** GETTER AND SETTER *******************
-     * **********************************************************
-     */
 }
