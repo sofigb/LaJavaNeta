@@ -18,7 +18,7 @@ public class ContactService {
     @Transactional
     public Contact createContact(Contact newContact) throws VirtualWalletException {
         try {
-            checkContact(newContact.getPhoneNumber(), newContact.getEmail());
+            checkContact(newContact.getPhoneNumber(), newContact.getEmail(), true);
             newContact.setActive(true);
             contactRepository.save(newContact);
             return newContact;
@@ -37,12 +37,13 @@ public class ContactService {
     }
 
     @Transactional
-    public void editContact(Contact updatedContact, Integer idContact, boolean delete) throws VirtualWalletException {
+    public void editContact(Contact updatedContact, Integer idContact) throws VirtualWalletException {
         if (contactRepository.findById(idContact).isPresent()) {
             try {
-                checkContact(updatedContact.getPhoneNumber(), updatedContact.getEmail());
+                boolean newEmailAddress = !updatedContact.getEmail().equals(contactRepository.getById(idContact).getEmail());
+                checkContact(updatedContact.getPhoneNumber(), updatedContact.getEmail(), newEmailAddress);
+
                 updatedContact.setId(idContact);
-                updatedContact.setActive(delete);
                 contactRepository.save(updatedContact);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
@@ -52,10 +53,10 @@ public class ContactService {
         }
     }
 
-    public void checkContact(Long phoneNumber, String email) throws VirtualWalletException {
+    public void checkContact(Long phoneNumber, String email, boolean newEmailAddress) throws VirtualWalletException {
         Validation.validEmailCheck(email);
 
-        if (contactRepository.existsContactByEmail(email)) {
+        if (contactRepository.existsContactByEmail(email) && newEmailAddress) {
             throw new VirtualWalletException("Email '" + email +  "' is already taken");
         }
 
@@ -66,7 +67,7 @@ public class ContactService {
     public Contact returnContact(Integer idContact) throws VirtualWalletException {
         if (contactRepository.findById(idContact).isPresent()) {
             try {
-                return contactRepository.getById(idContact); // RETURNS NULL VALUES
+                return contactRepository.getById(idContact);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }

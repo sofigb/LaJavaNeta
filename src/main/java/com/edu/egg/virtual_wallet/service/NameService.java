@@ -37,12 +37,11 @@ public class NameService {
     }
 
     @Transactional
-    public void editName(Name updatedName, Integer idName, boolean delete) throws VirtualWalletException {
+    public void editName(Name updatedName, Integer idName) throws VirtualWalletException {
         if(nameRepository.findById(idName).isPresent()) {
             try {
                 checkName(updatedName.getFirstName(), updatedName.getMiddleName(), updatedName.getLastName());
                 updatedName.setId(idName);
-                updatedName.setActive(delete);
                 nameRepository.save(updatedName);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());

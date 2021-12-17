@@ -48,7 +48,6 @@ public class CustomerService {
     public void deactivateCustomer(Integer idCustomer) throws VirtualWalletException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
-
                 Customer customer = customerRepository.findById(idCustomer).get();
 
                 addressService.deactivateAddress(customerRepository.findAddressIdByCustomerId(idCustomer));
@@ -56,7 +55,7 @@ public class CustomerService {
                 loginService.deactivateLogin(customerRepository.findLoginIdByCustomerId(idCustomer));
                 contactService.deactivateContact(customerRepository.findContactIdByCustomerId(idCustomer));
                 // deactivate account and payees.
-                customer.setId(idCustomer);
+                //customer.setId(idCustomer);
 
                 customerRepository.deleteById(idCustomer);
             } catch (Exception e) {
@@ -73,22 +72,33 @@ public class CustomerService {
 
     @Transactional
     public void editCustomer(Customer updatedCustomer, Integer idCustomer, Address address,
-                             Contact contact, Name name, Login login, boolean delete) throws VirtualWalletException {
+                             Contact contact, Name name, String username) throws VirtualWalletException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
 
-                addressService.editAddress(address, customerRepository.findAddressIdByCustomerId(idCustomer), delete);
-                nameService.editName(name, customerRepository.findNameIdByCustomerId(idCustomer), delete);
-                contactService.editContact(contact, customerRepository.findContactIdByCustomerId(idCustomer), delete);
+                addressService.editAddress(address, customerRepository.findAddressIdByCustomerId(idCustomer));
+                nameService.editName(name, customerRepository.findNameIdByCustomerId(idCustomer));
+                contactService.editContact(contact, customerRepository.findContactIdByCustomerId(idCustomer));
+                loginService.editUsername(username, customerRepository.findLoginIdByCustomerId(idCustomer));
 
                 customer.setDni(updatedCustomer.getDni());
                 customer.setDateOfBirth(updatedCustomer.getDateOfBirth());
-                customer.setActive(delete);
 
                customerRepository.save(customer);
+            } catch (Exception e) {
+                throw new VirtualWalletException(e.getMessage());
+            }
+        } else {
+            throw new VirtualWalletException("Unable to find Customer");
+        }
+    }
 
-                loginService.editLogin(login, customerRepository.findLoginIdByCustomerId(idCustomer), delete);
+    @Transactional
+    public void editCustomerPassword(Integer idCustomer, String currentPassword, String newPassword, String confirmNewPassword) throws VirtualWalletException {
+        if (customerRepository.findById(idCustomer).isPresent()) {
+            try {
+                loginService.editPassword(customerRepository.findLoginIdByCustomerId(idCustomer), currentPassword, newPassword, confirmNewPassword);
             } catch (Exception e) {
                 throw new VirtualWalletException(e.getMessage());
             }
@@ -103,7 +113,7 @@ public class CustomerService {
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
 
-                customer.setLoginInfo(loginService.returnLogin(customerRepository.findLoginIdByCustomerId(idCustomer)));
+                customer.getLoginInfo().setUsername(loginService.returnUsername(customerRepository.findLoginIdByCustomerId(idCustomer)));
                 customer.setContactInfo(contactService.returnContact(customerRepository.findContactIdByCustomerId(idCustomer)));
                 customer.setFullName(nameService.returnName(customerRepository.findNameIdByCustomerId(idCustomer)));
                 customer.setAddressInfo(addressService.returnAddress(customerRepository.findAddressIdByCustomerId(idCustomer)));

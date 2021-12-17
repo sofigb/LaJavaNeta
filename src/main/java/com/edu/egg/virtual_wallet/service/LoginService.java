@@ -1,8 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.Login;
-import com.edu.egg.virtual_wallet.entity.UserRole;
 import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
 import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
@@ -39,13 +37,22 @@ public class LoginService implements UserDetailsService {
     @Transactional
     public Login createLogin(Login newLogin, String role) throws VirtualWalletException {
         try {
-            if(role.equals("EMPLOYEE")) { newLogin.setPassword(PasswordPolicyEnforcer.generatePassword()); }
+            if(role.equals("EMPLOYEE")) {
+                newLogin.setPassword(PasswordPolicyEnforcer.generatePassword());
+                System.out.println("PASSWORD");
+                System.out.println(newLogin.getPassword());
+                System.out.println(newLogin.getPassword());
+                System.out.println(newLogin.getPassword());
+            }
+
             checkLoginDetails(newLogin.getUsername(), newLogin.getPassword());
+
             newLogin.setPassword(passwordEncoder.encode(newLogin.getPassword()));
             newLogin.setRole(userRoleService.findUserRoleByRoleName(role));
             newLogin.setLastLoggedIn(LocalDateTime.now());
             newLogin.setActive(true);
             loginRepository.save(newLogin);
+
             return newLogin;
         } catch (Exception e) {
             throw new VirtualWalletException(e.getMessage());
@@ -62,20 +69,41 @@ public class LoginService implements UserDetailsService {
     }
 
     @Transactional
-    public void editLogin(Login updatedLogin, Integer idLogin, boolean delete) throws VirtualWalletException {
+    public void editUsername(String username, Integer idLogin) throws VirtualWalletException {
         if(loginRepository.findById(idLogin).isPresent()) {
             try {
-                checkLoginDetails(updatedLogin.getUsername(), updatedLogin.getPassword());
-
                 Login login = loginRepository.findById(idLogin).get();
-                login.setPassword(updatedLogin.getPassword());
-                login.setUsername(updatedLogin.getUsername());
-                login.setActive(delete);
-
+                // login.setId(idLogin);
+                login.setUsername(username);
                 loginRepository.save(login);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new VirtualWalletException("Unable to edit username");
             }
+        } else {
+            throw new VirtualWalletException("Failed to identify Customers Login details");
+        }
+    }
+
+    @Transactional
+    public void editPassword(Integer idLogin, String currentPassword, String newPassword, String confirmNewPassword) throws VirtualWalletException {
+        if(loginRepository.findById(idLogin).isPresent()) {
+
+            Login login = loginRepository.findById(idLogin).get();
+
+            if (!passwordEncoder.encode(currentPassword).equals(login.getPassword())) {
+
+                if (newPassword.equals(confirmNewPassword)){
+
+                    Validation.validPasswordCheck(newPassword);
+                    login.setPassword(passwordEncoder.encode(newPassword));
+                    loginRepository.save(login);
+
+                } else {
+                    throw new VirtualWalletException("Confirm new password - Passwords no not match!");
+                }
+            } else {
+                throw new VirtualWalletException("Incorrect Password");
+           }
         } else {
             throw new VirtualWalletException("Failed to identify Customers Login details");
         }
@@ -91,6 +119,15 @@ public class LoginService implements UserDetailsService {
         Validation.validPasswordCheck(password);
     }
 
+    @Transactional(readOnly = true)
+    public String returnUsername(Integer idLogin) throws VirtualWalletException {
+        if (loginRepository.findById(idLogin).isPresent()) {
+            return loginRepository.getById(idLogin).getUsername();
+        } else {
+            throw new VirtualWalletException("Username not found");
+        }
+    }
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Login loginDetails =  loginRepository.findByUsername(username)
@@ -104,18 +141,5 @@ public class LoginService implements UserDetailsService {
         session.setAttribute("id", loginDetails.getId());
 
         return new User(loginDetails.getUsername(), loginDetails.getPassword(), Collections.singletonList(grantedAuthority));
-    }
-
-    @Transactional(readOnly = true)
-    public Login returnLogin(Integer idLogin) throws VirtualWalletException {
-        if (loginRepository.findById(idLogin).isPresent()) {
-            try {
-                return loginRepository.getById(idLogin); // RETURNS NULL VALUES
-            } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
-            }
-        } else {
-            throw new VirtualWalletException("Login not found");
-        }
     }
 }

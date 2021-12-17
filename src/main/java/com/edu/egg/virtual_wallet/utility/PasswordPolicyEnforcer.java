@@ -36,7 +36,19 @@ public class PasswordPolicyEnforcer {
         characterRules.add(new CharacterRule(EnglishCharacterData.UpperCase, 2));
         characterRules.add(new CharacterRule(EnglishCharacterData.LowerCase, 2));
         characterRules.add(new CharacterRule(EnglishCharacterData.Digit, 2));
-        characterRules.add(new CharacterRule(EnglishCharacterData.Special, 2));
+
+        CharacterData specialChars = new CharacterData() {
+            public String getErrorCode() {
+                return "Unable to return characters";
+            }
+
+            public String getCharacters() {
+                return "!@#$%^&*()_+";
+            }
+        };
+
+        characterRules.add(new CharacterRule(specialChars, 2));
+
 
         String password = passwordGenerator.generatePassword(8, characterRules);
         validatePassword(password);
