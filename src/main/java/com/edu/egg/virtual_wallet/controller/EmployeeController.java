@@ -84,6 +84,7 @@ public class EmployeeController {
     @PreAuthorize("hasRole('ADMIN')")
     public RedirectView editEmployeeProfile(@RequestParam Integer idEmployee, @ModelAttribute("contact") Contact contact,
                                             @ModelAttribute("name") Name name, @RequestParam String username) throws InputException {
+
         employeeService.editEmployee(idEmployee, contact, name, username);
         return new RedirectView("/workDashboard");
     }

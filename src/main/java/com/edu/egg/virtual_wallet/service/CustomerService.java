@@ -4,6 +4,7 @@ import com.edu.egg.virtual_wallet.entity.Address;
 import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.entity.Customer;
+import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.entity.Payee;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
@@ -57,13 +58,14 @@ public class CustomerService {
             newCustomer.setActive(true);
 
             customerRepository.save(newCustomer);
-
+            accountService.createAccount(CurrencyType.PESO_ARG, customerRepository.findCustomerByDni(newCustomer.getDni()));
             /*emailService.send(
                     newCustomer.getContactInfo().getEmail(),
                     newCustomer.getLoginInfo().getPassword(),
                     newCustomer.getLoginInfo().getUsername());*/
         } catch (Exception e) {
-            throw InputException.NotCreated(customer);
+            throw new InputException(e.getMessage());
+            // throw InputException.NotCreated(customer);
         }
     }
 
@@ -98,7 +100,6 @@ public class CustomerService {
     public void editCustomer(Customer updatedCustomer, Integer idCustomer, Address address,
                              Contact contact, Name name, String username) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
-
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
 
@@ -154,6 +155,7 @@ public class CustomerService {
     }
 
 //    no estoy muy segura que sirva 
+
     @Transactional(rollbackFor = Exception.class)
     public void savePayeeinList(Integer idCustomer, Payee payee) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
@@ -163,11 +165,9 @@ public class CustomerService {
                 Customer customer = (customerRepository.findById(idCustomer)).get();
                 customer.setPayees(payeelist);
                 customerRepository.save(customer);
-
             } catch (Exception e) {
                 throw new InputException(e.getMessage());
             }
-
         }
     }
 

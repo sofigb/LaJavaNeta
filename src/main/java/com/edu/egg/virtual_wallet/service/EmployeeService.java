@@ -1,6 +1,5 @@
 package com.edu.egg.virtual_wallet.service;
 
-
 import com.edu.egg.virtual_wallet.entity.Employee;
 import com.edu.egg.virtual_wallet.exception.InputException;
 
@@ -83,7 +82,7 @@ public class EmployeeService {
                 throw InputException.NotEdited(employee);
             }
         } else {
-                throw InputException.NotFound(employee);
+            throw InputException.NotFound(employee);
         }
     }
 

@@ -1,11 +1,10 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Login;
+
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
-
 import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
-
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
@@ -153,4 +152,17 @@ public class LoginService implements UserDetailsService {
 
         return new User(loginDetails.getUsername(), loginDetails.getPassword(), Collections.singletonList(grantedAuthority));
     }
+/*
+    @Transactional(readOnly = true)
+    public Login returnLogin(Integer idLogin) throws InputException {
+        if (loginRepository.findById(idLogin).isPresent()) {
+            try {
+                return loginRepository.getById(idLogin); // RETURNS NULL VALUES
+            } catch (Exception e) {
+                throw new InputException(e.getMessage());
+            }
+        } else {
+            throw new InputException("Login not found");
+        }
+    }*/
 }

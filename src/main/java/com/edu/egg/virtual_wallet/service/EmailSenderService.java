@@ -13,12 +13,11 @@ public class EmailSenderService {
     @Autowired
     private JavaMailSender sender;
 
-    @Value("sgonzalezbodello@gmail.com")
+    @Value("${EMAIL_USERNAME}")
     private String from;
 
     private static final String SUBJECT = "Correo de bienvenida";
     private static final String TEXT = "Bienvenido a la pagina web de Agus. ";
-
     @Async
     public void send(String to, String password, String username){
         SimpleMailMessage message = new SimpleMailMessage();

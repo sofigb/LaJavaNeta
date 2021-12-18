@@ -30,6 +30,7 @@ public class AuthenticationController {
     @GetMapping("/login")
     public ModelAndView login(@RequestParam(required = false) String error, @RequestParam(required = false) String logout,
                               Principal principal, HttpSession session, Authentication authentication) {
+
         ModelAndView modelAndView = new ModelAndView("login");
 
         // Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
@@ -52,7 +53,7 @@ public class AuthenticationController {
 
     @GetMapping("/register")
     public ModelAndView register() {
-        ModelAndView mav = new ModelAndView("registerCustomer");
+        ModelAndView mav = new ModelAndView("signup");
 
         mav.addObject("customer", new Customer());
         mav.addObject("address", new Address());

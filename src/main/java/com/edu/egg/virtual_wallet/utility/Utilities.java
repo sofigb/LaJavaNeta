@@ -30,6 +30,4 @@ public class Utilities {
 
         return genericAlias.toUpperCase();
     }
-
-
 }

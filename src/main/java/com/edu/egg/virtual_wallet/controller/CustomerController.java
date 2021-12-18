@@ -1,7 +1,9 @@
 package com.edu.egg.virtual_wallet.controller;
 
-import com.edu.egg.virtual_wallet.entity.*;
+import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.exception.InputException;
+import com.edu.egg.virtual_wallet.entity.*;
+import com.edu.egg.virtual_wallet.service.AccountService;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,11 +22,16 @@ public class CustomerController {
     @Autowired
     private CustomerService customerService;
 
+    @Autowired
+    private AccountService accountService;
+
     @GetMapping
     public ModelAndView customerDashboard(HttpSession session) throws InputException {
-        ModelAndView mav = new ModelAndView("myDashboard");
+        ModelAndView mav = new ModelAndView("dashboard");
+
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
-        mav.addObject("customer", customerService.returnCustomer(idCustomer));
+        mav.addObject("accountPeso", accountService.findByCustomerIdCurrency(idCustomer, CurrencyType.PESO_ARG));
+        mav.addObject("accountDollar", accountService.findByCustomerIdCurrency(idCustomer, CurrencyType.DOLLAR));
         return mav;
     }
 

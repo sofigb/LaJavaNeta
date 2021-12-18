@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-
 public class ContactService {
 
     private final String contact = "La información de contacto ";
@@ -20,7 +19,7 @@ public class ContactService {
     @Transactional(rollbackFor = Exception.class)
     public Contact createContact(Contact newContact) throws InputException {
         try {
-            checkContact(newContact.getPhoneNumber(), newContact.getEmail(), true);
+            checkContact(newContact.getPhoneNumber(), newContact.getEmail(),true);
             newContact.setActive(true);
             contactRepository.save(newContact);
             return newContact;
@@ -65,7 +64,7 @@ public class ContactService {
             throw InputException.RepeatedData(email);
         }
 
-        Validation.validPhoneNumberCheck(phoneNumber);
+        //Validation.validPhoneNumberCheck(phoneNumber);
     }
 
     @Transactional(readOnly = true)

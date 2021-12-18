@@ -1,7 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Payee;
-import com.edu.egg.virtual_wallet.exception.MyException;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.PayeeRepository;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import java.util.List;
@@ -25,7 +25,7 @@ public class PayeeService {
     private String message = "No existe ningun contacto asociado con el nombre %s";
 
     @Transactional(rollbackFor = Exception.class)
-    public void create(Payee payee, Integer idCustomer) throws MyException {
+    public void create(Payee payee, Integer idCustomer) throws InputException {
         
         try {
             Payee payees = new Payee();
@@ -36,23 +36,22 @@ public class PayeeService {
             payees.setActive(Boolean.TRUE);
             pRepository.save(payees);
         } catch (Exception e) {
-            throw new MyException(e.getMessage());
+            throw new InputException(e.getMessage());
         }
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void update(Payee payee) throws MyException {
+    public void update(Payee payee) throws InputException {
         try {
-            pRepository.findById(payee.getId()).orElseThrow(() -> new MyException(String.format(message, payee.getId())));
+            pRepository.findById(payee.getId()).orElseThrow(() -> new InputException(String.format(message, payee.getId())));
             Validation.validationName(payee.getName());
             payee.setActive(Boolean.TRUE);
             //VALIDAR FORMATO CUENTA QUE SEAN NUMEROS
             payee.setAccountNumber(payee.getAccountNumber());
             pRepository.save(payee);
         } catch (Exception e) {
-            throw new MyException(e.getMessage());
+            throw new InputException(e.getMessage());
         }
-
     }
 
     @Transactional(readOnly = true)
@@ -68,7 +67,6 @@ public class PayeeService {
     @Transactional(readOnly = true)
     public List<Payee> findByIdAccountList(Long idAccount) {
         return cService.findById(aService.findById(idAccount).getCustomer().getId()).get().getPayees();
-
     }
 
     @Transactional(readOnly = true)

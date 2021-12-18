@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="payee" content="" />
+
+    <title>Login</title>
+  </head>
+
+  <body class="bg-gradient-primary">
+    <!-- <div th:include="/show.html::header" ></div>-->
+
+    <div th:if="${logout}">
+      <div th:text="${logout}"></div>
+    </div>
+
+    <h1 class="h4 text-gray-900 mb-4">Log in to your Account</h1>
+
+    <form
+      autocomplete="off"
+      id="registerForm"
+      class="needs-validation authenticationFormContainer"
+      method="post"
+      novalidate
+      th:action="@{/login/check}"
+    >
+      <div class="form-group row">
+        <div class="col-sm-6 mb-3 mb-sm-0">
+          <label for="username">USERNAME *</label>
+          <input
+            class="col-12 form-control p-3"
+            id="username"
+            required
+            name="username"
+            type="text"
+          />
+          <label for="userPassword">PASSWORD *</label>
+          <input
+            class="col-12 form-control p-3 fw-bold"
+            id="userPassword"
+            required
+            name="password"
+            type="password"
+          />
+        </div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-user btn-block">
+        CONTINUE
+      </button>
+    </form>
+    <a class="button" th:href="@{/register}">JOIN NOW</a>
+  </body>
+</html>
