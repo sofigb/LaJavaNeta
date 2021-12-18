@@ -3,7 +3,6 @@ package com.edu.egg.virtual_wallet.service;
 import com.edu.egg.virtual_wallet.entity.Address;
 
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.AddressRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +16,7 @@ public class AddressService {
     @Autowired
     private AddressRepo addressRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Address createAddress(Address newAddress) throws InputException {
         try {
             newAddress.setActive(true);
@@ -28,7 +27,7 @@ public class AddressService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deactivateAddress(Integer id) throws InputException {
         try {
             addressRepository.deleteById(id);
@@ -37,7 +36,7 @@ public class AddressService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void editAddress(Address updatedAddress, Integer idAddress) throws InputException {
         if (addressRepository.findById(idAddress).isPresent()) {
             try {
@@ -52,15 +51,15 @@ public class AddressService {
     }
 
     @Transactional(readOnly = true)
-    public Address returnAddress(Integer idAddress) throws VirtualWalletException {
+    public Address returnAddress(Integer idAddress) throws InputException {
         if (addressRepository.findById(idAddress).isPresent()) {
             try {
                 return addressRepository.getById(idAddress); // RETURNS NULL VALUES
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new InputException(e.getMessage());
             }
         } else {
-            throw new VirtualWalletException("Address not found");
+            throw new InputException("Address not found");
         }
     }
 }

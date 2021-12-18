@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.FilterInvocation;
 import org.springframework.security.web.access.expression.DefaultWebSecurityExpressionHandler;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
 @Configuration
 @EnableWebSecurity
@@ -34,7 +35,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /********************* ROLE HIERARCHY NEEDS TESTING *********************/
 
-    @Bean
+    /*@Bean
     public RoleHierarchy roleHierarchy() {
         RoleHierarchyImpl roleHierarchy = new RoleHierarchyImpl();
         String hierarchy = "ROLE_ADMIN > ROLE_EMPLOYEE \n ROLE_EMPLOYEE > ROLE_CUSTOMER";
@@ -46,6 +47,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         DefaultWebSecurityExpressionHandler expressionHandler = new DefaultWebSecurityExpressionHandler();
         expressionHandler.setRoleHierarchy(roleHierarchy());
         return expressionHandler;
+    }
+
+            httpSecurity
+                .authorizeRequests()
+                .expressionHandler(webExpressionHandler()) // ROLE HIERARCHY
+                    .antMatchers("/", "/login", "/register", "/register/check", "/css/*", "/images/*","/assets/*").permitAll()
+                    .antMatchers("/**").authenticated() //para poder usar sin login
+    */
+
+    @Bean
+    public AuthenticationSuccessHandler myAuthenticationSuccessHandler() {
+        return new MyAuthenticationSuccessHandler();
     }
 
     /*
@@ -61,7 +74,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity httpSecurity) throws Exception {
         httpSecurity
                 .authorizeRequests()
-                .expressionHandler(webExpressionHandler())
                     .antMatchers("/", "/login", "/register", "/register/check", "/css/*", "/images/*","/assets/*").permitAll()
                     .antMatchers("/**").authenticated() //para poder usar sin login
                 .and()
@@ -70,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .loginProcessingUrl("/login/check") // th:action url - @PostMapping("/login/check")
                         .usernameParameter("username") // Overriding username and password parameters
                         .passwordParameter("password")
-                        .defaultSuccessUrl("/myDashboard", true) // Success URL - Should redirect to Customers profile
+                        .successHandler(myAuthenticationSuccessHandler()) // Success URL - Should redirect to Customers profile
                         .failureUrl("/login?error=true")
                         .permitAll()
                 .and()

@@ -5,10 +5,6 @@ import com.edu.egg.virtual_wallet.entity.Account;
 import com.edu.egg.virtual_wallet.entity.Payee;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.exception.MyException;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 
 import java.time.LocalDate;
 import java.time.Period;
@@ -38,13 +34,13 @@ public class Validation {
         if (balance == null || balance == 0 || balance < amount ) throw MyException.insufficientBalance();
     }
 
-    public static void nullCheck(String userStringInput, String inputName) throws VirtualWalletException {
-        if(userStringInput.trim().isEmpty() || userStringInput == null) throw new VirtualWalletException(inputName + " is a mandatory field");
+    public static void nullCheck(String userStringInput, String inputName) throws InputException {
+        if(userStringInput.trim().isEmpty() || userStringInput == null) throw new InputException(inputName + " is a mandatory field");
     }
-    public static void isLegallyOfAge (LocalDate customerDateOfBirth) throws VirtualWalletException {
+    public static void isLegallyOfAge (LocalDate customerDateOfBirth) throws InputException {
         nullCheck(customerDateOfBirth.toString(), "Date of Birth");
         if (Period.between(customerDateOfBirth, LocalDate.now()).getYears() < 18) {
-            throw new VirtualWalletException("You must be 18 or older to register!");
+            throw new InputException("You must be 18 or older to register!");
         }
     }
     public static void validNameCheck(String userName, String inputName) throws InputException {
@@ -54,27 +50,27 @@ public class Validation {
         }
     }
 
-    public static void validNumberCheck(Integer userNum, String inputName) throws InputException, VirtualWalletException {
+    public static void validNumberCheck(Integer userNum, String inputName) throws InputException {
         nullCheck(userNum.toString(), inputName);
         if (!userNum.toString().trim().matches("^[0-9]+$")) { // .*[0-9].*
             String numberCheck=" del numero de usuario . Recuerde que solo contiene numeros ";
-            throw   InputException.incorrectFormatting(numberCheck);
+            throw InputException.incorrectFormatting(numberCheck);
         }
     }
 
-    public static void validEmailCheck(String userEmail) throws VirtualWalletException, InputException {
+    public static void validEmailCheck(String userEmail) throws InputException {
         nullCheck(userEmail, "Email Address");
         if (!userEmail.trim().matches("^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^.-]+@[a-zA-Z0-9.-]+$")) {
             String email =" del email . Verifique que escribió su dirección de mail correctamente";
-            throw   InputException.incorrectFormatting(email);
+            throw InputException.incorrectFormatting(email);
         }
     }
 
 
-    public static void validPhoneNumberCheck(Long phoneNumber) throws VirtualWalletException, InputException {
+    public static void validPhoneNumberCheck(Long phoneNumber) throws InputException {
         if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
             String PhoneNumber =" del numero de teléfono ";
-            throw  InputException.incorrectFormatting(PhoneNumber);
+            throw InputException.incorrectFormatting(PhoneNumber);
             // if (phoneNumber==null)
 
 //        if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {

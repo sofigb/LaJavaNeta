@@ -2,12 +2,10 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Address;
 import com.edu.egg.virtual_wallet.entity.Contact;
-import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.entity.Payee;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
 import java.util.List;
 import java.util.Optional;
@@ -43,27 +41,33 @@ public class CustomerService {
 
 //    @Autowired
 //    private PayeeService payeeService;
-    @Transactional
 
+    private void checkCustomerDetails() {
+        // validate date of birth + dni
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public void createCustomer(Customer newCustomer, Address address, Contact contact,
-                               Name name, Login login) throws InputException {
+                               Name name, String username) throws InputException {
         try {
             newCustomer.setAddressInfo(addressService.createAddress(address));
             newCustomer.setFullName(nameService.createName(name));
             newCustomer.setContactInfo(contactService.createContact(contact));
-            newCustomer.setLoginInfo(loginService.createLogin(login, "CUSTOMER"));
+            newCustomer.setLoginInfo(loginService.createLogin(username, "CUSTOMER"));
             newCustomer.setActive(true);
 
             customerRepository.save(newCustomer);
-            // emailService.send(newCustomer.getContactInfo().getEmail());
 
+            /*emailService.send(
+                    newCustomer.getContactInfo().getEmail(),
+                    newCustomer.getLoginInfo().getPassword(),
+                    newCustomer.getLoginInfo().getUsername());*/
         } catch (Exception e) {
-            throw new InputException(e.getMessage());
-            // throw InputException.NotCreated(customer);
+            throw InputException.NotCreated(customer);
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deactivateCustomer(Integer idCustomer) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
@@ -90,9 +94,9 @@ public class CustomerService {
     // There should be another method for adding or deleting payees, and a different method for adding or deactivating Customers bank accounts
     // Transfers should be made by AccountService
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void editCustomer(Customer updatedCustomer, Integer idCustomer, Address address,
-                             Contact contact, Name name, String username) throws InputException, VirtualWalletException {
+                             Contact contact, Name name, String username) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
 
             try {
@@ -108,14 +112,14 @@ public class CustomerService {
 
                customerRepository.save(customer);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new InputException(e.getMessage());
             }
         } else {
             throw InputException.NotFound(customer);
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void editCustomerPassword(Integer idCustomer, String currentPassword, String newPassword, String confirmNewPassword) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
@@ -150,8 +154,8 @@ public class CustomerService {
     }
 
 //    no estoy muy segura que sirva 
-    @Transactional
-    public void savePayeeinList(Integer idCustomer, Payee payee) throws VirtualWalletException {
+    @Transactional(rollbackFor = Exception.class)
+    public void savePayeeinList(Integer idCustomer, Payee payee) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 List<Payee> payeelist = ((customerRepository.findById(idCustomer)).get()).getPayees();
@@ -161,7 +165,7 @@ public class CustomerService {
                 customerRepository.save(customer);
 
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new InputException(e.getMessage());
             }
 
         }
@@ -173,8 +177,8 @@ public class CustomerService {
     }
 
     @Transactional(readOnly = true)
-    public Integer findSessionIdCustomer(Integer idLogin) throws VirtualWalletException {
+    public Integer findSessionIdCustomer(Integer idLogin) throws InputException {
         return customerRepository.findCustomerIdByLoginId(idLogin)
-                .orElseThrow(() -> new VirtualWalletException("Current Customer session not found"));
+                .orElseThrow(() -> new InputException("Current Customer session not found"));
     }
 }

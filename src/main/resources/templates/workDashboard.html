@@ -1,5 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
   <head>
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
@@ -14,18 +18,28 @@
   </head>
 
   <body class="bg-gradient-primary">
-    <div th:object="${employee}">
-      <h2 th:text="|Hi ${employee.loginInfo.username}!|"></h2>
-      <h3>FULL NAME:</h3>
-      <p
-        th:text="|${employee.fullName.firstName} ${employee.fullName.middleName} ${employee.fullName.lastName}|"
-      ></p>
-      <h3>CONTACT DETAILS:</h3>
-      <p th:text="|PhoneNumber: ${employee.contactInfo.phoneNumber}|"></p>
-      <p th:text="|EmailAddress: ${employee.contactInfo.email}|"></p>
-    </div>
+    <h2 th:text="|Hi ${username}!|"></h2>
     <br />
-    <a class="button" th:href="@{/myData}">EDIT PROFILE</a>
+    <a class="button" th:href="@{/workDashboard/myData}">MY PROFILE</a>
+    <br />
+    <div sec:authorize="hasRole('EMPLOYEE')">
+      <a class="button" th:href="@{/workDashboard/registerCustomer}"
+        >REGISTER A CLIENT</a
+      >
+      <br />
+      <a class="button" th:href="@{/myData}">EDIT A CLIENT</a>
+      <br />
+    </div>
+    <div sec:authorize="hasRole('ADMIN')">
+      <a class="button" th:href="@{/workDashboard/addEmployee}"
+        >ADD AN EMPLOYEE</a
+      >
+      <br />
+      <a class="button" th:href="@{/workDashboard/myData}"
+        >UPDATE AN EMPLOYEE</a
+      >
+      <br />
+    </div>
     <a class="button" th:href="@{/logout}">LOGOUT</a>
   </body>
 </html>

@@ -2,7 +2,6 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Contact;
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.ContactRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +17,7 @@ public class ContactService {
     @Autowired
     private ContactRepo contactRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Contact createContact(Contact newContact) throws InputException {
         try {
             checkContact(newContact.getPhoneNumber(), newContact.getEmail(), true);
@@ -30,7 +29,7 @@ public class ContactService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deactivateContact(Integer id) throws InputException {
         try {
             contactRepository.deleteById(id);
@@ -39,7 +38,7 @@ public class ContactService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void editContact(Contact updatedContact, Integer idContact) throws InputException {
         if (contactRepository.findById(idContact).isPresent()) {
 
@@ -57,7 +56,7 @@ public class ContactService {
         }
     }
 
-    public void checkContact(Long phoneNumber, String email, boolean newEmailAddress) throws InputException, VirtualWalletException {
+    public void checkContact(Long phoneNumber, String email, boolean newEmailAddress) throws InputException {
         Validation.validEmailCheck(email);
 
         String usedEmail="El email " + email;
@@ -70,15 +69,15 @@ public class ContactService {
     }
 
     @Transactional(readOnly = true)
-    public Contact returnContact(Integer idContact) throws VirtualWalletException {
+    public Contact returnContact(Integer idContact) throws InputException {
         if (contactRepository.findById(idContact).isPresent()) {
             try {
                 return contactRepository.getById(idContact);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new InputException(e.getMessage());
             }
         } else {
-            throw new VirtualWalletException("Contact not found");
+            throw new InputException("Contact not found");
         }
     }
 }

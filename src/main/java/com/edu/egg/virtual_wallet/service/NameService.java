@@ -1,9 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.entity.Name;
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.NameRepo;
 import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +16,7 @@ public class NameService {
     @Autowired
     private NameRepo nameRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Name createName(Name newName) throws InputException {
         try {
             checkName(newName.getFirstName(), newName.getMiddleName(), newName.getLastName());
@@ -30,7 +28,7 @@ public class NameService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deactivateName(Integer id) throws InputException {
         try {
             nameRepository.deleteById(id);
@@ -39,7 +37,7 @@ public class NameService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void editName(Name updatedName, Integer idName) throws InputException {
         if(nameRepository.findById(idName).isPresent()) {
             try {
@@ -54,7 +52,7 @@ public class NameService {
         }
     }
 
-    public void checkName(String firstName, String middleName, String lastName) throws VirtualWalletException, InputException {
+    public void checkName(String firstName, String middleName, String lastName) throws InputException {
         Validation.nullCheck(firstName, "First Name");
         Validation.nullCheck(lastName, "Last Name");
 
@@ -64,15 +62,15 @@ public class NameService {
     }
 
     @Transactional(readOnly = true)
-    public Name returnName(Integer idName) throws VirtualWalletException {
+    public Name returnName(Integer idName) throws InputException {
         if (nameRepository.findById(idName).isPresent()) {
             try {
                 return nameRepository.getById(idName);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new InputException(e.getMessage());
             }
         } else {
-            throw new VirtualWalletException("Name not found");
+            throw new InputException("Name not found");
         }
     }
 }

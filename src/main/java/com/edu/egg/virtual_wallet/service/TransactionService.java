@@ -22,7 +22,7 @@ public class TransactionService {
     @Autowired(required = true)
     private TransactionRepository tRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(Transaction transaction, Long idAccount) throws MyException, Exception {
         try {
             Validation.checkReference(transaction.getReference());

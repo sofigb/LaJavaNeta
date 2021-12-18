@@ -15,7 +15,7 @@
 
   <body class="bg-gradient-primary">
     <form
-      th:action="@{/profile/edit}"
+      th:action="@{__${postPath}__}"
       method="POST"
       class="customer"
       th:object="${customer}"
@@ -128,8 +128,12 @@
     <form method="POST" th:action="@{/profile/delete}">
       <button class="btn btn-dark mt-3" type="submit">DELETE</button>
     </form>
-    <a class="button" th:href="@{/profile/changePassword}">CHANGE PASSWORD</a>
+    <a class="button" th:href="@{/myDashboard/profile/changePassword}"
+      >CHANGE PASSWORD</a
+    >
     <br />
-    <a class="button" th:href="@{/myDashboard}">GO BACK TO DASHBOARD</a>
+    <a class="button" th:href="@{__${defaultDashboardPath}__}"
+      >GO BACK TO DASHBOARD</a
+    >
   </body>
 </html>

@@ -1,6 +1,6 @@
 package com.edu.egg.virtual_wallet.utility;
 
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
+import com.edu.egg.virtual_wallet.exception.InputException;
 import org.passay.*;
 
 import java.util.ArrayList;
@@ -20,16 +20,16 @@ public class PasswordPolicyEnforcer {
         return rules;
     }
 
-    public static void validatePassword(String generatedPassword) throws VirtualWalletException {
+    public static void validatePassword(String generatedPassword) throws InputException {
         PasswordValidator validator = new PasswordValidator(passwordPolicy());
         RuleResult result = validator.validate(new PasswordData(generatedPassword));
 
         if (!result.isValid()) {
-            throw new VirtualWalletException("Invalid password! Hint: Make sure you are complying with the password policy");
+            throw new InputException("Invalid password! Hint: Make sure you are complying with the password policy");
         }
     }
 
-    public static String generatePassword() throws VirtualWalletException{
+    public static String generatePassword() throws InputException {
         PasswordGenerator passwordGenerator = new PasswordGenerator();
 
         List<CharacterRule> characterRules = new ArrayList<>();
@@ -48,7 +48,6 @@ public class PasswordPolicyEnforcer {
         };
 
         characterRules.add(new CharacterRule(specialChars, 2));
-
 
         String password = passwordGenerator.generatePassword(8, characterRules);
         validatePassword(password);

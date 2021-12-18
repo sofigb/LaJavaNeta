@@ -21,7 +21,7 @@ public class AccountService {
         return aRepository.findAll();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void createAccount(CurrencyType currency, Customer customer) {
 
         Account account = new Account();
@@ -43,9 +43,7 @@ public class AccountService {
     @Transactional
     public void updateAlias(String alias, Long id) throws Exception {
 
-
         if (aRepository.existsByAlias(alias)) throw new Exception("Ya existe el alias ingresado");
-
 
         if (alias.trim().isEmpty() || alias == null) throw new Exception("El alias no puede estar vacío");
 
@@ -54,8 +52,6 @@ public class AccountService {
         Account account = aRepository.findById(id).get();
 
         account.setAlias(alias);
-
-
         aRepository.save(account);
     }
 
@@ -69,7 +65,7 @@ public class AccountService {
         aRepository.enableByAccountNumber(accountNumber);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void transaction(Long accountNumber, Double balance) throws Exception {
 
         Account account = aRepository.findById(accountNumber).get();

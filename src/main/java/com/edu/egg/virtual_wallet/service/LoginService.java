@@ -2,7 +2,6 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Login;
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.LoginRepo;
 
 import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
@@ -39,16 +38,17 @@ public class LoginService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @Transactional
-    public Login createLogin(Login newLogin, String role) throws InputException {
+    @Transactional(rollbackFor = Exception.class)
+    public Login createLogin(String username, String role) throws InputException {
         try {
-            if(role.equals("EMPLOYEE")) {
-                newLogin.setPassword(PasswordPolicyEnforcer.generatePassword());
-                System.out.println("PASSWORD");
-                System.out.println(newLogin.getPassword());
-            }
+            Login newLogin = new Login();
 
-            checkLoginDetails(newLogin.getUsername(), newLogin.getPassword());
+            newLogin.setUsername(username);
+            newLogin.setPassword(PasswordPolicyEnforcer.generatePassword());
+            System.out.println("PASSWORD");
+            System.out.println(newLogin.getPassword()); // So that I can log in
+
+            checkUsername(username, true);
 
             newLogin.setPassword(passwordEncoder.encode(newLogin.getPassword()));
             newLogin.setRole(userRoleService.findUserRoleByRoleName(role));
@@ -63,7 +63,7 @@ public class LoginService implements UserDetailsService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deactivateLogin(Integer id) throws InputException {
         try {
             loginRepository.deleteById(id);
@@ -72,12 +72,15 @@ public class LoginService implements UserDetailsService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void editUsername(String username, Integer idLogin) throws InputException {
         if(loginRepository.findById(idLogin).isPresent()) {
             try {
                 Login login = loginRepository.findById(idLogin).get();
-                // login.setId(idLogin);
+
+                boolean newUsername = !username.equals(login.getUsername());
+                checkUsername(username, newUsername);
+
                 login.setUsername(username);
                 loginRepository.save(login);
             } catch (Exception e) {
@@ -88,8 +91,8 @@ public class LoginService implements UserDetailsService {
         }
     }
 
-    @Transactional
-    public void editPassword(Integer idLogin, String currentPassword, String newPassword, String confirmNewPassword) throws VirtualWalletException {
+    @Transactional(rollbackFor = Exception.class)
+    public void editPassword(Integer idLogin, String currentPassword, String newPassword, String confirmNewPassword) throws InputException {
         if(loginRepository.findById(idLogin).isPresent()) {
 
             Login login = loginRepository.findById(idLogin).get();
@@ -100,38 +103,38 @@ public class LoginService implements UserDetailsService {
 
                     //Validation.validPasswordCheck(newPassword);
                     PasswordPolicyEnforcer.validatePassword(newPassword);
+
+                    // Check that password is not the same as old one!
+
                     login.setPassword(passwordEncoder.encode(newPassword));
                     loginRepository.save(login);
 
                 } else {
-                    throw new VirtualWalletException("Confirm new password - Passwords no not match!");
+                    throw new InputException("Confirm new password - Passwords no not match!");
                 }
             } else {
-                throw new VirtualWalletException("Incorrect Password");
+                throw new InputException("Incorrect Password");
            }
         } else {
-            throw new VirtualWalletException("Failed to identify Customers Login details");
+            throw new InputException("Failed to identify Customers Login details");
         }
     }
 
-    public void checkLoginDetails(String username, String password) throws InputException, VirtualWalletException {
+    public void checkUsername(String username, boolean newUsername) throws InputException {
         Validation.nullCheck(username, "Username");
 
-        if (loginRepository.existsLoginByUsername(username)) {
+        if (loginRepository.existsLoginByUsername(username) && newUsername) {
             String user= "El usuario "+ username;
-            //throw new VirtualWalletException("Username '" + username +  "' is already taken");
             throw InputException.RepeatedData(user);
         }
-
-//        Validation.validPasswordCheck(password);
     }
 
     @Transactional(readOnly = true)
-    public String returnUsername(Integer idLogin) throws VirtualWalletException {
+    public String returnUsername(Integer idLogin) throws InputException {
         if (loginRepository.findById(idLogin).isPresent()) {
             return loginRepository.getById(idLogin).getUsername();
         } else {
-            throw new VirtualWalletException("Username not found");
+            throw new InputException("Username not found");
         }
     }
 
@@ -146,6 +149,7 @@ public class LoginService implements UserDetailsService {
         HttpSession session = attributes.getRequest().getSession(true);
 
         session.setAttribute("id", loginDetails.getId());
+        session.setAttribute("username", loginDetails.getUsername());
 
         return new User(loginDetails.getUsername(), loginDetails.getPassword(), Collections.singletonList(grantedAuthority));
     }

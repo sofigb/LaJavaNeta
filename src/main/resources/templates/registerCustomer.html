@@ -110,21 +110,14 @@
           th:value="${contact.email}"
         />
       </div>
-      <h1>LOGIN DETAILS</h1>
-      <div th:object="${login}">
-        <input
-          type="password"
-          class="form-control form-control-user"
-          name="password"
-          placeholder="Constraseña"
-          th:value="${login.password}"
-        />
+      <h1>USERNAME</h1>
+      <div th:object="${username}">
         <input
           type="text"
           class="form-control form-control-user"
           name="username"
           placeholder="Username"
-          th:value="${login.username}"
+          th:value="${username}"
         />
       </div>
       <button type="submit">Register!</button>

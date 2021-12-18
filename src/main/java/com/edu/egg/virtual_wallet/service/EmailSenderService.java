@@ -17,15 +17,25 @@ public class EmailSenderService {
     private String from;
 
     private static final String SUBJECT = "Correo de bienvenida";
-    private static final String TEXT = "Bienvenido a la pagina web de Agus.";
+    private static final String TEXT = "Bienvenido a la pagina web de Agus. ";
 
     @Async
-    public void send(String to){
+    public void send(String to, String password, String username){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setTo(to);
         message.setFrom(from);
         message.setSubject(SUBJECT);
-        message.setText(TEXT);
+        message.setText(TEXT + "Su username es " + username + " y su contraseña es "+ password);
+        sender.send(message);
+    }
+
+    @Async
+    public void sendEspecialEmail(String to, String password, String username){
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(to);
+        message.setFrom(from);
+        message.setSubject(SUBJECT);
+        message.setText("Bienvenido a la empresa! Su username es " + username + " y su contraseña es "+ password);
         sender.send(message);
     }
 }

@@ -6,9 +6,7 @@ import com.edu.egg.virtual_wallet.exception.InputException;
 
 import com.edu.egg.virtual_wallet.entity.*;
 
-import com.edu.egg.virtual_wallet.exception.VirtualWalletException;
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
-import com.edu.egg.virtual_wallet.utility.PasswordPolicyEnforcer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,23 +28,30 @@ public class EmployeeService {
     @Autowired
     private ContactService contactService;
 
-    @Transactional
-    public void createEmployee(Employee newEmployee, Contact contact,Name name,
-                               Login login) throws InputException {
+    @Autowired
+    private EmailSenderService emailService;
+
+    @Transactional(rollbackFor = Exception.class)
+    public void createEmployee(Contact contact, Name name, String username) throws InputException {
         try {
+            Employee newEmployee = new Employee();
+
             newEmployee.setContactInfo(contactService.createContact(contact));
             newEmployee.setFullName(nameService.createName(name));
-            newEmployee.setLoginInfo(loginService.createLogin(login, "EMPLOYEE"));
+            newEmployee.setLoginInfo(loginService.createLogin(username, "EMPLOYEE"));
             newEmployee.setActive(true);
             employeeRepository.save(newEmployee);
 
-            // ADD EMAIL SENDER METHOD
+            /*emailService.sendEspecialEmail(
+                    newEmployee.getContactInfo().getEmail(),
+                    newEmployee.getLoginInfo().getPassword(),
+                    newEmployee.getLoginInfo().getUsername());*/
         } catch (Exception e) {
             throw InputException.NotCreated(employee);
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deactivateEmployee(Integer idEmployee) throws InputException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
@@ -65,18 +70,15 @@ public class EmployeeService {
         }
     }
 
-    @Transactional
-    public void editEmployee(Employee updatedEmployee, Integer idEmployee, Contact contact,
-                             Name name, String username) throws InputException {
-
-        if (employeeRepository.findById(updatedEmployee.getId()).isPresent()) {
+    @Transactional(rollbackFor = Exception.class)
+    public void editEmployee(Integer idEmployee, Contact contact, Name name, String username) throws InputException {
+        if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 nameService.editName(name, employeeRepository.findNameIdByEmployeeId(idEmployee));
                 contactService.editContact(contact, employeeRepository.findContactIdByEmployeeId(idEmployee));
                 loginService.editUsername(username, employeeRepository.findLoginIdByEmployeeId(idEmployee));
 
-                updatedEmployee.setId(idEmployee);
-                employeeRepository.save(updatedEmployee);
+                employeeRepository.save(employeeRepository.findById(idEmployee).get());
             } catch (Exception e) {
                 throw InputException.NotEdited(employee);
             }
@@ -85,16 +87,16 @@ public class EmployeeService {
         }
     }
 
-    @Transactional
-    public void editEmployeePassword(Integer idEmployee, String currentPassword, String newPassword, String confirmNewPassword) throws VirtualWalletException {
+    @Transactional(rollbackFor = Exception.class)
+    public void editEmployeePassword(Integer idEmployee, String currentPassword, String newPassword, String confirmNewPassword) throws InputException {
         if (employeeRepository.findById(idEmployee).isPresent()) {
             try {
                 loginService.editPassword(employeeRepository.findLoginIdByEmployeeId(idEmployee), currentPassword, newPassword, confirmNewPassword);
             } catch (Exception e) {
-                throw new VirtualWalletException(e.getMessage());
+                throw new InputException(e.getMessage());
             }
         } else {
-            throw new VirtualWalletException("Unable to find Employee");
+            throw new InputException("Unable to find Employee");
         }
     }
 
@@ -118,8 +120,8 @@ public class EmployeeService {
     }
 
     @Transactional(readOnly = true)
-    public Integer findSessionIdEmployee(Integer idLogin) throws VirtualWalletException {
+    public Integer findSessionIdEmployee(Integer idLogin) throws InputException {
         return employeeRepository.findEmployeeIdByLoginId(idLogin)
-                .orElseThrow(() -> new VirtualWalletException("Current Employee session not found"));
+                .orElseThrow(() -> new InputException("Current Employee session not found"));
     }
 }

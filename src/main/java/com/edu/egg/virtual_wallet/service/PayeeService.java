@@ -24,7 +24,7 @@ public class PayeeService {
 
     private String message = "No existe ningun contacto asociado con el nombre %s";
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void create(Payee payee, Integer idCustomer) throws MyException {
         
         try {
@@ -40,7 +40,7 @@ public class PayeeService {
         }
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void update(Payee payee) throws MyException {
         try {
             pRepository.findById(payee.getId()).orElseThrow(() -> new MyException(String.format(message, payee.getId())));
@@ -85,12 +85,12 @@ public class PayeeService {
         return pRepository.idCustomer(id);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void active(Integer id) {
         pRepository.active(id);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void deleteById(Integer id) {
         pRepository.deleteById(id);
     }

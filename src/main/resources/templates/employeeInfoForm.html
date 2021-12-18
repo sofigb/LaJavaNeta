@@ -14,12 +14,7 @@
   </head>
 
   <body class="bg-gradient-primary">
-    <form
-      th:action="@{__${postPath}__}"
-      method="POST"
-      class="employee"
-      th:object="${employee}"
-    >
+    <form th:action="@{__${postPath}__}" method="POST" class="employee">
       <div class="form-group row">
         <h1>FULL NAME</h1>
         <div th:object="${name}">
@@ -76,7 +71,7 @@
       </div>
       <button type="submit">SAVE</button>
     </form>
-    <form method="POST" th:action="@{/profile/delete}">
+    <form method="POST" th:action="@{/workDashboard/profile/delete}">
       <button class="btn btn-dark mt-3" type="submit">DELETE</button>
     </form>
     <br />
