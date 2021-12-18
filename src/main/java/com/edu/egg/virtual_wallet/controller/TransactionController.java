@@ -69,7 +69,7 @@ public class TransactionController {
         response.setContentType("application/pdf");
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Transactions"+ ".pdf";
+        String headerValue = "attachment; filename=Transacciones"+ ".pdf";
         response.setHeader(headerKey, headerValue);
 
         List<Transaction> listTransaction= tService.obtainTransactions();

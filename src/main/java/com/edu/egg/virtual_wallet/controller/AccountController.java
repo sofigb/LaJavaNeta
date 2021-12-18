@@ -14,9 +14,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/account")
@@ -85,5 +89,37 @@ public class AccountController {
         aService.active(id);
         return new RedirectView("/myDashboard");
 
+    }
+
+
+    //COSAS DE DANI
+
+    @GetMapping("info/{id}")     // para enviar a back DANIEL MOSTRAR FICHA DE CUENTA
+    public ModelAndView showAccountInfo(@PathVariable Long id, HttpServletRequest request) {
+        ModelAndView mav = new ModelAndView("account-info");
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+
+        if (flashMap != null) {
+            mav.addObject("success", flashMap.get("aliasSuccess"));
+            mav.addObject("error", flashMap.get("aliasError"));
+        }
+
+        mav.addObject("cuentas", aService.accountList());
+        mav.addObject("cuenta", aService.findById(id));
+        return mav;
+    }
+
+
+    @PostMapping("/saveAlias")
+    public RedirectView saveAliasChanges(@ModelAttribute("account") Account account, RedirectAttributes attributes) throws Exception {
+
+        try{
+            aService.updateAlias(account.getAlias(), account.getId());
+            attributes.addFlashAttribute("aliasSuccess", "Alias modificado exitosamente");
+        } catch (Exception e){
+            attributes.addFlashAttribute("aliasError", e.getMessage());
+        }
+
+        return new RedirectView("/account/info/" + account.getId());
     }
 }

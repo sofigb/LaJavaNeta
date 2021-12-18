@@ -43,37 +43,44 @@
 								<hr> 
 								<div class="d-flex justify-content-evenly">
 									<a href="">Depositar</a>
-									<a href="">Retirar</a>
+									<a th:href="@{/account/info/__${accountPeso.id}__}">Cvu/Alias</a>
 									<a th:href="@{/transaction/register/__${accountPeso.id}__}">Transferir</a>
 								</div>
-
-									
 						    </div><!--//app-card-body-->
-
+							
 					    </div><!--//app-card-->
 				    </div><!--//col-->
-			    
-				    <div class="col-12 col-lg-5">
+									
+					<div class="col-12 col-lg-5" th:object="${accountDollar}" th:unless="${accountDollar == null}">
 					    <div class="app-card app-card-stat shadow-sm h-100">
 
-						    <div class="app-card-body p-3 p-lg-4" th:object="${accountDollar}">
-
+						    <div class="app-card-body p-3 p-lg-4">
 							    <h4 class="stats-type mb-1">CUENTA DOLARES</h4>
-								<a class="btn app-btn-secondary" th:unless="${accountDollar != null}" th:href="@{/account/createAccount/}"></a>
-<!--							    <div class="stats-figure" th:text="'$ ' + ${accountDollar.balance}"></div>
-	-->
-								<hr>
-								<div class="">
-									<a href="">Últimos movimientos</a>
-
-
+							    <div class="stats-figure"  th:text="'$ ' + ${accountDollar.balance}"></div>
+								<hr> 
+								<div class="d-flex justify-content-evenly">
+									<a href="">Depositar</a>
+									<a href="">Retirar</a>
+									<a th:href="@{/transaction/register/__${accountDollar.id}__}">Transferir</a>
 								</div>
-							    
 						    </div><!--//app-card-body-->
-						    
+
 					    </div><!--//app-card-->
 				    </div><!--//col-->
-				    
+
+				    <div class="col-12 col-lg-5" th:object="${accountDollar}" th:unless="${accountDollar != null}">
+					    <div class="app-card app-card-stat shadow-sm h-100">
+
+						    <div class="app-card-body p-3 p-lg-4" >
+
+							    <h4 class="stats-type mb-1">CUENTA DOLARES</h4>
+								<hr>
+								<a class="btn app-btn-secondary" th:unless="${accountDollar != null}" th:href="@{/account/createAccount/}">Crear</a>
+								
+							</div><!--//app-card-body-->
+					    </div><!--//app-card-->
+				    </div><!--//col-->
+					
 				    <div class="col-12 col-lg-2">
 					    <div class="app-card app-card-stat shadow-sm h-100">
 						    <div class="app-card-body p-3 p-lg-4">
@@ -87,6 +94,15 @@
 				    </div><!--//col-->
 
 			    </div><!--//row-->
+
+									
+
+			    
+							
+							    
+	
+						    
+				    
 						
 						    
 
