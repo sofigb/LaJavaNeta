@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
@@ -80,5 +81,30 @@ public class PayeeController{
         pService.update(payee);
         return new RedirectView("/payee");
     }
+// dani cosas
+@GetMapping("/myContactList")
+public ModelAndView registerr(HttpSession session) throws InputException {
+    ModelAndView mav = new ModelAndView("payee-list");
 
+    Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+
+    mav.addObject("payeeList", pService.findByCustomerIdList(idCustomer));
+    mav.addObject("payee", new Payee());
+
+    return mav;
+}
+
+    @PostMapping("/createPayee")
+    public RedirectView saveAliasChanges(@ModelAttribute("payee") Payee payee, HttpSession session, RedirectAttributes attributes) throws Exception {
+
+        try{
+            Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+            pService.createDani(payee, idCustomer);
+            // attributes.addFlashAttribute("aliasSuccess", "Alias modificado exitosamente");
+        } catch (Exception e){
+            attributes.addFlashAttribute("aliasError", e.getMessage());
+        }
+
+        return new RedirectView("/payee/myContactList");
+    }
 }

@@ -94,7 +94,7 @@
                         
                         <select name="type" th:field="*{type}">
                          
-                          <option  placeholder="Elije un tipo" th:each="TransactionType : ${T(com.edu.egg.virtual_wallet.enums.TransactionType).values()}"
+                          <option  placeholder="Elige un tipo" th:each="TransactionType : ${T(com.edu.egg.virtual_wallet.enums.TransactionType).values()}"
                                   th:value="${TransactionType}" th:text="${TransactionType}"></option>
                       </select>
                     

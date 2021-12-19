@@ -26,7 +26,7 @@ public class PayeeService {
 
     @Transactional
     public void create(Payee payee, Integer idCustomer) throws InputException {
-        
+
         try {
             Payee payees = new Payee();
             //VALIDAR FORMATO CUENTA QUE SEAN NUMEROS
@@ -90,4 +90,25 @@ public class PayeeService {
     public void deleteById(Integer id) {
         pRepository.deleteById(id);
     }
+
+    @Transactional
+    public void createDani(Payee payee, Integer idCustomer) throws InputException {
+
+        try {
+            //Payee payees = new Payee();
+            //VALIDAR FORMATO CUENTA QUE SEAN NUMEROS
+           // payees.setAccountNumber(payee.getAccountNumber());
+          //  payees.setName(payee.getName());
+            //payees.setActive(Boolean.TRUE);
+            //pRepository.save(payees);
+            Validation.validationName(payee.getName());
+            payee.setActive(Boolean.TRUE);
+            pRepository.save(payee);
+            cService.savePayeeinList(idCustomer,payee);
+        } catch (Exception e) {
+            throw new InputException(e.getMessage());
+        }
+    }
+
+
 }
