@@ -17,8 +17,8 @@ public class EmailSenderService {
     @Value("${USERNAME}")
     private String from;
 
-    private static  String SUBJECT = "Correo de bienvenida";
-    private static  String TEXT = "Bienvenido a la pagina web de Agus.";
+    private static  String SUBJECT = "Bienvenidx a AgroPay";
+    private static  String TEXT = "Hola,nos alegra que te unas a esta familia.Ya hemos creado tu cuenta para que comiences a operar.";
 
     @Async
     public void send(String to){

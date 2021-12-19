@@ -51,7 +51,7 @@ public class TransactionController {
 
     @GetMapping("/register/{idAccount}")
     public ModelAndView register(@PathVariable Long idAccount) {
-        ModelAndView mav = new ModelAndView("registerTransaction");
+        ModelAndView mav = new ModelAndView("transaction-list");
 
         mav.addObject("transaction", new Transaction());
         mav.addObject("payeeList", pService.findByIdAccountList(idAccount));
