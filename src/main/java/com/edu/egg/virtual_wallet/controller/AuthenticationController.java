@@ -27,12 +27,12 @@ public class AuthenticationController {
         // Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
 
         if (error != null) {
-            modelAndView.addObject("error", "Watch out! Invalid username or password");
+            modelAndView.addObject("error", "Usuario o contraseña incorrectos");
         }
 
         if (logout != null) {
             // timestamp
-            modelAndView.addObject("logout", "You've signed out, sorry to see you go.");
+            modelAndView.addObject("logout", "Has salido de AgroPay");
         }
 
         if (principal != null) {
