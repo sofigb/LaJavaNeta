@@ -122,4 +122,12 @@ public class AccountController {
 
         return new RedirectView("/account/info/" + account.getId());
     }
+
+    @GetMapping("/giftNewAccount")
+    public RedirectView giftNewAccount(HttpSession session) throws InputException {
+        Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+        aService.giftNewCustomer(idCustomer);
+        return new RedirectView("/myDashboard");
+
+    }
 }

@@ -2,6 +2,7 @@ package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.Transaction;
 import com.edu.egg.virtual_wallet.entity.TransactionPDFExporter;
+import com.edu.egg.virtual_wallet.enums.TransactionType;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.service.AccountService;
 import com.edu.egg.virtual_wallet.service.CustomerService;
@@ -57,7 +58,7 @@ public class TransactionController {
 
     @PostMapping("/create/{idAccount}")
     public RedirectView create(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
-        tService.create(transaction, idAccount);
+        tService.create(transaction, idAccount , TransactionType.WIRE_TRANSFER);
         return new RedirectView("/myDashboard");
     }
     @GetMapping("/export/pdf")

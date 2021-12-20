@@ -128,4 +128,19 @@ public class AccountService {
 
         return newAccountAlias;
     }
+    //nuevo metodo
+    @Transactional(readOnly = true)
+    public Account findByAccountNumber(Long number) {
+        return aRepository.findByAccountNumber(number);
+    }
+
+    @Transactional
+    public void giftNewCustomer(Integer idCustomer) {
+        Account account=  aRepository.findAllByIdCustomer(idCustomer, CurrencyType.PESO_ARG);
+        if (account.getBalance()== 0D) {
+            account.setBalance(1000D);
+        }
+        aRepository.save(account);
+    }
+
 }

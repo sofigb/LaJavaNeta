@@ -42,7 +42,7 @@
 							    <div class="stats-figure"  th:text="'$ ' + ${accountPeso.balance}"></div>
 								<hr> 
 								<div class="d-flex justify-content-evenly">
-									<a href="">Depositar</a>
+									<a th:href="@{/account/giftNewAccount}">PREMIO CONSUELO</a>
 									<a th:href="@{/account/info/__${accountPeso.id}__}">Cvu/Alias</a>
 									<a th:href="@{/transaction/register/__${accountPeso.id}__}">Transferir</a>
 								</div>

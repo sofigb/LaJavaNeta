@@ -1,5 +1,6 @@
 package com.edu.egg.virtual_wallet.service;
 
+import com.edu.egg.virtual_wallet.entity.Account;
 import com.edu.egg.virtual_wallet.entity.Transaction;
 import com.edu.egg.virtual_wallet.enums.TransactionType;
 import com.edu.egg.virtual_wallet.exception.InputException;
@@ -22,31 +23,40 @@ public class TransactionService {
 
     @Autowired(required = true)
     private TransactionRepository tRepository;
-
     @Transactional
-    public void create(Transaction transaction, Long idAccount) throws InputException {
+    public void create(Transaction transaction, Long idAccount,TransactionType transactionType) throws InputException {
         try {
             Validation.checkReference(transaction.getReference());
             Validation.notNullNegativeAmount(transaction.getAmount());
+
             Transaction transactions = new Transaction();
             transactions.setReference(transaction.getReference());
             transactions.setTimeStamp(LocalDateTime.now());
             transactions.setSenderAccountNumber(aService.findById(idAccount));
             Validation.insufficientBalance(transactions.getSenderAccount().getBalance(), transaction.getAmount());
-
             transactions.setAmount(transaction.getAmount());
             transactions.setPayee(transaction.getPayee());
             transactions.setCurrency(transactions.getSenderAccount().getCurrency());
-            transactions.setType(TransactionType.WIRE_TRANSFER);
-//        Validation.exitsPayee((payeeService.findById(transaction.getPayee().getId())), transaction.getPayee());
-//        Validation.exitsAccount((aService.findByNumber(transaction.getSenderAccount().getNumber())), transaction.getPayee());
+
+            transactions.setType(transactionType);
+
+            Account account =aService.findByAccountNumber(transactions.getPayee().getAccountNumber());
+            Double balance;
 
             switch (transactions.getType()) {
                 case WIRE_TRANSFER:
                     aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() - transactions.getAmount()));
+                    if (account != null) {
+                        balance = account.getBalance()+transactions.getAmount();
+                        aService.transaction(account.getId(), balance);
+                    }
                     break;
                 case DEPOSIT:
                     aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
+                    if ( account != null) {
+                        balance = account.getBalance()+transactions.getAmount();
+                        aService.transaction(account.getId(), balance);
+                    }
                     break;
             }
             tRepository.save(transactions);
@@ -65,5 +75,6 @@ public class TransactionService {
         return tRepository.findAll();
     }
 
+//metodo sofi
 
 }
