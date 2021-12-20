@@ -1,6 +1,7 @@
 package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Transaction;
+import com.edu.egg.virtual_wallet.enums.TransactionType;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.TransactionRepository;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -36,7 +37,7 @@ public class TransactionService {
             transactions.setAmount(transaction.getAmount());
             transactions.setPayee(transaction.getPayee());
             transactions.setCurrency(transactions.getSenderAccount().getCurrency());
-            transactions.setType(transaction.getType());
+            transactions.setType(TransactionType.WIRE_TRANSFER);
 //        Validation.exitsPayee((payeeService.findById(transaction.getPayee().getId())), transaction.getPayee());
 //        Validation.exitsAccount((aService.findByNumber(transaction.getSenderAccount().getNumber())), transaction.getPayee());
 

@@ -13,16 +13,16 @@ public class EmailSenderService {
     @Autowired
     private JavaMailSender sender;
 
-
     @Value("${USERNAME}")
     private String from;
 
-    private static  String SUBJECT = "Bienvenidx a AgroPay";
-    private static  String TEXT = "Hola,nos alegra que te unas a esta familia.Ya hemos creado tu cuenta para que comiences a operar.";
+    private static  String SUBJECT = "Le damos la bienvenida a AgroPay";
+    private static  String SUBTEXT = " ,nos alegra que te unas a esta familia.Ya hemos creado tu cuenta para que comiences a operar.";
 
     @Async
-    public void send(String to){
+    public void send(String to,String name){
         SimpleMailMessage message = new SimpleMailMessage();
+      String TEXT="Hola "+name+SUBTEXT;
         message.setTo(to);
         message.setFrom(from);
         message.setSubject(SUBJECT);
@@ -30,15 +30,5 @@ public class EmailSenderService {
         sender.send(message);
     }
 
-    @Async
-    public void sendEspecialEmail(String to,String password,String name){
-        SimpleMailMessage message = new SimpleMailMessage();
-        TEXT="Bienvenido "+ name +" a la pagina web de virtual wallet. Su correo es " + to + " y su contraseña es "+ password;
-        message.setTo(to);
-        message.setFrom(from);
-        message.setSubject(SUBJECT);
-        message.setText(TEXT);
-        sender.send(message);
-    }
 
 }

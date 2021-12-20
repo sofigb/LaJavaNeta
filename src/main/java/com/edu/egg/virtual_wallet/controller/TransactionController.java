@@ -9,11 +9,7 @@ import com.edu.egg.virtual_wallet.service.PayeeService;
 import com.edu.egg.virtual_wallet.service.TransactionService;
 import com.lowagie.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -59,7 +55,7 @@ public class TransactionController {
         return mav;
     }
 
-    @GetMapping("/create/{idAccount}")
+    @PostMapping("/create/{idAccount}")
     public RedirectView create(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
         tService.create(transaction, idAccount);
         return new RedirectView("/myDashboard");
