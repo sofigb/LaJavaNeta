@@ -41,23 +41,14 @@ public class TransactionService {
 
             transactions.setType(transactionType);
 
-            Account account =aService.findByAccountNumber(transactions.getPayee().getAccountNumber());
-            Double balance;
 
+           
             switch (transactions.getType()) {
                 case WIRE_TRANSFER:
                     aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() - transactions.getAmount()));
-                    if (account != null) {
-                        balance = account.getBalance()+transactions.getAmount();
-                        aService.transaction(account.getId(), balance);
-                    }
                     break;
                 case DEPOSIT:
                     aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
-                    if ( account != null) {
-                        balance = account.getBalance()+transactions.getAmount();
-                        aService.transaction(account.getId(), balance);
-                    }
                     break;
             }
             tRepository.save(transactions);
@@ -70,12 +61,20 @@ public class TransactionService {
     public List<Transaction> showAllByAccountId(Long id) {
         return tRepository.findAllByIdAccount(id);
     }
+     @Transactional(readOnly = true)
+    public List<Transaction> findAllDepositByIdAccount(Long id) {
+        return tRepository.findAllDepositByIdAccount(id);
+    }
+     @Transactional(readOnly = true)
+    public List<Transaction> findAllTransferByIdAccount(Long id) {
+        return tRepository.findAllTransferByIdAccount(id);
+    }
 
     @Transactional(readOnly = true)
     public List<Transaction> obtainTransactions() {
         return tRepository.findAll();
     }
 
-//metodo sofi
+
 
 }
