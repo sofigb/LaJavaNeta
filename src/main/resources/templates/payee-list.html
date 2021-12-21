@@ -134,9 +134,9 @@
 										<td class="cell" th:text="${payee.name}"></td>
 										<td class="cell"><span class="badge bg-success">Realizada</span></td>
 										<td class="cell">
-											<a class="btn-sm app-btn-secondary" href="#"
+											<a class="btn-sm app-btn-secondary" 
 											>Modificar</a>
-											<a class="btn-sm app-btn-secondary" href="#"
+											<a class="btn-sm app-btn-secondary" th:href="@{/payee/delete/__${payee.id}__}"
 											>Eliminar</a>
 
 										</td>

@@ -124,7 +124,7 @@
 				</div>
 
 				<div th:if="${!payeeList.isEmpty()}">
-					<h5 class="stats-label">Contactos frecuentes</h5>
+					<h5 class="stats-label">Tranferencias realizadas</h5>
 				</div>
 
 				<div class="app-card app-card-orders-table shadow-sm mb-5"> <!--th:unless="${payeeList.isEmpty()}"-->
@@ -133,29 +133,27 @@
 							<table class="table app-table-hover mb-0 text-left">
 								<thead>
 									<tr>
-										<th class="cell">Nombre</th>
-										<th class="cell">N° cuenta</th>
-
+										<th class="cell">Número</th>
+                                                                                <th class="cell">Contacto Frecuente</th>
+										<th class="cell">Tipo</th>
+										<th class="cell">Monto</th>
+										<th class="cell">Fecha</th>
 										<th class="cell">Status</th>
-										<th class="cell">Acciones</th>
-
+										<th class="cell">Referencia</th>
+										<th class="cell"></th>
 									</tr>
 								</thead>
 								<tbody>
-									<tr th:each="payee : ${payeeList}">
-										<td class="cell" th:text="'# ' + ${payee.name}"></td>
-										<td class="cell"><span class="truncate">Lorem ipsum dolor sit amet eget volutpat erat</span></td>
-										<td class="cell">John Sanders</td>
-										<td class="cell"><span>17 Oct</span><span class="note">2:16 PM</span></td>
+									<tr th:each="accountTransaction : ${listTransaction}">
+										<td class="cell" th:text="'# ' + ${accountTransaction.id}"></td>
+                                                                                <td class="cell" th:text="${accountTransaction.payee.name}"></td>
+										<td class="cell" th:text="${accountTransaction.type}"></td>
+										<td class="cell" th:text="${accountTransaction.amount}"></td>
+										<td class="cell" th:text="${accountTransaction.timeStamp}"></td>
 										<td class="cell"><span class="badge bg-success">Realizada</span></td>
-										<td class="cell">$259.35</td>
-										<td class="cell">
-											<a class="btn-sm app-btn-secondary" th:href="@{/transaction/export/pdf}"
-											>Modificar</a>
-											<a class="btn-sm app-btn-secondary" th:href="@{/transaction/export/pdf}"
-											>Eliminar</a>
-
-										</td>
+										<td class="cell" th:text="${accountTransaction.reference}"></td>
+										<td class="cell"><a class="btn-sm app-btn-secondary" th:href="@{/transaction/export/pdf/__${cuenta.id}__}"
+										>Ver PDF</a></td>
 									</tr>
 								</tbody>
 							</table>

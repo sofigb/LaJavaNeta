@@ -95,5 +95,22 @@ public class PayeeService {
         }
     }
 
+    @Transactional
+    public Payee createMyPayee(Long idAccount) throws InputException {
+
+        try {
+            Payee payees = new Payee();
+            
+           payees.setAccountNumber(aService.findById(idAccount).getNumber());
+          payees.setName("Mi cuenta en "+aService.findById(idAccount).getCurrency());
+           payees.setActive(Boolean.TRUE);
+           pRepository.save(payees);
+          
+            pRepository.save(payees);
+            return payees;
+        } catch (Exception e) {
+            throw new InputException(e.getMessage());
+        }
+    }
 
 }

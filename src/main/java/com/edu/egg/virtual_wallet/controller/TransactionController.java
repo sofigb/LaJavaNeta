@@ -15,11 +15,11 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
+import org.springframework.stereotype.Controller;
 
-@RestController
+@Controller
 @RequestMapping("/transaction")
 public class TransactionController {
 
@@ -53,45 +53,48 @@ public class TransactionController {
 
         mav.addObject("transaction", new Transaction());
         mav.addObject("payeeList", pService.findByIdAccountList(idAccount));
-        mav.addObject("action", "create/"+idAccount);
+        mav.addObject("listTransaction", tService.findAllTransferByIdAccount(idAccount));
+        mav.addObject("action", "create/" + idAccount);
         return mav;
     }
 
     @PostMapping("/create/{idAccount}")
     public RedirectView create(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
-        tService.create(transaction, idAccount , TransactionType.WIRE_TRANSFER);
+        tService.create(transaction, idAccount, TransactionType.WIRE_TRANSFER);
         return new RedirectView("/myDashboard");
     }
-    //verificar con post sino
+
+   
     @GetMapping("/export/pdf/{idAccount}")
-    public void exportToPDF(HttpServletResponse response,@PathVariable Long idAccount) throws DocumentException, IOException, InputException {
+    public void exportToPDF(HttpServletResponse response, @PathVariable Long idAccount) throws DocumentException, IOException, InputException {
         response.setContentType("application/pdf");
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Transacciones"+ ".pdf";
+        String headerValue = "attachment; filename=Transacciones" + ".pdf";
         response.setHeader(headerKey, headerValue);
 
-        List<Transaction> listTransaction= tService.showAllByAccountId(idAccount);
+        List<Transaction> listTransaction = tService.showAllByAccountId(idAccount);
 
         TransactionPDFExporter exporter = new TransactionPDFExporter(listTransaction);
         exporter.export(response);
 
     }
-/*
+
+    @GetMapping("/registerDep/{idAccount}")
+    public ModelAndView registerDep(@PathVariable Long idAccount) {
+        ModelAndView mav = new ModelAndView("deposit-register");
+        mav.addObject("transaction", new Transaction());
+        mav.addObject("depositTransaction", tService.findAllDepositByIdAccount(idAccount));
+        mav.addObject("action", "create/deposit/" + idAccount);
+        return mav;
+
+    }
+
     @PostMapping("/create/deposit/{idAccount}")
     public RedirectView createDep(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
-        tService.create(transaction, idAccount , TransactionType.DEPOSIT);
+
+        transaction.setPayee(pService.createMyPayee(idAccount));
+        tService.create(transaction, idAccount, TransactionType.DEPOSIT);
         return new RedirectView("/myDashboard");
     }
-
-    @GetMapping("/register/{idAccount}")
-    public ModelAndView registerDep(@PathVariable Long idAccount) {
-        ModelAndView mav = new ModelAndView("transaction-list");
-
-        mav.addObject("transaction", new Transaction());
-        mav.addObject("payeeList", pService.findByIdAccountList(idAccount));
-        mav.addObject("action", "create/"+idAccount);
-        return mav;
-    }
-*/
 }
