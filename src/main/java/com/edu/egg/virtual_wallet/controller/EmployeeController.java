@@ -126,7 +126,7 @@ public class EmployeeController {
         customerService.createCustomer(customer, address, contact, name, login);
         return new RedirectView("/workDashboard");
     }
-    @GetMapping("/cryptoAPI")     
+    @GetMapping("/cryptoAPI")
     public ModelAndView crypto (){
         ModelAndView mav = new ModelAndView("cryptocurrency-quotes");
         return mav;
