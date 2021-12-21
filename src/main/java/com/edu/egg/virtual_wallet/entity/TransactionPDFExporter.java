@@ -2,6 +2,9 @@ package com.edu.egg.virtual_wallet.entity;
 
 import java.awt.Color;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,7 +25,7 @@ public class TransactionPDFExporter {
         cell.setPadding(5);
 
         Font font = FontFactory.getFont(FontFactory.HELVETICA);
-        font.setColor(Color.WHITE);
+        font.setColor(Color.BLACK);
 
         cell.setPhrase(new Phrase("FECHA", font));
         table.addCell(cell);
@@ -44,7 +47,7 @@ public class TransactionPDFExporter {
     private void writeTableData(PdfPTable table) {
         for (Transaction transaction : listTransaction) {
 
-            table.addCell(transaction.getTimeStamp().toString());
+            table.addCell(transaction.getTimeStamp().format(DateTimeFormatter.ofPattern("yyyy/MM/dd")));
 //numero del que envia la transaccion
             table.addCell(transaction.getSenderAccount().getNumber().toString());
 
@@ -64,16 +67,17 @@ public class TransactionPDFExporter {
         document.open();
         Font font = FontFactory.getFont(FontFactory.HELVETICA_BOLD);
         font.setSize(18);
-        font.setColor(Color.BLUE);
+        font.setColor(Color.black);
 
-        Paragraph p = new Paragraph("TRANSACCIONES", font);
+        Paragraph p = new Paragraph("HISTORIAL DE TRANSACCIONES", font);
         p.setAlignment(Paragraph.ALIGN_CENTER);
 
         document.add(p);
 
         PdfPTable table = new PdfPTable(5);
         table.setWidthPercentage(100f);
-        table.setWidths(new float[] {1.5f, 3.5f, 3.0f, 3.0f, 1.5f});
+        table.setWidths(new float[] {2.0f, 3.5f, 3.0f, 3.0f, 1.5f});
+        //1.5f
         table.setSpacingBefore(10);
 
         writeTableHeader(table);

@@ -52,22 +52,25 @@ public class CustomerService {
 
     @Transactional(rollbackFor = Exception.class)
     public void createCustomer(Customer newCustomer, Address address, Contact contact,
-                               Name name, String username) throws InputException {
+                               Name name, Login login) throws InputException {
         try {
             checkCustomerDetails(newCustomer.getDni(), newCustomer.getDateOfBirth(), true);
 
             newCustomer.setAddressInfo(addressService.createAddress(address));
             newCustomer.setFullName(nameService.createName(name));
             newCustomer.setContactInfo(contactService.createContact(contact));
-            newCustomer.setLoginInfo(loginService.createLogin(username, "CUSTOMER"));
+            newCustomer.setLoginInfo(loginService.createLogin(login, "CUSTOMER"));
             newCustomer.setActive(true);
-
             customerRepository.save(newCustomer);
             accountService.createAccount(CurrencyType.PESO_ARG, customerRepository.findCustomerByDni(newCustomer.getDni()));
+
             /*emailService.send(
                     newCustomer.getContactInfo().getEmail(),
                     newCustomer.getLoginInfo().getPassword(),
                     newCustomer.getLoginInfo().getUsername());*/
+
+          //  emailService.send(newCustomer.getContactInfo().getEmail(),newCustomer.getFullName().getFirstName());
+
         } catch (Exception e) {
             throw new InputException(e.getMessage());
             // throw InputException.NotCreated(customer);

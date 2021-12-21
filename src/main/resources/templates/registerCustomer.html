@@ -111,13 +111,20 @@
         />
       </div>
       <h1>USERNAME</h1>
-      <div th:object="${username}">
+      <div th:object="${login}">
         <input
           type="text"
           class="form-control form-control-user"
           name="username"
           placeholder="Username"
-          th:value="${username}"
+          th:value="${login.username}"
+        />
+        <input
+          type="text"
+          class="form-control form-control-user"
+          name="password"
+          placeholder="Password"
+          th:value="${login.password}"
         />
       </div>
       <button type="submit">Register!</button>

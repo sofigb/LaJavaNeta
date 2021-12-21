@@ -1,6 +1,8 @@
 package com.edu.egg.virtual_wallet.service;
 
+import com.edu.egg.virtual_wallet.entity.Account;
 import com.edu.egg.virtual_wallet.entity.Transaction;
+import com.edu.egg.virtual_wallet.enums.TransactionType;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.TransactionRepository;
 import com.edu.egg.virtual_wallet.validation.Validation;
@@ -23,22 +25,21 @@ public class TransactionService {
     private TransactionRepository tRepository;
 
     @Transactional(rollbackFor = Exception.class)
-    public void create(Transaction transaction, Long idAccount) throws InputException {
+    public void create(Transaction transaction, Long idAccount,TransactionType transactionType) throws InputException {
         try {
             Validation.checkReference(transaction.getReference());
             Validation.notNullNegativeAmount(transaction.getAmount());
+
             Transaction transactions = new Transaction();
             transactions.setReference(transaction.getReference());
             transactions.setTimeStamp(LocalDateTime.now());
             transactions.setSenderAccountNumber(aService.findById(idAccount));
             Validation.insufficientBalance(transactions.getSenderAccount().getBalance(), transaction.getAmount());
-
             transactions.setAmount(transaction.getAmount());
             transactions.setPayee(transaction.getPayee());
             transactions.setCurrency(transactions.getSenderAccount().getCurrency());
-            transactions.setType(transaction.getType());
-//        Validation.exitsPayee((payeeService.findById(transaction.getPayee().getId())), transaction.getPayee());
-//        Validation.exitsAccount((aService.findByNumber(transaction.getSenderAccount().getNumber())), transaction.getPayee());
+
+            transactions.setType(transactionType);
 
             switch (transactions.getType()) {
                 case WIRE_TRANSFER:
@@ -57,6 +58,14 @@ public class TransactionService {
     @Transactional(readOnly = true)
     public List<Transaction> showAllByAccountId(Long id) {
         return tRepository.findAllByIdAccount(id);
+    }
+     @Transactional(readOnly = true)
+    public List<Transaction> findAllDepositByIdAccount(Long id) {
+        return tRepository.findAllDepositByIdAccount(id);
+    }
+     @Transactional(readOnly = true)
+    public List<Transaction> findAllTransferByIdAccount(Long id) {
+        return tRepository.findAllTransferByIdAccount(id);
     }
 
     @Transactional(readOnly = true)

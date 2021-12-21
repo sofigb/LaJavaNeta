@@ -14,4 +14,8 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     
     @Query(value = "SELECT * FROM Transaction t WHERE  t.sender_account_id=:id", nativeQuery = true)
     List<Transaction> findAllByIdAccount(@Param("id") Long id);
+       @Query(value = "SELECT * FROM Transaction t WHERE  t.sender_account_id=:id AND t.type=0", nativeQuery = true)
+    List<Transaction> findAllDepositByIdAccount(@Param("id") Long id);
+       @Query(value = "SELECT * FROM Transaction t WHERE  t.sender_account_id=:id AND t.type=1", nativeQuery = true)
+    List<Transaction> findAllTransferByIdAccount(@Param("id") Long id);
 }

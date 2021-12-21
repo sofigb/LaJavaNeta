@@ -24,7 +24,7 @@ public class NameService {
             nameRepository.save(newName);
             return newName;
         } catch (Exception e) {
-            throw InputException.NotCreated(name);
+            throw new InputException(e.getMessage());
         }
     }
 

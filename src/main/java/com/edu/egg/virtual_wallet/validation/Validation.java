@@ -58,7 +58,10 @@ public class Validation {
             String help = ".Recuerde que debe ser mayor a 18 años";
         }
     }
-*/
+
+
+   */
+
     public static void validNameCheck(String userName, String inputName) throws InputException {
         if (userName.trim().matches("^-?[0-9]+$")) { // TODO: Allow all Unicode Characters "\p{L}\p{M}*$"
             String name=" del nombre . Recuerde que solo contiene letras ";
@@ -84,7 +87,7 @@ public class Validation {
     }
 
     public static void validPhoneNumberCheck(Long phoneNumber) throws InputException {
-        if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
+        if (phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
             String PhoneNumber =" del numero de teléfono ";
             throw InputException.incorrectFormatting(PhoneNumber);
             // if (phoneNumber==null)

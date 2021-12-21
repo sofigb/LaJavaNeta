@@ -7,7 +7,6 @@ import com.edu.egg.virtual_wallet.entity.*;
 
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,9 +37,12 @@ public class EmployeeService {
         try {
             Employee newEmployee = new Employee();
 
+            Login login = new Login();
+            login.setUsername(username);
+
             newEmployee.setContactInfo(contactService.createContact(contact));
             newEmployee.setFullName(nameService.createName(name));
-            newEmployee.setLoginInfo(loginService.createLogin(username, "EMPLOYEE"));
+            newEmployee.setLoginInfo(loginService.createLogin(login, "EMPLOYEE"));
             newEmployee.setActive(true);
             employeeRepository.save(newEmployee);
 
@@ -49,7 +51,7 @@ public class EmployeeService {
                     newEmployee.getLoginInfo().getPassword(),
                     newEmployee.getLoginInfo().getUsername());*/
         } catch (Exception e) {
-            throw InputException.NotCreated(employee);
+            throw new InputException(e.getMessage());
         }
     }
 

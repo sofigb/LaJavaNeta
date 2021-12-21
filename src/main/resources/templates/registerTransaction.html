@@ -86,7 +86,6 @@
 
                               <option th:each="payee: ${payeeList}" th:text="|${payee.name}|"
                                      th:value="${payee.id}"  ></option>
-                              </select>
                           </datalist>
 
                       </div>
@@ -94,7 +93,7 @@
                         
                         <select name="type" th:field="*{type}">
                          
-                          <option  placeholder="Elije un tipo" th:each="TransactionType : ${T(com.edu.egg.virtual_wallet.enums.TransactionType).values()}"
+                          <option  placeholder="Elige un tipo" th:each="TransactionType : ${T(com.edu.egg.virtual_wallet.enums.TransactionType).values()}"
                                   th:value="${TransactionType}" th:text="${TransactionType}"></option>
                       </select>
                     
@@ -119,7 +118,7 @@
         </div>
       </div>
     </div>
-
+<a th:href="@{/transaction/export/pdf}">Export to pdf</a>
     <!-- Bootstrap core JavaScript-->
     <script th:src="@{/vendor/jquery/jquery.min.js}"></script>
     <script th:src="@{/vendor/bootstrap/js/bootstrap.bundle.min.js}"></script>

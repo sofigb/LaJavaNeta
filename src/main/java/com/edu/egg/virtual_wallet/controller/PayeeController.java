@@ -1,6 +1,6 @@
 
 package com.edu.egg.virtual_wallet.controller;
-import com.edu.egg.virtual_wallet.entity.Payee;
+import com.edu.egg.virtual_wallet.entity.*;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import com.edu.egg.virtual_wallet.service.PayeeService;
@@ -12,9 +12,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Controller
 @RequestMapping("/payee")
@@ -33,15 +37,6 @@ public class PayeeController{
         mav.addObject("href", "register");
         mav.addObject("title", "a Contactos Frecuentes");
         mav.addObject("title1", "Contactos Frecuentes");
-        return mav;
-    }
-
-    @GetMapping("/register")
-    public ModelAndView register() {
-        ModelAndView mav = new ModelAndView("registerPayee");
-
-        mav.addObject("payee", new Payee());
-        mav.addObject("action", "create");
         return mav;
     }
 
@@ -67,13 +62,6 @@ public class PayeeController{
         return new RedirectView("/payee");
     }
 
-    @PostMapping("/create")
-    public RedirectView create(@ModelAttribute("payee") Payee payee, HttpSession session) throws InputException {
-        Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
-        pService.create(payee, idCustomer);
-        return new RedirectView("/payee");
-    }
-
     @PostMapping("/save")
     public RedirectView saveChanges(@ModelAttribute("payee") Payee payee) throws InputException {
 
@@ -81,4 +69,31 @@ public class PayeeController{
         return new RedirectView("/payee");
     }
 
+    @GetMapping("/myContactList")
+    public ModelAndView registerr(HttpSession session, HttpServletRequest request) throws InputException {
+        ModelAndView mav = new ModelAndView("payee-list");
+        Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+        if(flashMap != null){
+            mav.addObject("error", flashMap.get("error"));
+            mav.addObject("payee", flashMap.get("payee"));
+        }else{
+            mav.addObject("payee", new Payee());
+        }
+        mav.addObject("payeeList", pService.findByCustomerIdList(idCustomer));
+
+        return mav;
+    }
+    @PostMapping("/createPayee")
+    public RedirectView saveAliasChanges(@ModelAttribute("payee") Payee payee, HttpSession session, RedirectAttributes attributes) throws Exception {
+        Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
+        try{
+            pService.createDani(payee, idCustomer);
+        } catch (Exception e){
+            attributes.addFlashAttribute("error", e.getMessage());
+            attributes.addFlashAttribute("payee", payee);
+            return new RedirectView("/payee/myContactList");
+        }
+        return new RedirectView("/payee/myContactList");
+    }
 }

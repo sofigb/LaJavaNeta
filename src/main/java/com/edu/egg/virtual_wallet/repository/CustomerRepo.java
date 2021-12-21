@@ -1,7 +1,6 @@
 package com.edu.egg.virtual_wallet.repository;
 
 import com.edu.egg.virtual_wallet.entity.Customer;
-import com.edu.egg.virtual_wallet.entity.Employee;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

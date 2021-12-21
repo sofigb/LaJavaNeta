@@ -2,6 +2,7 @@ package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.Transaction;
 import com.edu.egg.virtual_wallet.entity.TransactionPDFExporter;
+import com.edu.egg.virtual_wallet.enums.TransactionType;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.service.AccountService;
 import com.edu.egg.virtual_wallet.service.CustomerService;
@@ -9,19 +10,16 @@ import com.edu.egg.virtual_wallet.service.PayeeService;
 import com.edu.egg.virtual_wallet.service.TransactionService;
 import com.lowagie.text.DocumentException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import org.springframework.stereotype.Controller;
 
-@RestController
+@Controller
 @RequestMapping("/transaction")
 public class TransactionController {
 
@@ -51,32 +49,52 @@ public class TransactionController {
 
     @GetMapping("/register/{idAccount}")
     public ModelAndView register(@PathVariable Long idAccount) {
-        ModelAndView mav = new ModelAndView("registerTransaction");
+        ModelAndView mav = new ModelAndView("transaction-list");
 
         mav.addObject("transaction", new Transaction());
         mav.addObject("payeeList", pService.findByIdAccountList(idAccount));
-        mav.addObject("action", "create/"+idAccount);
+        mav.addObject("listTransaction", tService.findAllTransferByIdAccount(idAccount));
+        mav.addObject("action", "create/" + idAccount);
         return mav;
     }
 
-    @GetMapping("/create/{idAccount}")
+    @PostMapping("/create/{idAccount}")
     public RedirectView create(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
-        tService.create(transaction, idAccount);
+        tService.create(transaction, idAccount, TransactionType.WIRE_TRANSFER);
         return new RedirectView("/myDashboard");
     }
-    @GetMapping("/export/pdf")
-    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+
+   
+    @GetMapping("/export/pdf/{idAccount}")
+    public void exportToPDF(HttpServletResponse response, @PathVariable Long idAccount) throws DocumentException, IOException, InputException {
         response.setContentType("application/pdf");
 
         String headerKey = "Content-Disposition";
-        String headerValue = "attachment; filename=Transactions"+ ".pdf";
+        String headerValue = "attachment; filename=Transacciones" + ".pdf";
         response.setHeader(headerKey, headerValue);
 
-        List<Transaction> listTransaction= tService.obtainTransactions();
+        List<Transaction> listTransaction = tService.showAllByAccountId(idAccount);
 
         TransactionPDFExporter exporter = new TransactionPDFExporter(listTransaction);
         exporter.export(response);
 
     }
 
+    @GetMapping("/registerDep/{idAccount}")
+    public ModelAndView registerDep(@PathVariable Long idAccount) {
+        ModelAndView mav = new ModelAndView("deposit-register");
+        mav.addObject("transaction", new Transaction());
+        mav.addObject("depositTransaction", tService.findAllDepositByIdAccount(idAccount));
+        mav.addObject("action", "create/deposit/" + idAccount);
+        return mav;
+
+    }
+
+    @PostMapping("/create/deposit/{idAccount}")
+    public RedirectView createDep(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
+
+        transaction.setPayee(pService.createMyPayee(idAccount));
+        tService.create(transaction, idAccount, TransactionType.DEPOSIT);
+        return new RedirectView("/myDashboard");
+    }
 }

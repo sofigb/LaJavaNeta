@@ -11,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ContactService {
 
-    private final String contact = "La información de contacto ";
+    private final String contact = "la información de contacto ";
 
     @Autowired
     private ContactRepo contactRepository;
@@ -24,7 +24,7 @@ public class ContactService {
             contactRepository.save(newContact);
             return newContact;
         } catch (Exception e) {
-            throw  InputException.NotCreated(contact);
+            throw new InputException(e.getMessage());
         }
     }
 
@@ -63,7 +63,6 @@ public class ContactService {
         if (contactRepository.existsContactByEmail(email) && newEmailAddress) {
             throw InputException.RepeatedData(email);
         }
-
         //Validation.validPhoneNumberCheck(phoneNumber);
     }
 

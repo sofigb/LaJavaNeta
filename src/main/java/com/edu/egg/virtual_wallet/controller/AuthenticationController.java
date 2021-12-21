@@ -1,7 +1,6 @@
 package com.edu.egg.virtual_wallet.controller;
 
 import com.edu.egg.virtual_wallet.entity.*;
-import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.security.MyAuthenticationSuccessHandler;
 import com.edu.egg.virtual_wallet.service.CustomerService;
 import com.edu.egg.virtual_wallet.service.LoginService;
@@ -13,10 +12,14 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.security.Principal;
+import java.util.Map;
 
 @Controller
 public class AuthenticationController {
@@ -36,12 +39,12 @@ public class AuthenticationController {
         // Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
 
         if (error != null) {
-            modelAndView.addObject("error", "Watch out! Invalid username or password");
+            modelAndView.addObject("error", "Usuario o contraseña incorrectos");
         }
 
         if (logout != null) {
             // timestamp
-            modelAndView.addObject("logout", "You've signed out, sorry to see you go.");
+            modelAndView.addObject("logout", "Has salido de AgroPay");
         }
 
         if (principal != null) {
@@ -52,14 +55,26 @@ public class AuthenticationController {
     }
 
     @GetMapping("/register")
-    public ModelAndView register() {
+    public ModelAndView register(HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("signup");
 
-        mav.addObject("customer", new Customer());
-        mav.addObject("address", new Address());
-        mav.addObject("contact", new Contact());
-        mav.addObject("name", new Name());
-        mav.addObject("username", "");
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
+
+        if(flashMap != null){
+            mav.addObject("error", flashMap.get("error"));
+
+            mav.addObject("customer", flashMap.get("customer"));
+            mav.addObject("address",  flashMap.get("address"));
+            mav.addObject("contact",  flashMap.get("contact"));
+            mav.addObject("name",  flashMap.get("name"));
+            mav.addObject("login",  flashMap.get("login"));
+        }else{
+            mav.addObject("customer", new Customer());
+            mav.addObject("address", new Address());
+            mav.addObject("contact", new Contact());
+            mav.addObject("name", new Name());
+            mav.addObject("login", new Login());
+        }
 
         return mav;
     }
@@ -67,8 +82,21 @@ public class AuthenticationController {
     @PostMapping("/register/check")
     public RedirectView checkRegistration(@ModelAttribute("customer") Customer customer, @ModelAttribute("address") Address address,
                                           @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name,
-                                          @RequestParam String username) throws InputException {
-        customerService.createCustomer(customer, address, contact, name, username);
-        return new RedirectView("/login");
+                                          @ModelAttribute("login") Login login, RedirectAttributes attributes) {
+        try {
+            customerService.createCustomer(customer, address, contact, name, login);
+
+            return new RedirectView("/login");
+
+        } catch(Exception e){
+            attributes.addFlashAttribute("error",e.getMessage());
+            attributes.addFlashAttribute("customer",customer);
+            attributes.addFlashAttribute("address",address);
+            attributes.addFlashAttribute("contact",contact);
+            attributes.addFlashAttribute("name",name);
+            attributes.addFlashAttribute("login",login);
+
+            return new RedirectView("/register");
+        }
     }
 }

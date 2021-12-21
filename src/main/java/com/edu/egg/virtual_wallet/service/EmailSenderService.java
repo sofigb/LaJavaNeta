@@ -16,15 +16,17 @@ public class EmailSenderService {
     @Value("${EMAIL_USERNAME}")
     private String from;
 
-    private static final String SUBJECT = "Correo de bienvenida";
-    private static final String TEXT = "Bienvenido a la pagina web de Agus. ";
+    private static  String SUBJECT = "Le damos la bienvenida a AgroPay";
+    private static  String SUBTEXT = ", nos alegra que te unas a esta familia.Ya hemos creado tu cuenta para que comiences a operar.";
+
     @Async
-    public void send(String to, String password, String username){
+    public void send(String to,String name){
         SimpleMailMessage message = new SimpleMailMessage();
+      String TEXT="Hola "+name+SUBTEXT;
         message.setTo(to);
         message.setFrom(from);
         message.setSubject(SUBJECT);
-        message.setText(TEXT + "Su username es " + username + " y su contraseña es "+ password);
+        message.setText(SUBTEXT);
         sender.send(message);
     }
 

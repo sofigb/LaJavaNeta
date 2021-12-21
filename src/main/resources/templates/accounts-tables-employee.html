@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html
+  lang="es"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <!-- Meta -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Billetera virtual" />
+    <meta name="author" content="Grupo 4 Javaneta" />
+
+    <title>Cuentas - AgroPay</title>
+
+    <!-- FontAwesome JS-->
+    <script
+      defer
+      th:src="@{/assets/plugins/fontawesome/js/all.min.js}"
+    ></script>
+
+    <!-- App CSS -->
+    <link
+      id="theme-style"
+      rel="stylesheet"
+      th:href="@{/assets/css/portal.css}"
+    />
+  </head>
+
+  <body class="app">
+    <header th:replace="fragments :: headerAdminEmployee"></header>
+
+    <div class="app-wrapper">
+      <div class="app-content pt-3 p-md-3 p-lg-4">
+        <div class="container-xl">
+          <div class="row g-3 mb-4 align-items-center justify-content-between">
+            <div class="col-auto">
+              <h1 class="app-page-title mb-0">Empleados</h1>
+            </div>
+            <div class="col-auto">
+              <div class="page-utilities">
+                <div
+                  class="
+                    row
+                    g-2
+                    justify-content-start justify-content-md-end
+                    align-items-center
+                  "
+                >
+                  <div class="col-auto">
+                    <form
+                      class="table-search-form row gx-1 align-items-center"
+                      method="POST"
+                      th:action="@{/workDashboard/findEmployee}"
+                      th:object="${searchEmployee}"
+                    >
+                      <div class="col-auto">
+                        <input
+                          type="text"
+                          id="search-orders"
+                          name="searchEmployee"
+                          class="form-control search-orders"
+                          placeholder="search by username or email"
+                          th:value="${searchEmployee}"
+                        />
+                      </div>
+                      <div class="col-auto">
+                        <button type="submit" class="btn app-btn-secondary">
+                          FIND EMPLOYEE
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                  <!--//col-->
+                </div>
+                <!--//row-->
+              </div>
+              <!--//table-utilities-->
+            </div>
+            <!--//col-auto-->
+          </div>
+          <!--//row-->
+
+          <div class="tab-content" id="orders-table-tab-content">
+            <div
+              class="tab-pane fade show active"
+              id="orders-all"
+              role="tabpanel"
+              aria-labelledby="orders-all-tab"
+            >
+              <div class="app-card app-card-orders-table shadow-sm mb-5">
+                <div class="app-card-body">
+                  <div class="table-responsive">
+                    <table
+                      class="table app-table-hover mb-0 text-left"
+                      th:unless="${employees.isEmpty()}"
+                    >
+                      <thead>
+                        <tr>
+                          <th class="cell">Username</th>
+                          <th class="cell">Email</th>
+                          <th class="cell">Acciones</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr th:each="employee : ${employees}">
+                          <td
+                            class="cell"
+                            th:text="${employee.loginInfo.username}"
+                          ></td>
+                          <td
+                            class="cell"
+                            th:text="${employee.contactInfo.email}"
+                          ></td>
+                          <td class="cell" sec:authorize="hasRole('ADMIN')">
+                            <a
+                              class="btn-sm app-btn-secondary"
+                              th:href="@{/workDashboard/employeeData/__${employee.id}__}"
+                              >Modificar</a
+                            >
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                  <!--//table-responsive-->
+                </div>
+                <!--//app-card-body-->
+              </div>
+              <!--//app-card-->
+            </div>
+            <!--//tab-pane-->
+          </div>
+        </div>
+        <!--//container-fluid-->
+      </div>
+      <!--//app-content-->
+
+      <footer class="app-footer">
+        <div class="container text-center py-3"></div>
+      </footer>
+      <!--//app-footer-->
+    </div>
+    <!--//app-wrapper-->
+
+    <!-- Javascript -->
+    <script th:src="@{/assets/plugins/popper.min.js}"></script>
+    <script th:src="@{/assets/plugins/bootstrap/js/bootstrap.min.js}"></script>
+
+    <!-- Page Specific JS -->
+    <script th:src="@{/assets/js/app.js}"></script>
+  </body>
+</html>

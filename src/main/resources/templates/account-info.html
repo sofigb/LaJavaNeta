@@ -48,10 +48,7 @@
                       th:text="'Cuenta Nº: ' + ${cuenta.number}"
                     ></h6>
 
-                    <h6
-                      class="text-start stats-label m-1 text-secondary"
-                      th:text="'Titular: ' + ${cuenta.customer.user.fullName.firstName} + ' ' + ${cuenta.customer.user.fullName.lastName}"
-                    ></h6>
+                    <!--h6 class="text-start stats-label m-1 text-secondary" th:text="'Titular: ' + ${cuenta.customer.user.fullName.firstName} + ' ' + ${cuenta.customer.user.fullName.lastName}"></h6-->
 
                     <h6
                       class="text-start stats-label m-1 text-secondary"
@@ -165,11 +162,11 @@
           </div>
           <!--//row-->
 
-          <div class="mb-1" th:if="${cuenta.transactions.isEmpty()}">
+          <div class="mb-1" th:if="${listT.isEmpty()}">
             <h5 class="stats-label">Esta cuenta no registra operaciones</h5>
           </div>
 
-          <div th:if="${!cuenta.transactions.isEmpty()}">
+          <div th:if="${!listT.isEmpty()}">
             <h5 class="stats-label">Operaciones realizadas</h5>
           </div>
 
@@ -181,6 +178,7 @@
                   <thead>
                     <tr>
                       <th class="cell">Número</th>
+                      <th class="cell">Contacto Frecuente</th>
                       <th class="cell">Tipo</th>
                       <th class="cell">Monto</th>
                       <th class="cell">Fecha</th>
@@ -190,28 +188,38 @@
                     </tr>
                   </thead>
                   <tbody>
-                    <tr th:each="accountTransaction : ${cuentas}">
+                    <tr th:each="accountTransaction : ${listT}">
                       <td
                         class="cell"
-                        th:text="'# ' + ${accountTransaction.number}"
+                        th:text="'# ' + ${accountTransaction.id}"
                       ></td>
-                      <td class="cell">
-                        <span class="truncate"
-                          >Lorem ipsum dolor sit amet eget volutpat erat</span
-                        >
-                      </td>
-                      <td class="cell">John Sanders</td>
-                      <td class="cell">
-                        <span>17 Oct</span><span class="note">2:16 PM</span>
-                      </td>
+                      <td
+                        class="cell"
+                        th:text="${accountTransaction.payee.name}"
+                      ></td>
+                      <td
+                        class="cell"
+                        th:text="${accountTransaction.type}"
+                      ></td>
+                      <td
+                        class="cell"
+                        th:text="${accountTransaction.amount}"
+                      ></td>
+                      <td
+                        class="cell"
+                        th:text="${accountTransaction.timeStamp}"
+                      ></td>
                       <td class="cell">
                         <span class="badge bg-success">Realizada</span>
                       </td>
-                      <td class="cell">$259.35</td>
+                      <td
+                        class="cell"
+                        th:text="${accountTransaction.reference}"
+                      ></td>
                       <td class="cell">
                         <a
                           class="btn-sm app-btn-secondary"
-                          th:href="@{/transaction/export/pdf}"
+                          th:href="@{/transaction/export/pdf/__${cuenta.id}__}"
                           >Ver PDF</a
                         >
                       </td>

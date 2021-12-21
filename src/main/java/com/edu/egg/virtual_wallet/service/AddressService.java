@@ -23,7 +23,7 @@ public class AddressService {
             addressRepository.save(newAddress);
             return newAddress;
         } catch (Exception e) {
-            throw InputException.NotCreated(address);
+            throw  new InputException(e.getMessage());
         }
     }
 

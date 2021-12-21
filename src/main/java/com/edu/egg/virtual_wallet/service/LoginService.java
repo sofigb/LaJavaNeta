@@ -38,16 +38,16 @@ public class LoginService implements UserDetailsService {
     private BCryptPasswordEncoder passwordEncoder;
 
     @Transactional(rollbackFor = Exception.class)
-    public Login createLogin(String username, String role) throws InputException {
+    public Login createLogin(Login newLogin, String role) throws InputException {
         try {
-            Login newLogin = new Login();
+            if(role.equals("EMPLOYEE")) {
+                newLogin.setPassword(PasswordPolicyEnforcer.generatePassword());
+                System.out.println("PASSWORD");
+                System.out.println(newLogin.getPassword());
+            }
 
-            newLogin.setUsername(username);
-            newLogin.setPassword(PasswordPolicyEnforcer.generatePassword());
-            System.out.println("PASSWORD");
-            System.out.println(newLogin.getPassword()); // So that I can log in
-
-            checkUsername(username, true);
+            checkUsername(newLogin.getUsername(), true);
+            PasswordPolicyEnforcer.validatePassword(newLogin.getPassword());
 
             newLogin.setPassword(passwordEncoder.encode(newLogin.getPassword()));
             newLogin.setRole(userRoleService.findUserRoleByRoleName(role));
@@ -58,7 +58,7 @@ public class LoginService implements UserDetailsService {
 
             return newLogin;
         } catch (Exception e) {
-            throw InputException.NotCreated(login);
+            throw new InputException(e.getMessage());
         }
     }
 
@@ -119,7 +119,7 @@ public class LoginService implements UserDetailsService {
         }
     }
 
-    public void checkUsername(String username, boolean newUsername) throws InputException {
+    public void checkUsername(String username,  boolean newUsername) throws InputException {
         Validation.nullCheck(username, "Username");
 
         if (loginRepository.existsLoginByUsername(username) && newUsername) {

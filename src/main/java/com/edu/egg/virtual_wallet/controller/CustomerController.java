@@ -25,6 +25,12 @@ public class CustomerController {
     @Autowired
     private AccountService accountService;
 
+    @GetMapping("/help")
+    public ModelAndView help(){
+        ModelAndView mav = new ModelAndView("help-center");
+        return mav;
+    }
+
     @GetMapping
     public ModelAndView customerDashboard(HttpSession session) throws InputException {
         ModelAndView mav = new ModelAndView("dashboard");
@@ -37,7 +43,7 @@ public class CustomerController {
 
     @GetMapping("/profile")
     public ModelAndView customerProfile(HttpSession session) throws InputException {
-        ModelAndView mav = new ModelAndView("editCustomerProfile");
+        ModelAndView mav = new ModelAndView("editCustomerProfileDana");
 
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
         Customer customer = customerService.returnCustomer(idCustomer);
