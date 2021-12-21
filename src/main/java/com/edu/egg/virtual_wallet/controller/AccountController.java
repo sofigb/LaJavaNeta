@@ -21,8 +21,9 @@ import org.springframework.web.servlet.view.RedirectView;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.Map;
+import org.springframework.stereotype.Controller;
 
-@RestController
+@Controller
 @RequestMapping("/account")
 public class AccountController {
 

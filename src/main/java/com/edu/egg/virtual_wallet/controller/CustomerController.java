@@ -38,6 +38,7 @@ public class CustomerController {
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
         mav.addObject("accountPeso", accountService.findByCustomerIdCurrency(idCustomer, CurrencyType.PESO_ARG));
         mav.addObject("accountDollar", accountService.findByCustomerIdCurrency(idCustomer, CurrencyType.DOLLAR));
+        mav.addObject("username", session.getAttribute("username"));
         return mav;
     }
 
