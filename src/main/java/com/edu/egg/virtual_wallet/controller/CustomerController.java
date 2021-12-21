@@ -45,6 +45,12 @@ public class CustomerController {
         return mav;
     }
 
+    @GetMapping("/help")
+    public ModelAndView help(){
+        ModelAndView mav = new ModelAndView("help-center");
+        return mav;
+    }
+
     @PostMapping("/register/check")
     public RedirectView checkRegistration(@ModelAttribute("customer") Customer customer, @ModelAttribute("address") Address address,
                                           @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name,

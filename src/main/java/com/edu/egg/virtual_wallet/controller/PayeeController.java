@@ -71,7 +71,7 @@ public class PayeeController{
     @PostMapping("/create")
     public RedirectView create(@ModelAttribute("payee") Payee payee, HttpSession session) throws InputException {
         Integer idCustomer = cService.findSessionIdCustomer((Integer) session.getAttribute("id"));
-        pService.create(payee, idCustomer);
+        pService.createDani(payee, idCustomer);
         return new RedirectView("/payee");
     }
 

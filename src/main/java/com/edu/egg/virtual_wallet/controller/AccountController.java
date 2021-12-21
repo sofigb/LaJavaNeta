@@ -6,6 +6,7 @@ import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.service.AccountService;
 import com.edu.egg.virtual_wallet.service.CustomerService;
+import com.edu.egg.virtual_wallet.service.TransactionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -26,6 +27,8 @@ import java.util.Map;
 @RequestMapping("/account")
 public class AccountController {
 
+    @Autowired
+    private TransactionService tService;
     @Autowired
     private AccountService aService;
     @Autowired
@@ -106,6 +109,7 @@ public class AccountController {
 
         mav.addObject("cuentas", aService.accountList());
         mav.addObject("cuenta", aService.findById(id));
+        mav.addObject("listT", tService.showAllByAccountId(id));
         return mav;
     }
 

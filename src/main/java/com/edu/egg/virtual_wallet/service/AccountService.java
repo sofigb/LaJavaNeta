@@ -2,7 +2,9 @@ package com.edu.egg.virtual_wallet.service;
 
 import com.edu.egg.virtual_wallet.entity.Account;
 import com.edu.egg.virtual_wallet.entity.Customer;
+import com.edu.egg.virtual_wallet.entity.Transaction;
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
+import com.edu.egg.virtual_wallet.enums.TransactionType;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.repository.AccountRepository;
 import com.edu.egg.virtual_wallet.utility.Utilities;
@@ -142,5 +144,9 @@ public class AccountService {
         }
         aRepository.save(account);
     }
+
+    //metodo nuevo de sofi, testear
+
+
 
 }

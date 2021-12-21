@@ -24,21 +24,6 @@ public class PayeeService {
 
     private String message = "No existe ningun contacto asociado con el nombre %s";
 
-    @Transactional
-    public void create(Payee payee, Integer idCustomer) throws InputException {
-
-        try {
-            Payee payees = new Payee();
-            //VALIDAR FORMATO CUENTA QUE SEAN NUMEROS
-            payees.setAccountNumber(payee.getAccountNumber());
-            Validation.validationName(payee.getName());
-            payees.setName(payee.getName());
-            payees.setActive(Boolean.TRUE);
-            pRepository.save(payees);
-        } catch (Exception e) {
-            throw new InputException(e.getMessage());
-        }
-    }
 
     @Transactional
     public void update(Payee payee) throws InputException {

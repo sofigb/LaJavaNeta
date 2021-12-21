@@ -15,6 +15,7 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
 
@@ -61,19 +62,36 @@ public class TransactionController {
         tService.create(transaction, idAccount , TransactionType.WIRE_TRANSFER);
         return new RedirectView("/myDashboard");
     }
-    @GetMapping("/export/pdf")
-    public void exportToPDF(HttpServletResponse response) throws DocumentException, IOException {
+    //verificar con post sino
+    @GetMapping("/export/pdf/{idAccount}")
+    public void exportToPDF(HttpServletResponse response,@PathVariable Long idAccount) throws DocumentException, IOException, InputException {
         response.setContentType("application/pdf");
 
         String headerKey = "Content-Disposition";
         String headerValue = "attachment; filename=Transacciones"+ ".pdf";
         response.setHeader(headerKey, headerValue);
 
-        List<Transaction> listTransaction= tService.obtainTransactions();
+        List<Transaction> listTransaction= tService.showAllByAccountId(idAccount);
 
         TransactionPDFExporter exporter = new TransactionPDFExporter(listTransaction);
         exporter.export(response);
 
     }
+/*
+    @PostMapping("/create/deposit/{idAccount}")
+    public RedirectView createDep(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
+        tService.create(transaction, idAccount , TransactionType.DEPOSIT);
+        return new RedirectView("/myDashboard");
+    }
 
+    @GetMapping("/register/{idAccount}")
+    public ModelAndView registerDep(@PathVariable Long idAccount) {
+        ModelAndView mav = new ModelAndView("transaction-list");
+
+        mav.addObject("transaction", new Transaction());
+        mav.addObject("payeeList", pService.findByIdAccountList(idAccount));
+        mav.addObject("action", "create/"+idAccount);
+        return mav;
+    }
+*/
 }
