@@ -7,8 +7,11 @@ import com.edu.egg.virtual_wallet.entity.*;
 
 import com.edu.egg.virtual_wallet.repository.EmployeeRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 public class EmployeeService {
@@ -122,5 +125,27 @@ public class EmployeeService {
     public Integer findSessionIdEmployee(Integer idLogin) throws InputException {
         return employeeRepository.findEmployeeIdByLoginId(idLogin)
                 .orElseThrow(() -> new InputException("Current Employee session not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public Integer searchEmployeeByUsernameOrEmail(String username, String email) throws InputException {
+
+        if (employeeRepository.findEmployeeIdByUsername(username).isPresent()) {
+            return employeeRepository.findEmployeeIdByUsername(username).get();
+        }
+        if (employeeRepository.findEmployeeIdByEmail(email).isPresent()) {
+            return employeeRepository.findEmployeeIdByEmail(email).get();
+        }
+
+        throw new InputException("Employee not found");
+    }
+
+    @Transactional(readOnly = true)
+    public List<Employee> getEmployeeList() throws InputException {
+        try {
+            return employeeRepository.findAllByOrderByActivationDateDesc();
+        } catch ( Exception e){
+            throw new InputException("Unable to retrieve employee list");
+        }
     }
 }

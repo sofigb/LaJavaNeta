@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -23,4 +24,12 @@ public interface EmployeeRepo  extends JpaRepository<Employee, Integer> {
 
     @Query("SELECT e.loginInfo.id FROM Employees e WHERE e.id = :id")
     Integer findLoginIdByEmployeeId(@Param("id") Integer id);
+
+    @Query("SELECT e.id FROM Employees e WHERE e.loginInfo.username = :username")
+    Optional<Integer> findEmployeeIdByUsername(@Param("username") String username);
+
+    @Query("SELECT e.id FROM Employees e WHERE e.contactInfo.email = :email")
+    Optional<Integer> findEmployeeIdByEmail(@Param("email") String email);
+
+    List<Employee> findAllByOrderByActivationDateDesc();
 }

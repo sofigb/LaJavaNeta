@@ -27,7 +27,24 @@
         >REGISTER A CLIENT</a
       >
       <br />
-      <a class="button" th:href="@{/myData}">EDIT A CLIENT</a>
+      <a class="button" th:href="@{/workDashboard/show/customers}"
+        >SHOW ALL CUSTOMERS</a
+      >
+      <br />
+      <form
+        method="POST"
+        th:action="@{/workDashboard/findCustomer}"
+        th:object="${searchCustomer}"
+      >
+        <input
+          type="text"
+          class="form-control form-control-user"
+          name="searchCustomer"
+          placeholder="search by username, email or dni"
+          th:value="${searchCustomer}"
+        />
+        <button class="btn btn-dark mt-3" type="submit">FIND CUSTOMER</button>
+      </form>
       <br />
     </div>
     <div sec:authorize="hasRole('ADMIN')">
@@ -35,9 +52,24 @@
         >ADD AN EMPLOYEE</a
       >
       <br />
-      <a class="button" th:href="@{/workDashboard/myData}"
-        >UPDATE AN EMPLOYEE</a
+      <a class="button" th:href="@{/workDashboard/show/employees}"
+        >SHOW ALL EMPLOYEES</a
       >
+      <br />
+      <form
+        method="POST"
+        th:action="@{/workDashboard/findEmployee}"
+        th:object="${searchEmployee}"
+      >
+        <input
+          type="text"
+          class="form-control form-control-user"
+          name="searchEmployee"
+          placeholder="search by username or email"
+          th:value="${searchEmployee}"
+        />
+        <button class="btn btn-dark mt-3" type="submit">FIND EMPLOYEE</button>
+      </form>
       <br />
     </div>
     <a class="button" th:href="@{/logout}">LOGOUT</a>

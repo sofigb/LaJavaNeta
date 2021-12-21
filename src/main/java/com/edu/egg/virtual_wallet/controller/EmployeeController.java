@@ -48,7 +48,7 @@ public class EmployeeController {
 
     @PostMapping("/addEmployee/check")
     @PreAuthorize("hasRole('ADMIN')")
-    public RedirectView checkEmployeeData(@ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name,
+    public RedirectView checkEmployeeData(@ModelAttribute("contact") Contact contact, @ModelAttribute("name") Name name,
                                           @RequestParam String username) throws InputException {
         employeeService.createEmployee(contact, name, username);
         return new RedirectView("/workDashboard/addEmployee");
@@ -62,7 +62,30 @@ public class EmployeeController {
         return mav;
     }
 
-    // ADD SEARCH FOR CUSTOMER USERNAME + EMAIL + DNI
+    @PostMapping("/findCustomer")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public RedirectView findCustomer(@RequestParam String searchCustomer) { // SEARCH FOR CUSTOMER BY USERNAME + EMAIL + DNI
+        try {
+            Integer idCustomer = customerService.
+                    searchCustomerByUsernameEmailOrDni(searchCustomer, searchCustomer, searchCustomer);
+            return new RedirectView("/workDashboard/updateCustomer/" + idCustomer);
+
+        } catch (InputException e) {
+            return new RedirectView("/workDashboard");
+        }
+    }
+
+    @PostMapping("/findEmployee")
+    @PreAuthorize("hasRole('ADMIN')")
+    public RedirectView findEmployee(@RequestParam String searchEmployee) { // SEARCH FOR EMPLOYEE BY USERNAME + EMAIL
+        try {
+            Integer idEmployee = employeeService.searchEmployeeByUsernameOrEmail(searchEmployee, searchEmployee);
+            return new RedirectView("/workDashboard/employeeData/" + idEmployee);
+
+        } catch (InputException e) {
+            return new RedirectView("/workDashboard");
+        }
+    }
 
     @GetMapping("/employeeData/{idEmployee}")
     @PreAuthorize("hasRole('ADMIN')")
@@ -152,6 +175,7 @@ public class EmployeeController {
         mav.addObject("contact", customer.getContactInfo());
         mav.addObject("name", customer.getFullName());
         mav.addObject("username", customer.getLoginInfo().getUsername());
+        mav.addObject("defaultDashboardPath", "/workDashboard");
 
         return mav;
     }
@@ -165,4 +189,25 @@ public class EmployeeController {
         customerService.editCustomer(customer, idCustomer, address, contact, name, username);
         return new RedirectView("/workDashboard");
     }
+
+    @GetMapping("/show/employees")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ModelAndView showEmployees() throws InputException {
+        ModelAndView mav = new ModelAndView("employeeList");
+        mav.addObject("employees", employeeService.getEmployeeList());
+        return mav;
+    }
+
+    @GetMapping("/show/customers")
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    public ModelAndView showCustomers() throws InputException {
+        ModelAndView mav = new ModelAndView("customerList");
+        mav.addObject("customers", customerService.getCustomerList());
+        return mav;
+    }
+
+    // List Clients
+    // List Employees
+    // List transactions
+    // List Accounts
 }

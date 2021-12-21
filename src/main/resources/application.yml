@@ -38,3 +38,8 @@ logging:
     org:
       springframework:
         web: debug
+hibernate:
+  cache:
+    use_second_level_cache: false
+    region:
+      factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory

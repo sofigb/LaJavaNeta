@@ -1,15 +1,15 @@
 package com.edu.egg.virtual_wallet.service;
 
-import com.edu.egg.virtual_wallet.entity.Address;
-import com.edu.egg.virtual_wallet.entity.Contact;
-import com.edu.egg.virtual_wallet.entity.Name;
-import com.edu.egg.virtual_wallet.entity.Customer;
+import com.edu.egg.virtual_wallet.entity.*;
 import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.exception.InputException;
-import com.edu.egg.virtual_wallet.entity.Payee;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,17 +40,22 @@ public class CustomerService {
     @Autowired
     private AddressService addressService;
 
-//    @Autowired
-//    private PayeeService payeeService;
+    private void checkCustomerDetails(Long dni, LocalDate dateOfBirth, boolean newDni) throws InputException {
+        // Add DNI format Validation
 
-    private void checkCustomerDetails() {
-        // validate date of birth + dni
+        if (customerRepository.existsCustomerByDni(dni) && newDni) {
+            throw InputException.RepeatedData(Long.toString(dni));
+        }
+
+        Validation.isLegallyOfAge(dateOfBirth);
     }
 
     @Transactional(rollbackFor = Exception.class)
     public void createCustomer(Customer newCustomer, Address address, Contact contact,
                                Name name, String username) throws InputException {
         try {
+            checkCustomerDetails(newCustomer.getDni(), newCustomer.getDateOfBirth(), true);
+
             newCustomer.setAddressInfo(addressService.createAddress(address));
             newCustomer.setFullName(nameService.createName(name));
             newCustomer.setContactInfo(contactService.createContact(contact));
@@ -102,6 +107,9 @@ public class CustomerService {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
+
+                boolean newDni = !updatedCustomer.getDni().equals(customer.getDni());
+                checkCustomerDetails(updatedCustomer.getDni(), updatedCustomer.getDateOfBirth(), newDni);
 
                 addressService.editAddress(address, customerRepository.findAddressIdByCustomerId(idCustomer));
                 nameService.editName(name, customerRepository.findNameIdByCustomerId(idCustomer));
@@ -171,6 +179,12 @@ public class CustomerService {
         }
     }
 
+    /*@Transactional(readOnly = true)
+    public Customer showSearchedCustomer(String username, String email, String dni) throws InputException {
+        Integer idCustomer = searchCustomerByUsernameEmailOrDni(username, email, dni);
+        return returnCustomer(idCustomer);
+    }*/
+
     @Transactional(readOnly = true)
     public Optional<Customer> findById(Integer id) {
         return customerRepository.findById(id);
@@ -180,5 +194,29 @@ public class CustomerService {
     public Integer findSessionIdCustomer(Integer idLogin) throws InputException {
         return customerRepository.findCustomerIdByLoginId(idLogin)
                 .orElseThrow(() -> new InputException("Current Customer session not found"));
+    }
+
+    @Transactional(readOnly = true)
+    public Integer searchCustomerByUsernameEmailOrDni(String username, String email, String dni) throws InputException {
+
+        if (customerRepository.findCustomerIdByUsername(username).isPresent()) {
+            return customerRepository.findCustomerIdByUsername(username).get();
+        }
+        if (customerRepository.findCustomerIdByEmail(email).isPresent()) {
+            return customerRepository.findCustomerIdByEmail(email).get();
+        }
+        if (customerRepository.findCustomerIdByDni(Long.parseLong(dni)).isPresent()) {
+            return customerRepository.findCustomerIdByDni(Long.parseLong(dni)).get();
+        }
+        throw new InputException("Customer not found");
+    }
+
+    @Transactional(readOnly = true)
+    public List<Customer> getCustomerList() throws InputException {
+        try {
+            return customerRepository.findAllByOrderByActivationDateDesc();
+        } catch ( Exception e){
+            throw new InputException("Unable to retrieve customer list");
+        }
     }
 }
