@@ -20,9 +20,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.servlet.view.RedirectView;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
 
 @Controller
 public class CustomerController {
@@ -34,29 +38,52 @@ public class CustomerController {
     private AccountService accountService;
 
     @GetMapping("/register")
-    public ModelAndView register() {
+    public ModelAndView register(HttpServletRequest request) {
         ModelAndView mav = new ModelAndView("signup");
-        mav.addObject("customer", new Customer());
-        mav.addObject("address", new Address());
-        mav.addObject("contact", new Contact());
-        mav.addObject("name", new Name());
-        mav.addObject("login", new Login());
+        Map<String, ?> flashMap = RequestContextUtils.getInputFlashMap(request);
 
-        return mav;
-    }
+        if(flashMap != null){
+            mav.addObject("error", flashMap.get("error"));
 
-    @GetMapping("/help")
-    public ModelAndView help(){
-        ModelAndView mav = new ModelAndView("help-center");
+            mav.addObject("customer", flashMap.get("customer"));
+            mav.addObject("address",  flashMap.get("address"));
+            mav.addObject("contact",  flashMap.get("contact"));
+            mav.addObject("name",  flashMap.get("name"));
+            mav.addObject("login",  flashMap.get("login"));
+        }else{
+            mav.addObject("customer", new Customer());
+            mav.addObject("address", new Address());
+            mav.addObject("contact", new Contact());
+            mav.addObject("name", new Name());
+            mav.addObject("login", new Login());
+        }
+
         return mav;
     }
 
     @PostMapping("/register/check")
     public RedirectView checkRegistration(@ModelAttribute("customer") Customer customer, @ModelAttribute("address") Address address,
                                           @ModelAttribute("contact") Contact  contact, @ModelAttribute("name") Name name,
-                                          @ModelAttribute("login") Login login) throws InputException {
-        customerService.createCustomer(customer, address, contact, name, login);
-        return new RedirectView("/login");
+                                          @ModelAttribute("login") Login login, RedirectAttributes attributes) throws InputException {
+        try{
+            customerService.createCustomer(customer, address, contact, name, login);
+            return new RedirectView("/login");
+        }catch(Exception e){
+            attributes.addFlashAttribute("error",e.getMessage());
+            attributes.addFlashAttribute("customer",customer);
+            attributes.addFlashAttribute("address",address);
+            attributes.addFlashAttribute("contact",contact);
+            attributes.addFlashAttribute("name",name);
+            attributes.addFlashAttribute("login",login);
+            return new RedirectView("/register");
+        }
+
+    }
+
+    @GetMapping("/help")
+    public ModelAndView help(){
+        ModelAndView mav = new ModelAndView("help-center");
+        return mav;
     }
 
     @GetMapping("/myDashboard")

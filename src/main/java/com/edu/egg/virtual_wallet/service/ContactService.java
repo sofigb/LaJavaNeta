@@ -12,12 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 
 public class ContactService {
 
-    private final String contact = "La información de contacto ";
+    private final String contact = "la información de contacto ";
 
     @Autowired
     private ContactRepo contactRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Contact createContact(Contact newContact) throws InputException {
         try {
             checkContact(newContact.getPhoneNumber(), newContact.getEmail(),true);
@@ -25,7 +25,7 @@ public class ContactService {
             contactRepository.save(newContact);
             return newContact;
         } catch (Exception e) {
-            throw  InputException.NotCreated(contact);
+            throw new InputException(e.getMessage());
         }
     }
 
@@ -66,7 +66,7 @@ public class ContactService {
             throw InputException.RepeatedData(email);
         }
 
-        Validation.validPhoneNumberCheck(phoneNumber);
+      //  Validation.validPhoneNumberCheck(phoneNumber);
     }
 
     @Transactional(readOnly = true)

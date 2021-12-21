@@ -23,7 +23,8 @@ public class TransactionService {
 
     @Autowired(required = true)
     private TransactionRepository tRepository;
-    @Transactional
+
+    @Transactional(rollbackFor = Exception.class)
     public void create(Transaction transaction, Long idAccount,TransactionType transactionType) throws InputException {
         try {
             Validation.checkReference(transaction.getReference());

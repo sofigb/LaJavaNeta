@@ -17,7 +17,7 @@ public class NameService {
     @Autowired
     private NameRepo nameRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Name createName(Name newName) throws InputException {
         try {
             checkName(newName.getFirstName(), newName.getMiddleName(), newName.getLastName());
@@ -25,7 +25,7 @@ public class NameService {
             nameRepository.save(newName);
             return newName;
         } catch (Exception e) {
-            throw InputException.NotCreated(name);
+            throw new InputException(e.getMessage());
         }
     }
 

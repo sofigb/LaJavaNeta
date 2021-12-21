@@ -37,7 +37,7 @@ public class LoginService implements UserDetailsService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Login createLogin(Login newLogin, String role) throws InputException {
         try {
             if(role.equals("EMPLOYEE")) {
@@ -57,7 +57,7 @@ public class LoginService implements UserDetailsService {
 
             return newLogin;
         } catch (Exception e) {
-            throw InputException.NotCreated(login);
+            throw new InputException(e.getMessage());
         }
     }
 
@@ -122,7 +122,7 @@ public class LoginService implements UserDetailsService {
             throw InputException.RepeatedData(user);
         }
 
-//        Validation.validPasswordCheck(password);
+        Validation.validPasswordCheck(password);
     }
 
     @Transactional(readOnly = true)

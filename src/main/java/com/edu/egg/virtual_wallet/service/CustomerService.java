@@ -9,8 +9,12 @@ import com.edu.egg.virtual_wallet.enums.CurrencyType;
 import com.edu.egg.virtual_wallet.exception.InputException;
 import com.edu.egg.virtual_wallet.entity.Payee;
 import com.edu.egg.virtual_wallet.repository.CustomerRepo;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+
+import com.edu.egg.virtual_wallet.validation.Validation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,16 +47,16 @@ public class CustomerService {
 
 //    @Autowired
 //    private PayeeService payeeService;
-    @Transactional
+@Transactional(rollbackFor = Exception.class)
     public void createCustomer(Customer newCustomer, Address address, Contact contact,
                                Name name, Login login) throws InputException {
         try {
+            checkCustomerDetails(newCustomer.getDni(), newCustomer.getDateOfBirth(), true);
             newCustomer.setAddressInfo(addressService.createAddress(address));
             newCustomer.setFullName(nameService.createName(name));
             newCustomer.setContactInfo(contactService.createContact(contact));
             newCustomer.setLoginInfo(loginService.createLogin(login, "CUSTOMER"));
             newCustomer.setActive(true);
-
             customerRepository.save(newCustomer);
             accountService.createAccount(CurrencyType.PESO_ARG, customerRepository.findCustomerByDni(newCustomer.getDni()));
            emailService.send(newCustomer.getContactInfo().getEmail(),newCustomer.getFullName().getFirstName());
@@ -62,7 +66,15 @@ public class CustomerService {
             // throw InputException.NotCreated(customer);
         }
     }
+    private void checkCustomerDetails(Long dni, LocalDate dateOfBirth, boolean newDni) throws InputException {
+        // Add DNI format Validation
 
+        if (customerRepository.existsCustomerByDni(dni) && newDni) {
+            throw InputException.RepeatedData(Long.toString(dni));
+        }
+
+        Validation.isLegallyOfAge(dateOfBirth);
+    }
     @Transactional
     public void deactivateCustomer(Integer idCustomer) throws InputException {
         if (customerRepository.findById(idCustomer).isPresent()) {
@@ -96,7 +108,8 @@ public class CustomerService {
         if (customerRepository.findById(idCustomer).isPresent()) {
             try {
                 Customer customer = customerRepository.findById(idCustomer).get();
-
+                boolean newDni = !updatedCustomer.getDni().equals(customer.getDni());
+                checkCustomerDetails(updatedCustomer.getDni(), updatedCustomer.getDateOfBirth(), newDni);
                 addressService.editAddress(address, customerRepository.findAddressIdByCustomerId(idCustomer));
                 nameService.editName(name, customerRepository.findNameIdByCustomerId(idCustomer));
                 contactService.editContact(contact, customerRepository.findContactIdByCustomerId(idCustomer));

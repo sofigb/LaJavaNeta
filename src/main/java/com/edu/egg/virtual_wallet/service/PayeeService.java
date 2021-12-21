@@ -76,7 +76,7 @@ public class PayeeService {
         pRepository.deleteById(id);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void createDani(Payee payee, Integer idCustomer) throws InputException {
 
         try {

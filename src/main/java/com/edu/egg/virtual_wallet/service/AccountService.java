@@ -29,7 +29,7 @@ public class AccountService {
         return aRepository.findAllByIdCustomer(id, currency);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void createAccount(CurrencyType currency, Customer customer) {
 
         Account account = new Account();

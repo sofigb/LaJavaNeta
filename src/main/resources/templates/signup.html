@@ -28,10 +28,10 @@
 					
 					<h2 class="auth-heading text-center mb-2">¡Completá tus datos!</h2>	
 
-					<!--div th:text="${error}" class="text-danger"></div--> <!--class="alert alert-danger m-0 shadow"--> <!--RECIBO ERRORES-->
+					 <!--class="alert alert-danger m-0 shadow"--> <!--RECIBO ERRORES-->
 									
 					<div class="auth-form-container text-start mx-auto mt-5">
-
+						<div th:text="${error}" class="text-danger"></div>
 						<form class="auth-form auth-signup-form" method="POST" th:action="@{/register/check}">
 
 							<div class="customer-details p-1" th:object="${customer}">

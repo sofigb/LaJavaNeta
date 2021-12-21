@@ -4,6 +4,9 @@ package com.edu.egg.virtual_wallet.validation;
 
 import com.edu.egg.virtual_wallet.exception.InputException;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 
 public class Validation {
     private final String name=" del nombre .Recuerde que solo puede contener letras ";
@@ -43,7 +46,8 @@ public class Validation {
     public static void nullCheck(String userStringInput, String inputName) throws InputException {
         if(userStringInput.trim().isEmpty() || userStringInput == null) throw new InputException(inputName + " is a mandatory field");
     }
-  /*  public static void isLegallyOfAge (LocalDate customerDateOfBirth) throws InputException {
+
+  public static void isLegallyOfAge (LocalDate customerDateOfBirth) throws InputException {
         nullCheck(customerDateOfBirth.toString(), "Date of Birth");
         if (Period.between(customerDateOfBirth, LocalDate.now()).getYears() < 18) {
             String age = "La edad";
@@ -51,7 +55,7 @@ public class Validation {
             throw  InputException.insufficient(age,help);
         }
     }
-*/
+
     public static void validNameCheck(String userName, String inputName) throws InputException {
         if (userName.trim().matches("^-?[0-9]+$")) { // TODO: Allow all Unicode Characters "\p{L}\p{M}*$"
             String name=" del nombre . Recuerde que solo contiene letras ";
@@ -75,7 +79,7 @@ public class Validation {
     }
 
     public static void validPhoneNumberCheck(Long phoneNumber) throws InputException {
-        if (!phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
+        if (phoneNumber.toString().trim().matches("^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$")) {
             String PhoneNumber =" del numero de teléfono ";
             throw  InputException.incorrectFormatting(PhoneNumber);
         }

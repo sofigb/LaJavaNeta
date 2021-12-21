@@ -29,7 +29,7 @@ public class EmployeeService {
     @Autowired
     private ContactService contactService;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void createEmployee(Employee newEmployee, Contact contact,Name name,
                                Login login) throws InputException {
         try {
@@ -41,7 +41,7 @@ public class EmployeeService {
 
             // ADD EMAIL SENDER METHOD
         } catch (Exception e) {
-            throw InputException.NotCreated(employee);
+            throw new InputException(e.getMessage());
         }
     }
 

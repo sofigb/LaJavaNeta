@@ -16,14 +16,14 @@ public class AddressService {
     @Autowired
     private AddressRepo addressRepository;
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public Address createAddress(Address newAddress) throws InputException {
         try {
             newAddress.setActive(true);
             addressRepository.save(newAddress);
             return newAddress;
         } catch (Exception e) {
-            throw InputException.NotCreated(address);
+            throw  new InputException(e.getMessage());
         }
     }
 

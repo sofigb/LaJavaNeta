@@ -32,4 +32,5 @@ public interface CustomerRepo extends JpaRepository<Customer, Integer> {
     @Query("SELECT c FROM Customers c WHERE c.dni = :dni")
     Customer findCustomerByDni(@Param("dni") Long id);
 
+    boolean existsCustomerByDni(Long dni);
 }
