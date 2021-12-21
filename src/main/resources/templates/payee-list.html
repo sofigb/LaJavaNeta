@@ -54,10 +54,12 @@
 										<button class="btn app-btn-secondary" type="submit">Agregar</button>
 									</form>
 								</div>
+								<div th:text="${error}" class="text-danger"></div>
+								<div th:text="${success}" class="text-success"></div>
 
-								<div class="text-start text-success m-1" th:if="${success != null}" th:text="${success}"></div>
+							<!--	<div class="text-start text-success m-1" th:if="${success != null}" th:text="${success}"></div>
 								<div class="text-start text-danger m-1" th:if="${error != null}" th:text="${error}"></div>
-
+-->
 						    </div><!--//app-card-body-->
 					    </div><!--//app-card-->
 				    </div><!--//col-->
