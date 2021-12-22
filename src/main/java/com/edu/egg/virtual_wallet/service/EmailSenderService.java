@@ -13,7 +13,7 @@ public class EmailSenderService {
     @Autowired
     private JavaMailSender sender;
 
-    @Value("${EMAIL_USERNAME}")
+    @Value("AgroPayCompany@gmail.com")
     private String from;
 
     private static  String SUBJECT = "Le damos la bienvenida a AgroPay";

@@ -25,7 +25,7 @@ public class TransactionService {
     private TransactionRepository tRepository;
 
     @Transactional(rollbackFor = Exception.class)
-    public void create(Transaction transaction, Long idAccount,TransactionType transactionType) throws InputException {
+    public void create(Transaction transaction, Long idAccount, TransactionType transactionType) throws InputException {
         try {
             Validation.checkReference(transaction.getReference());
             Validation.notNullNegativeAmount(transaction.getAmount());
@@ -40,13 +40,25 @@ public class TransactionService {
             transactions.setCurrency(transactions.getSenderAccount().getCurrency());
 
             transactions.setType(transactionType);
+            Account account = aService.findByAccountNumber(transactions.getPayee().getAccountNumber());
+            Double balance;
 
             switch (transactions.getType()) {
                 case WIRE_TRANSFER:
                     aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() - transactions.getAmount()));
+                    if (account != null) {
+                        balance = account.getBalance() + transactions.getAmount();
+                        aService.transaction(account.getId(), balance);
+                    }
+
                     break;
                 case DEPOSIT:
                     aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
+
+                    if (account != null) {
+                        balance = account.getBalance() + transactions.getAmount();
+                        aService.transaction(account.getId(), balance);
+                    }
                     break;
             }
             tRepository.save(transactions);
@@ -59,11 +71,13 @@ public class TransactionService {
     public List<Transaction> showAllByAccountId(Long id) {
         return tRepository.findAllByIdAccount(id);
     }
-     @Transactional(readOnly = true)
+
+    @Transactional(readOnly = true)
     public List<Transaction> findAllDepositByIdAccount(Long id) {
         return tRepository.findAllDepositByIdAccount(id);
     }
-     @Transactional(readOnly = true)
+
+    @Transactional(readOnly = true)
     public List<Transaction> findAllTransferByIdAccount(Long id) {
         return tRepository.findAllTransferByIdAccount(id);
     }
