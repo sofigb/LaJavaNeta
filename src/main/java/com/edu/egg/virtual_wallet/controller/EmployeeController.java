@@ -27,10 +27,25 @@ public class EmployeeController {
     @GetMapping("/myData") // IF THE EMPLOYEE HAS ADMIN ROLE, THIS CONTROLLER DOES NOT WORK
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
     public ModelAndView myData(HttpSession session) throws InputException {
-        ModelAndView mav = new ModelAndView("employeeData");
+        ModelAndView mav = new ModelAndView("editEmployeeProfile");
         Integer idEmployee = employeeService.findSessionIdEmployee((Integer) session.getAttribute("id"));
-        mav.addObject("employee", employeeService.returnEmployee(idEmployee));
+        Employee employee =  employeeService.returnEmployee(idEmployee);
+
+        mav.addObject("postPath", "/workDashboard/myData/edit");
+        mav.addObject("employee", employee);
+        mav.addObject("contact", employee.getContactInfo());
+        mav.addObject("name", employee.getFullName());
+        mav.addObject("username", employee.getLoginInfo().getUsername());
         return mav;
+    }
+
+    @PostMapping("/myData/edit")
+    public RedirectView editCustomerProfile(@ModelAttribute("contact") Contact contact, @ModelAttribute("name") Name name,
+                                            @RequestParam String username, HttpSession session) throws InputException {
+
+        Integer idEmployee = employeeService.findSessionIdEmployee((Integer) session.getAttribute("id"));
+        employeeService.editEmployee(idEmployee, contact, name, username);
+        return new RedirectView("/workDashboard");
     }
 
     @GetMapping("/addEmployee")
@@ -39,7 +54,7 @@ public class EmployeeController {
         ModelAndView mav = new ModelAndView("editEmployeeProfile");
 
         mav.addObject("postPath", "/workDashboard/addEmployee/check");
-        mav.addObject("id", null);
+        mav.addObject("employee", new Employee());
         mav.addObject("contact", new Contact());
         mav.addObject("name", new Name());
         mav.addObject("username", "");
@@ -57,10 +72,10 @@ public class EmployeeController {
 
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','EMPLOYEE')")
-    public ModelAndView employeeDashboard(HttpSession session)  {
-        ModelAndView mav = new ModelAndView("dashboard-employee");
-        mav.addObject("username", session.getAttribute("username"));
-        return mav;
+    public ModelAndView employeeDashboard(HttpSession session) {
+            ModelAndView mav = new ModelAndView("dashboard-employee");
+            mav.addObject("username", session.getAttribute("username"));
+            return mav;
     }
 
     @PostMapping("/findCustomer")
@@ -96,7 +111,7 @@ public class EmployeeController {
         Employee employee = employeeService.returnEmployee(id);
 
         mav.addObject("postPath", "/workDashboard/employeeData/edit");
-        mav.addObject("id", employee.getId());
+        mav.addObject("employee", employee);
         mav.addObject("contact", employee.getContactInfo());
         mav.addObject("name", employee.getFullName());
         mav.addObject("username", employee.getLoginInfo().getUsername());
@@ -110,7 +125,7 @@ public class EmployeeController {
                                             @ModelAttribute("name") Name name, @RequestParam String username) throws InputException {
 
         employeeService.editEmployee(id, contact, name, username);
-        return new RedirectView("/show/employees");
+        return new RedirectView("/workDashboard/show/employees");
     }
 
     @GetMapping("/myData/changePassword")
@@ -160,7 +175,7 @@ public class EmployeeController {
                                         @ModelAttribute("login") Login login) throws InputException {
 
         customerService.createCustomer(customer, address, contact, name, login);
-        return new RedirectView("/workDashboard");
+        return new RedirectView("/workDashboard/show/customers");
     }
 
     @GetMapping("/updateCustomer/{id}")
@@ -194,22 +209,21 @@ public class EmployeeController {
     @GetMapping("/show/employees")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView showEmployees() throws InputException {
+        try {
         ModelAndView mav = new ModelAndView("employeeChart");
         mav.addObject("employees", employeeService.getEmployeeList());
         return mav;
+    } catch (Exception e) {
+        throw new InputException(e.getMessage());
+    }
     }
 
     @GetMapping("/show/customers")
     @PreAuthorize("hasRole('EMPLOYEE')")
     public ModelAndView showCustomers() throws InputException {
+
         ModelAndView mav = new ModelAndView("customerChart");
         mav.addObject("customers", customerService.getCustomerList());
-        return mav;
-    }
-
-    @GetMapping("/cryptoAPI") // Preguntar a dani
-    public ModelAndView crypto (){
-        ModelAndView mav = new ModelAndView("cryptocurrency-quotes");
         return mav;
     }
 }

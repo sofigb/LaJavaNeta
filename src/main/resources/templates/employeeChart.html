@@ -12,7 +12,7 @@
     <meta name="description" content="Billetera virtual" />
     <meta name="author" content="Grupo 4 Javaneta" />
 
-    <title>Cuentas - AgroPay</title>
+    <title>Employees - AgroPay</title>
 
     <!-- FontAwesome JS-->
     <script
@@ -29,7 +29,7 @@
   </head>
 
   <body class="app">
-    <header th:replace="fragments :: headerAdminEmployee"></header>
+    <header th:replace="fragmentsEmployee :: headerAdminEmployee"></header>
 
     <div class="app-wrapper">
       <div class="app-content pt-3 p-md-3 p-lg-4">
@@ -91,11 +91,14 @@
             >
               <div class="app-card app-card-orders-table shadow-sm mb-5">
                 <div class="app-card-body">
-                  <div class="table-responsive">
-                    <table
-                      class="table app-table-hover mb-0 text-left"
-                      th:unless="${employees.isEmpty()}"
-                    >
+                  <div th:if="${employees.isEmpty()}">
+                    No se encuentran empleados registrados
+                  </div>
+                  <div
+                    class="table-responsive"
+                    th:unless="${employees.isEmpty()}"
+                  >
+                    <table class="table app-table-hover mb-0 text-left">
                       <thead>
                         <tr>
                           <th class="cell">Username</th>

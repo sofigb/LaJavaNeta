@@ -84,23 +84,25 @@
                         required
                       />
 
-                      <div class="col-sm-6 mb-3 mb-sm-0 mb-3">
-                        <select
-                          class="form-control form-control-user"
-                          th:field="*{payee}"
-                          required
+                      <select
+                        class="form-control form-control-user"
+                        th:field="*{payee}"
+                        required
+                      >
+                        <option
+                          selected
+                          disabled
+                          value="Elige contacto frecuente..."
                         >
-                          <option selected disabled value="">
-                            Elige contacto frecuente...
-                          </option>
-                          <option
-                            id="payee"
-                            th:each="payee: ${payeeList}"
-                            th:text="${payee.name}"
-                            th:value="${payee.id}"
-                          ></option>
-                        </select>
-                      </div>
+                          Elige contacto frecuente...
+                        </option>
+                        <option
+                          id="payee"
+                          th:each="payee: ${payeeList}"
+                          th:text="${payee.name}"
+                          th:value="${payee.id}"
+                        ></option>
+                      </select>
 
                       <button class="btn app-btn-secondary mt-3" type="submit">
                         Transferir
@@ -237,13 +239,13 @@
                         class="cell"
                         th:text="${accountTransaction.reference}"
                       ></td>
-                      <!--<td class="cell">
+                      <td class="cell">
                         <a
                           class="btn-sm app-btn-secondary"
-                          th:href="@{/transaction/export/pdf/__${cuenta.id}__}"
+                          th:href="@{/transaction/export/pdf/__${accountTransaction.senderAccount.id}__}"
                           >Ver PDF</a
                         >
-                      </td>-->
+                      </td>
                     </tr>
                   </tbody>
                 </table>

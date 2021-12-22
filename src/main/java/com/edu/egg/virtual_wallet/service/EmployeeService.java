@@ -46,10 +46,10 @@ public class EmployeeService {
             newEmployee.setActive(true);
             employeeRepository.save(newEmployee);
 
-            /*emailService.sendEspecialEmail(
+            emailService.sendEspecialEmail(
                     newEmployee.getContactInfo().getEmail(),
                     newEmployee.getLoginInfo().getPassword(),
-                    newEmployee.getLoginInfo().getUsername());*/
+                    newEmployee.getLoginInfo().getUsername());
         } catch (Exception e) {
             throw new InputException(e.getMessage());
         }

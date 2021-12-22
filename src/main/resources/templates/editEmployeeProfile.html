@@ -29,22 +29,16 @@
   </head>
 
   <body class="app">
-    <header
-      sec:authorize="hasRole('CUSTOMER')"
-      th:replace="fragments :: header"
-    ></header>
-    <header
-      sec:authorize="hasRole('EMPLOYEE')"
-      th:replace="fragments :: headerAdminEmployee"
-    ></header>
-    <header
-      sec:authorize="hasRole('ADMIN')"
-      th:replace="fragments :: headerAdminEmployee"
-    ></header>
+    <header th:replace="fragmentsEmployee :: headerAdminEmployee"></header>
 
     <div class="app-wrapper">
-      <form th:action="@{__${postPath}__}" method="POST" class="employee">
-        <input type="hidden" th:value="${id}" />
+      <form
+        th:action="@{__${postPath}__}"
+        method="POST"
+        class="employee"
+        th:object="${employee}"
+      >
+        <input type="hidden" th:field="*{id}" />
         <div class="app-content pt-3 p-md-3 p-lg-4 form-group">
           <div class="container-xl">
             <h1 class="app-page-title" sec:authorize="hasRole('CUSTOMER')">

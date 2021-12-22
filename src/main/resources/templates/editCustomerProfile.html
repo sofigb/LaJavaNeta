@@ -35,11 +35,11 @@
     ></header>
     <header
       sec:authorize="hasRole('EMPLOYEE')"
-      th:replace="fragments :: headerAdminEmployee"
+      th:replace="fragmentsEmployee :: headerAdminEmployee"
     ></header>
     <header
       sec:authorize="hasRole('ADMIN')"
-      th:replace="fragments :: headerAdminEmployee"
+      th:replace="fragmentsEmployee :: headerAdminEmployee"
     ></header>
 
     <div class="app-wrapper">

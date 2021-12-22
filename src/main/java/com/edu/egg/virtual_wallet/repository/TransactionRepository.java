@@ -2,6 +2,7 @@
 package com.edu.egg.virtual_wallet.repository;
 
 import com.edu.egg.virtual_wallet.entity.Account;
+import com.edu.egg.virtual_wallet.entity.Customer;
 import com.edu.egg.virtual_wallet.entity.Transaction;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,6 +17,6 @@ public interface TransactionRepository extends JpaRepository<Transaction, Intege
     List<Transaction> findAllByIdAccount(@Param("id") Long id);
        @Query(value = "SELECT * FROM Transaction t WHERE  t.sender_account_id=:id AND t.type=0", nativeQuery = true)
     List<Transaction> findAllDepositByIdAccount(@Param("id") Long id);
-       @Query(value = "SELECT * FROM Transaction t WHERE  t.sender_account_id=:id AND t.type=1", nativeQuery = true)
+       @Query(value = "SELECT * FROM Transaction t WHERE t.sender_account_id=:id AND t.type=1 ORDER BY t.time_stamp DESC", nativeQuery = true)
     List<Transaction> findAllTransferByIdAccount(@Param("id") Long id);
 }

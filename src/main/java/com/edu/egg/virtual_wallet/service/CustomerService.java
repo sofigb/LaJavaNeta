@@ -65,12 +65,7 @@ public class CustomerService {
             customerRepository.save(newCustomer);
             accountService.createAccount(CurrencyType.PESO_ARG, customerRepository.findCustomerByDni(newCustomer.getDni()));
 
-            /*emailService.send(
-                    newCustomer.getContactInfo().getEmail(),
-                    newCustomer.getLoginInfo().getPassword(),
-                    newCustomer.getLoginInfo().getUsername());*/
-
-          //  emailService.send(newCustomer.getContactInfo().getEmail(),newCustomer.getFullName().getFirstName());
+            emailService.send(newCustomer.getContactInfo().getEmail(),newCustomer.getFullName().getFirstName());
 
         } catch (Exception e) {
             throw new InputException(e.getMessage());

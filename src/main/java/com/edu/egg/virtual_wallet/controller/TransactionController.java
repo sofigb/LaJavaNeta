@@ -61,7 +61,7 @@ public class TransactionController {
     @PostMapping("/create/{idAccount}")
     public RedirectView create(@ModelAttribute("transaction") Transaction transaction, @PathVariable Long idAccount) throws InputException {
         tService.create(transaction, idAccount, TransactionType.WIRE_TRANSFER);
-        return new RedirectView("/myDashboard");
+        return new RedirectView("/transaction/register/" + idAccount);
     }
 
    
