@@ -99,4 +99,10 @@ public class CustomerController {
         customerService.editCustomerPassword(idCustomer, currentPassword, newPassword, confirmNewPassword);
         return new RedirectView("/myDashboard/profile");
     }
+
+    @GetMapping("/cryptoAPI") // Preguntar a dani
+    public ModelAndView crypto () {
+        ModelAndView mav = new ModelAndView("cryptocurrency-quotes");
+        return mav;
+    }
 }

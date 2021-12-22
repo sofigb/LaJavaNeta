@@ -207,7 +207,7 @@ public class EmployeeController {
         return mav;
     }
 
-    @GetMapping("/cryptoAPI/cryptoAPI")
+    @GetMapping("/cryptoAPI") // Preguntar a dani
     public ModelAndView crypto (){
         ModelAndView mav = new ModelAndView("cryptocurrency-quotes");
         return mav;

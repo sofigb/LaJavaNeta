@@ -4,7 +4,7 @@
   xmlns:th="http://www.thymeleaf.org"
   xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
 >
-  <header th:fragment="header" class="app-header fixed-top">
+  <header th:fragment="headerAdminEmployee" class="app-header fixed-top">
     <div class="app-header-inner">
       <div class="container-fluid py-2"></div>
       <!--//container-fluid-->
@@ -18,7 +18,7 @@
           >&times;</a
         >
         <div class="app-branding">
-          <a class="app-logo" th:href="@{/myDashboard}"
+          <a class="app-logo" th:href="@{/workDashboard}"
             ><img
               class="logo-icon me-2"
               th:src="@{assets/images/app-logo.svg}"
@@ -32,7 +32,7 @@
           <ul class="app-menu list-unstyled accordion" id="menu-accordion">
             <li class="nav-item">
               <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-              <a class="nav-link active" th:href="@{/myDashboard}"
+              <a class="nav-link active" th:href="@{/workDashboard}"
                 ><!--en revision-->
                 <span class="nav-icon">
                   <svg
@@ -90,7 +90,7 @@
 
             <li class="nav-item">
               <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-              <a class="nav-link" th:href="@{/myDashboard/profile}">
+              <a class="nav-link" th:href="@{/workDashboard/myData}">
                 <span class="nav-icon">
                   <!--CLASE DISTINTA-->
                   <svg
@@ -116,7 +116,7 @@
 
             <li class="nav-item">
               <!--//Bootstrap Icons: https://icons.getbootstrap.com/ -->
-              <a class="nav-link" th:href="@{/myDashboard/cryptoAPI}">
+              <a class="nav-link" th:href="@{/workDashboard/cryptoAPI}">
                 <span class="nav-icon">
                   <!--CLASE DISTINTA-->
                   <svg

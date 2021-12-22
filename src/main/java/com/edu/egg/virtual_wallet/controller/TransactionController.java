@@ -47,14 +47,14 @@ public class TransactionController {
         return mav;
     }
 
-    @GetMapping("/register/{idAccount}")
-    public ModelAndView register(@PathVariable Long idAccount) {
+    @GetMapping("/register/{id}")
+    public ModelAndView register(@PathVariable Long id) {
         ModelAndView mav = new ModelAndView("transaction-list");
 
         mav.addObject("transaction", new Transaction());
-        mav.addObject("payeeList", pService.findByIdAccountList(idAccount));
-        mav.addObject("listTransaction", tService.findAllTransferByIdAccount(idAccount));
-        mav.addObject("action", "create/" + idAccount);
+        mav.addObject("payeeList", pService.findByIdAccountList(id));
+        mav.addObject("listTransaction", tService.findAllTransferByIdAccount(id));
+        mav.addObject("action", "create/" + id);
         return mav;
     }
 
