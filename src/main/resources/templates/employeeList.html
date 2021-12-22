@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="myDashboard" content="" />
+
+    <title>HOME</title>
+  </head>
+
+  <body>
+    <h1>EMPLOYEES</h1>
+    <a
+      th:href="@{/workDashboard/addEmployee}"
+      role="button"
+      sec:authorize="hasRole('ADMIN')"
+      >ADD EMPLOYEE</a
+    >
+    <form
+      method="POST"
+      th:action="@{/workDashboard/findEmployee}"
+      th:object="${searchEmployee}"
+    >
+      <input
+        type="text"
+        class="form-control form-control-user"
+        name="searchEmployee"
+        placeholder="search by username or email"
+        th:value="${searchEmployee}"
+      />
+      <button class="btn btn-dark mt-3" type="submit">FIND EMPLOYEE</button>
+    </form>
+
+    <div th:if="${employees.isEmpty()}">
+      <h4>THERE ARE NO EMPLOYEES ;-;.</h4>
+    </div>
+    <table th:unless="${employees.isEmpty()}">
+      <thead class="table-secondary text-center">
+        <tr>
+          <th>USERNAME</th>
+          <th>EMAIL</th>
+          <th sec:authorize="hasRole('ADMIN')"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:each="employee : ${employees}">
+          <td th:text="${employee.loginInfo.username}"></td>
+          <td th:text="${employee.contactInfo.email}"></td>
+
+          <td sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/workDashboard/employeeData/__${employee.id}__}">
+              EDIT</a
+            >
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <a class="button" th:href="@{/workDashboard}">GO BACK TO DASHBOARD</a>
+  </body>
+</html>

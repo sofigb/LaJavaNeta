@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <!-- Meta -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Billetera virtual" />
+    <meta name="author" content="Grupo 4 Javaneta" />
+
+    <title>Login - AgroPay</title>
+
+    <!-- FontAwesome JS-->
+    <script
+      defer
+      th:src="@{/assets/plugins/fontawesome/js/all.min.js}"
+    ></script>
+
+    <!-- App CSS -->
+    <link
+      id="theme-style"
+      rel="stylesheet"
+      th:href="@{/assets/css/portal.css}"
+    />
+  </head>
+
+  <body class="app app-login p-0">
+    <div class="row g-0 app-auth-wrapper">
+      <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-5">
+        <div class="d-flex flex-column align-content-end">
+          <div class="app-auth-body mx-auto">
+            <div class="app-auth-branding mb-4">
+              <a class="app-logo" href=""
+                ><img
+                  class="logo-icon me-2"
+                  src="assets/images/app-logo.svg"
+                  alt="logo"
+              /></a>
+            </div>
+
+            <h2 class="auth-heading text-center mb-5">Bienvenid@!!!</h2>
+            <div th:if="${logout}">
+              <div th:text="${logout}"></div>
+            </div>
+            <div th:text="${error}" class="text-danger"></div>
+            <!--class="alert alert-danger m-0 shadow"-->
+            <!--RECIBO ERRORES-->
+
+            <div class="auth-form-container text-start">
+              <form
+                class="auth-form login-form"
+                id="form"
+                th:action="@{/login/check}"
+                method="POST"
+                autocomplete="off"
+                novalidate
+              >
+                <div class="mb-3">
+                  <label class="sr-only" for="signin-username"></label>
+                  <input
+                    id="signin-username"
+                    name="username"
+                    type="text"
+                    class="form-control"
+                    placeholder="Usuario"
+                    required="required"
+                  />
+                </div>
+                <!--//form-group-->
+
+                <div class="mb-3">
+                  <label class="sr-only" for="signin-password"></label>
+                  <input
+                    id="signin-password"
+                    name="password"
+                    type="password"
+                    class="form-control signin-password"
+                    placeholder="Contraseña"
+                    required="required"
+                  />
+                </div>
+                <!--//form-group-->
+
+                <div class="text-center">
+                  <button
+                    type="submit"
+                    class="btn app-btn-primary w-100 theme-btn mx-auto"
+                  >
+                    Iniciar Sesión
+                  </button>
+                </div>
+              </form>
+
+              <hr />
+
+              <div class="text-center mt-2">
+                <a
+                  type="button"
+                  class="btn app-btn-primary w-50 theme-btn mx-auto"
+                  th:href="@{/register}"
+                  >Registrarse</a
+                >
+              </div>
+            </div>
+            <!--//auth-form-container-->
+          </div>
+          <!--//auth-body-->
+          <footer class="app-auth-footer">
+            <div class="social-m">
+              <a href="https://www.linkedin.com/"
+                ><i class="fab fa-linkedin fa-2x"></i
+              ></a>
+              <a href="https://es-la.facebook.com/"
+                ><i class="fab fa-facebook-square fa-2x"></i
+              ></a>
+              <a href="https://www.instagram.com/?hl=es-la"
+                ><i class="fab fa-instagram-square fa-2x"></i
+              ></a>
+            </div>
+            <p>&copy; AgroPay - 2021</p>
+          </footer>
+          <!--//app-auth-footer-->
+        </div>
+        <!--//flex-column-->
+      </div>
+      <!--//auth-main-col-->
+
+      <div
+        class="col-12 col-md-5 col-lg-6 h-100 auth-background-col"
+        style="
+          background-image: url(assets/images/background/smartphone_and_laptop-wallpaper-1280x1024.jpg);
+          background-size: cover;
+        "
+      >
+        <!--div class="auth-background-holder"> <--foto
+		    </div-->
+      </div>
+      <!--//auth-background-col-->
+    </div>
+    <!--//row-->
+  </body>
+</html>

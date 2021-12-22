@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Billetera virtual">
+    <meta name="author" content="Grupo 4 Javaneta">
+
+    <title>Registro - AgroPay</title>
+
+    <!-- FontAwesome JS-->
+    <script defer th:src="@{/assets/plugins/fontawesome/js/all.min.js}"></script>
+
+    <!-- App CSS -->
+    <link id="theme-style" rel="stylesheet" th:href="@{/assets/css/portal.css}">
+
+</head>
+
+<body class="app app-signup p-0">
+<div class="row g-0 app-auth-wrapper">
+    <div class="col-12 col-md-7 col-lg-6 auth-main-col text-center p-4">
+        <div class="d-flex flex-column align-content-end">
+            <div class="app-auth-body mx-auto">
+                <!--div class="app-auth-branding mb-4"><a class="app-logo" href="index.html"><img class="logo-icon me-2" src="assets/images/app-logo.svg" alt="logo"></a></div-->
+
+                <h2 class="auth-heading text-center mb-2">¡Completá tus datos!</h2>
+
+                <!--class="alert alert-danger m-0 shadow"--> <!--RECIBO ERRORES-->
+
+                <div class="auth-form-container text-start mx-auto mt-5">
+                    <div th:text="${error}" class="text-danger"></div>
+                    <form class="auth-form auth-signup-form" method="POST" th:action="@{/register/check}">
+
+                        <div class="customer-details p-1" th:object="${customer}">
+
+                            <div class="m-1">
+                                <label class="sr-only" for="signup-dni"></label>
+                                <input id="signup-dni" name="dni" type="number" class="form-control signup-name" placeholder="DNI" required="required"  th:value="${customer.dni}">
+                            </div>
+
+
+                            <label class="sr-only" for="dateOfBirth"></label>
+                            <input id="dateOfBirth" type="date" class="form-control form-control-user" name="dateOfBirth" placeholder="Fecha de Nacimiento" th:value="${customer.dateOfBirth}"/>
+
+                        </div>
+
+                        <div class="name-details" th:object="${name}">
+
+
+                            <div class="d-flex">
+
+                                <div class="m-1">
+                                    <label class="sr-only" for="signup-fname"></label>
+                                    <input id="signup-fname" name="firstName" type="text" class="form-control signup-name" placeholder="Nombre" required="required" th:value="${name.firstName}">
+                                </div>
+
+                                <div class="m-1">
+                                    <label class="sr-only" for="signup-sname"></label>
+                                    <input id="signup-sname" name="middleName" type="text" class="form-control signup-name" placeholder="Segundo Nombre" required="required" th:value="${name.middleName}">
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex">
+
+                                <div class="m-1">
+                                    <label class="sr-only" for="signup-surname"></label>
+                                    <input id="signup-surname" name="lastName" type="text" class="form-control signup-name" placeholder="Apellido" required="required" th:value="${name.lastName}">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="contact-details" th:object="${contact}">
+
+                            <div class="d-flex">
+
+                                <div class="email m-1">
+                                    <label class="sr-only" for="signup-email"></label>
+                                    <input id="signup-email" name="email" type="email" class="form-control signup-email" placeholder="Email" required="required" th:value="${contact.email}">
+                                </div>
+
+                                <div class="password m-1">
+                                    <label class="sr-only" for="signup-phone"></label>
+                                    <input id="signup-phone" name="phoneNumber" type="number" class="form-control signup-phone" placeholder="Teléfono" required="required" th:value="${contact.phoneNumber}">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="login-details" th:object="${login}">
+
+
+                            <div class="d-flex">
+
+                                <div class="m-1">
+                                    <label class="sr-only" for="signup-username"></label>
+                                    <input id="signup-username" name="username" type="text" class="form-control signup-name" placeholder="Usuario" required="required" th:value="${login.username}">
+                                </div>
+
+                                <div class="password m-1">
+                                    <label class="sr-only" for="signup-password"></label>
+                                    <input id="signup-password" name="password" type="password" class="form-control signup-password" placeholder="Contraseña" required="required" th:value="${login.password}">
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <div class="address-details" th:object="${address}">
+
+
+                            <div class="d-flex">
+
+                                <div class="m-1">
+                                    <label class="sr-only" for="signup-address"></label>
+                                    <input id="signup-address" name="street" type="text" class="form-control signup-name" placeholder="Calle" required="required" th:value="${address.street}">
+                                </div>
+
+                                <div class="m-1">
+                                    <label class="sr-only" for="signup-number"></label>
+                                    <input id="signup-number" name="houseNumber" type="number" class="form-control signup-name" placeholder="Número" required="required" th:value="${address.houseNumber}">
+                                </div>
+
+                            </div>
+
+                            <div class="d-flex">
+
+                                <div class="m-1">
+                                    <label class="sr-only" for="signup-postal-code"></label>
+                                    <input id="signup-postal-code" name="postCode" type="number" class="form-control signup-postal-code" placeholder="Código Postal" required="required" th:value="${address.postCode}">
+                                </div>
+
+                                <div class="m-1">
+                                    <label class="sr-only" for="signup-city"></label>
+                                    <input id="signup-city" name="city" type="text" class="form-control signup-name" placeholder="Ciudad" required="required" th:value="${address.city}">
+                                </div>
+
+                            </div>
+
+
+                        </div>
+
+                        <!--div class="extra mb-2">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="RememberPassword">
+                                <label class="form-check-label" for="RememberPassword">
+                                I agree to Portal's <a href="#" class="app-link">Terms of Service</a> and <a href="#" class="app-link">Privacy Policy</a>.
+                                </label>
+                            </div>
+                        </div--><!--//extra-->
+
+                        <div class="text-center mt-3 p-1">
+                            <button type="submit" class="btn app-btn-primary w-100 theme-btn mx-auto">Registrarse</button>
+                        </div>
+                    </form><!--//auth-form-->
+
+                    <div class="auth-option text-center mt-2 ">Ya ténes una cuenta? <a class="text-link" th:href="@{/myDashboard}">Ingresá</a></div>
+                </div><!--//auth-form-container-->
+            </div><!--//auth-body-->
+
+
+
+
+
+
+
+        </div><!--//flex-column-->
+    </div><!--//auth-main-col-->
+    <div class="col-12 col-md-5 col-lg-6 h-100 auth-background-col">
+        <div class="auth-background-holder">
+        </div>
+        <div class="auth-background-mask"></div>
+        <div class="auth-background-overlay p-3 p-lg-5">
+            <div class="d-flex flex-column align-content-end h-100">
+                <div class="h-100"></div>
+
+            </div>
+        </div><!--//auth-background-overlay-->
+    </div><!--//auth-background-col-->
+
+</div><!--//row-->
+</body>
+</html>

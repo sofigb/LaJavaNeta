@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL8Dialect
+        format_sql: true
+  thymeleaf:
+    cache: false
+  mvc:
+    format:
+      date: yyy-MM-dd
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: ${EMAIL_USERNAME}
+    password: ${EMAIL_PASSWORD}
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            required: true
+            enable: true
+          ssl:
+            trust: smtp.gmail.com
+  main:
+    allow-circular-reference: true
+logging:
+  level:
+    org:
+      springframework:
+        web: debug
+hibernate:
+  cache:
+    use_second_level_cache: false
+    region:
+      factory_class: org.hibernate.cache.ehcache.EhCacheRegionFactory

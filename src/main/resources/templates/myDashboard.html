@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="myDashboard" content="" />
+
+    <title>HOME</title>
+  </head>
+
+  <body class="bg-gradient-primary">
+    <div th:object="${customer}">
+      <h2 th:text="|Hi ${customer.loginInfo.username}!|"></h2>
+      <h3>FULL NAME:</h3>
+      <p
+        th:text="|${customer.fullName.firstName} ${customer.fullName.middleName} ${customer.fullName.lastName}|"
+      ></p>
+      <h3>DNI:</h3>
+      <p th:text="${customer.dni}"></p>
+      <h3>DATE OF BIRTH:</h3>
+      <p th:text="${customer.dateOfBirth}"></p>
+      <h3>ADDRESS:</h3>
+      <p
+        th:text="|${customer.addressInfo.houseNumber} ${customer.addressInfo.street}|"
+      ></p>
+      <p th:text="${customer.addressInfo.postCode}"></p>
+      <p th:text="${customer.addressInfo.city}"></p>
+      <h3>CONTACT DETAILS:</h3>
+      <p th:text="|PhoneNumber: ${customer.contactInfo.phoneNumber}|"></p>
+      <p th:text="|EmailAddress: ${customer.contactInfo.email}|"></p>
+    </div>
+    <br />
+    <a class="button" th:href="@{/myDashboard/profile}">EDIT PROFILE</a>
+    <a class="button" th:href="@{/logout}">LOGOUT</a>
+  </body>
+</html>

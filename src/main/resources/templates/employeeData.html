@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html
+  lang="en"
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
+    <meta name="myDashboard" content="" />
+
+    <title>MY DATA</title>
+  </head>
+
+  <body class="bg-gradient-primary">
+    <div th:object="${employee}">
+      <h2 th:text="|USERNAME: ${employee.loginInfo.username}!|"></h2>
+      <h3>FULL NAME:</h3>
+      <p
+        th:text="|${employee.fullName.firstName} ${employee.fullName.middleName} ${employee.fullName.lastName}|"
+      ></p>
+      <h3>CONTACT DETAILS:</h3>
+      <p th:text="|PhoneNumber: ${employee.contactInfo.phoneNumber}|"></p>
+      <p th:text="|EmailAddress: ${employee.contactInfo.email}|"></p>
+    </div>
+    <br />
+    <a class="button" th:href="@{/workDashboard/myData/changePassword}"
+      >CHANGE PASSWORD</a
+    >
+    <br />
+    <a class="button" th:href="@{/workDashboard}">GO BACK TO DASHBOARD</a>
+  </body>
+</html>
