@@ -43,20 +43,15 @@
     ></header>
 
     <div class="app-wrapper">
-      <form
-        th:action="@{__${postPath}__}"
-        method="POST"
-        class="customer"
-        th:object="${customer}"
-      >
-        <input type="hidden" th:field="*{id}" />
+      <form th:action="@{__${postPath}__}" method="POST" class="employee">
+        <input type="hidden" th:value="${id}" />
         <div class="app-content pt-3 p-md-3 p-lg-4 form-group">
           <div class="container-xl">
             <h1 class="app-page-title" sec:authorize="hasRole('CUSTOMER')">
               Mis Datos
             </h1>
-            <h1 class="app-page-title" sec:authorize="hasRole('EMPLOYEE')">
-              Datos Cliente
+            <h1 class="app-page-title" sec:authorize="hasRole('ADMIN')">
+              Datos Empleado
             </h1>
             <div class="row gy-4">
               <div class="col-12 col-lg-6">
@@ -131,15 +126,15 @@
                       >
                         <div class="col-auto">
                           <div class="item-label">
-                            <strong>Apellido</strong>
+                            <strong>Segundo Nombre</strong>
                           </div>
                           <div class="item-data">
                             <input
                               type="text"
                               id="item-data"
-                              name="lastName"
+                              name="middleName"
                               class="form-control item-data"
-                              th:value="${name.lastName}"
+                              th:value="${name.middleName}"
                             />
                           </div>
                         </div>
@@ -158,48 +153,22 @@
                         class="row justify-content-between align-items-center"
                       >
                         <div class="col-auto">
-                          <div class="item-label"><strong>DNI</strong></div>
-                          <div class="item-data">
-                            <input
-                              type="number"
-                              id="item-data"
-                              name="dni"
-                              class="form-control item-data"
-                              th:value="${customer.dni}"
-                            />
-                          </div>
-                        </div>
-                        <!--//col-->
-                        <div class="col text-end">
-                          <!--a class="btn-sm app-btn-secondary" href="#">Change</a-->
-                        </div>
-                        <!--//col-->
-                      </div>
-                      <!--//row-->
-                    </div>
-                    <!--//item-->
-
-                    <div class="item border-bottom py-3">
-                      <div
-                        class="row justify-content-between align-items-center"
-                      >
-                        <div class="col-auto">
                           <div class="item-label">
-                            <strong>Fecha Nacimiento</strong>
+                            <strong>Apellido</strong>
                           </div>
                           <div class="item-data">
                             <input
-                              type="date"
+                              type="text"
                               id="item-data"
-                              name="dateOfBirth"
+                              name="lastName"
                               class="form-control item-data"
-                              th:value="${customer.dateOfBirth}"
+                              th:value="${name.lastName}"
                             />
                           </div>
                         </div>
                         <!--//col-->
                         <div class="col text-end">
-                          <!--a class="btn-sm app-btn-secondary" href="#">Change</a-->
+                          <!--a class="btn-sm app-btn-secondary"href="#">Change</a-->
                         </div>
                         <!--//col-->
                       </div>
@@ -273,7 +242,6 @@
                 <!--//app-card-->
               </div>
               <!--//col-->
-
               <div class="col-12 col-lg-6">
                 <div
                   class="
@@ -283,162 +251,7 @@
                     flex-column
                     align-items-start
                   "
-                  th:object="${address}"
-                >
-                  <div class="app-card-header p-3 border-bottom-0">
-                    <div class="row align-items-center gx-3">
-                      <div class="col-auto">
-                        <div class="app-icon-holder">
-                          <svg
-                            width="1em"
-                            height="1em"
-                            viewBox="0 0 16 16"
-                            class="bi bi-sliders"
-                            fill="currentColor"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M11.5 2a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM9.05 3a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0V3h9.05zM4.5 7a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zM2.05 8a2.5 2.5 0 0 1 4.9 0H16v1H6.95a2.5 2.5 0 0 1-4.9 0H0V8h2.05zm9.45 4a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm-2.45 1a2.5 2.5 0 0 1 4.9 0H16v1h-2.05a2.5 2.5 0 0 1-4.9 0H0v-1h9.05z"
-                            />
-                          </svg>
-                        </div>
-                        <!--//icon-holder-->
-                      </div>
-                      <!--//col-->
-                      <div class="col-auto">
-                        <h4 class="app-card-title">Dirección</h4>
-                      </div>
-                      <!--//col-->
-                    </div>
-                    <!--//row-->
-                  </div>
-                  <!--//app-card-header-->
-                  <div class="app-card-body px-4 w-100">
-                    <div class="item border-bottom py-3">
-                      <div
-                        class="row justify-content-between align-items-center"
-                      >
-                        <div class="col-auto">
-                          <div class="item-label"><strong>Calle</strong></div>
-                          <div class="item-data">
-                            <input
-                              type="text"
-                              id="item-data"
-                              name="street"
-                              class="form-control item-data"
-                              th:value="${address.street}"
-                            />
-                          </div>
-                        </div>
-                        <!--//col-->
-                        <div class="col text-end">
-                          <!--a class="btn-sm app-btn-secondary" href="#">Cambiar</a-->
-                        </div>
-                        <!--//col-->
-                      </div>
-                      <!--//row-->
-                    </div>
-                    <!--//item-->
-
-                    <div class="item border-bottom py-3">
-                      <div
-                        class="row justify-content-between align-items-center"
-                      >
-                        <div class="col-auto">
-                          <div class="item-label"><strong>Número</strong></div>
-                          <div class="item-data">
-                            <input
-                              type="number"
-                              id="item-data"
-                              name="houseNumber"
-                              class="form-control item-data"
-                              th:value="${address.houseNumber}"
-                            />
-                          </div>
-                        </div>
-                        <!--//col-->
-                        <div class="col text-end">
-                          <!--a class="btn-sm app-btn-secondary" href="#">Change</a-->
-                        </div>
-                        <!--//col-->
-                      </div>
-                      <!--//row-->
-                    </div>
-                    <!--//item-->
-
-                    <div class="item border-bottom py-3">
-                      <div
-                        class="row justify-content-between align-items-center"
-                      >
-                        <div class="col-auto">
-                          <div class="item-label">
-                            <strong>Código Postal</strong>
-                          </div>
-                          <div class="item-data">
-                            <input
-                              type="text"
-                              id="item-data"
-                              name="postCode"
-                              class="form-control item-data"
-                              th:value="${address.postCode}"
-                            />
-                          </div>
-                        </div>
-                        <!--//col-->
-                        <div class="col text-end">
-                          <!--a class="btn-sm app-btn-secondary" href="#">Change</a-->
-                        </div>
-                        <!--//col-->
-                      </div>
-                      <!--//row-->
-                    </div>
-                    <!--//item-->
-                    <div class="item border-bottom py-3">
-                      <div
-                        class="row justify-content-between align-items-center"
-                      >
-                        <div class="col-auto">
-                          <div class="item-label"><strong>Ciudad</strong></div>
-                          <div class="item-data">
-                            <input
-                              type="text"
-                              id="item-data"
-                              name="city"
-                              class="form-control item-data"
-                              th:value="${address.city}"
-                            />
-                          </div>
-                        </div>
-                        <!--//col-->
-                        <div class="col text-end">
-                          <!--a class="btn-sm app-btn-secondary" href="#">Change</a-->
-                        </div>
-                        <!--//col-->
-                      </div>
-                      <!--//row-->
-                    </div>
-                    <!--//item-->
-                  </div>
-                  <!--//app-card-body-->
-                  <div class="app-card-footer p-4 mt-auto">
-                    <!--a class="btn app-btn-secondary" href="#">Manage Preferences</a-->
-                  </div>
-                  <!--//app-card-footer-->
-                </div>
-                <!--//app-card-->
-              </div>
-              <!--//col-->
-              <div class="col-12 col-lg-6">
-                <div
-                  class="
-                    app-card app-card-account
-                    shadow-sm
-                    d-flex
-                    flex-column
-                    align-items-start
-                  "
-                  th:object="${login}"
+                  th:object="${username}"
                 >
                   <div class="app-card-header p-3 border-bottom-0">
                     <div class="row align-items-center gx-3">
@@ -486,7 +299,7 @@
                               id="item-data"
                               name="username"
                               class="form-control item-data"
-                              th:value="${login.username}"
+                              th:value="${username}"
                             />
                           </div>
                         </div>
@@ -507,20 +320,7 @@
                           <div class="item-label">
                             <strong>Contraseña</strong>
                           </div>
-                          <div th:unless="${login.password != null}">
-                            <div class="item-data">
-                              <input
-                                type="password"
-                                id="item-data"
-                                name="password"
-                                class="form-control item-data"
-                                th:value="${login.password}"
-                              />
-                            </div>
-                          </div>
-                          <div th:if="${login.password != null}">
-                            <div class="item-data">••••••••</div>
-                          </div>
+                          <div class="item-data">••••••••</div>
                         </div>
                         <!--//col-->
                         <div class="col text-end">
@@ -536,98 +336,6 @@
 
                   <div class="app-card-footer p-4 mt-auto">
                     <!--a class="btn app-btn-secondary" href="#">Manage Security</a-->
-                  </div>
-                  <!--//app-card-footer-->
-                </div>
-                <!--//app-card-->
-              </div>
-              <div class="col-12 col-lg-6">
-                <div
-                  class="
-                    app-card app-card-account
-                    shadow-sm
-                    d-flex
-                    flex-column
-                    align-items-start
-                  "
-                >
-                  <div class="app-card-header p-3 border-bottom-0">
-                    <div class="row align-items-center gx-3">
-                      <div class="col-auto">
-                        <div class="app-icon-holder">
-                          <svg
-                            width="1em"
-                            height="1em"
-                            viewBox="0 0 16 16"
-                            class="bi bi-credit-card"
-                            fill="currentColor"
-                            xmlns="http://www.w3.org/2000/svg"
-                          >
-                            <path
-                              fill-rule="evenodd"
-                              d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"
-                            />
-                            <path
-                              d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"
-                            />
-                          </svg>
-                        </div>
-                        <!--//icon-holder-->
-                      </div>
-                      <!--//col-->
-                      <div class="col-auto">
-                        <h4 class="app-card-title">Métodos de Pago</h4>
-                      </div>
-                      <!--//col-->
-                    </div>
-                    <!--//row-->
-                  </div>
-                  <!--//app-card-header-->
-                  <div class="app-card-body px-4 w-100">
-                    <div class="item border-bottom py-3">
-                      <div
-                        class="row justify-content-between align-items-center"
-                      >
-                        <div class="col-auto">
-                          <div class="item-label">
-                            <i class="fab fa-cc-visa me-2"></i
-                            ><strong>Tarjeta de Débito</strong>
-                          </div>
-                          <div class="item-data">1234*******5678</div>
-                        </div>
-                        <!--//col-->
-                        <div class="col text-end">
-                          <!--a class="btn-sm app-btn-secondary" href="#">Edit</a-->
-                        </div>
-                        <!--//col-->
-                      </div>
-                      <!--//row-->
-                    </div>
-                    <!--//item-->
-                    <div class="item border-bottom py-3">
-                      <div
-                        class="row justify-content-between align-items-center"
-                      >
-                        <div class="col-auto">
-                          <div class="item-label">
-                            <i class="fab fa-paypal me-2"></i
-                            ><strong>PayPal</strong>
-                          </div>
-                          <div class="item-data">No conectado</div>
-                        </div>
-                        <!--//col-->
-                        <div class="col text-end">
-                          <!--a class="btn-sm app-btn-secondary" href="#">Connect</a-->
-                        </div>
-                        <!--//col-->
-                      </div>
-                      <!--//row-->
-                    </div>
-                    <!--//item-->
-                  </div>
-                  <!--//app-card-body-->
-                  <div class="app-card-footer p-4 mt-auto">
-                    <!--a class="btn app-btn-secondary" href="#">Manage Payment</a-->
                   </div>
                   <!--//app-card-footer-->
                 </div>

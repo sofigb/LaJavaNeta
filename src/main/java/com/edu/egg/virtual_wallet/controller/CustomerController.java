@@ -43,7 +43,7 @@ public class CustomerController {
 
     @GetMapping("/profile")
     public ModelAndView customerProfile(HttpSession session) throws InputException {
-        ModelAndView mav = new ModelAndView("editCustomerProfileDana");
+        ModelAndView mav = new ModelAndView("editCustomerProfile");
 
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
         Customer customer = customerService.returnCustomer(idCustomer);
@@ -53,8 +53,8 @@ public class CustomerController {
         mav.addObject("address", customer.getAddressInfo());
         mav.addObject("contact", customer.getContactInfo());
         mav.addObject("name", customer.getFullName());
-        mav.addObject("username", customer.getLoginInfo().getUsername());
-        mav.addObject("defaultDashboardPath", "/myDashboard");
+        mav.addObject("login", customer.getLoginInfo());
+        //mav.addObject("defaultDashboardPath", "/myDashboard");
 
         return mav;
     }
@@ -62,10 +62,10 @@ public class CustomerController {
     @PostMapping("/profile/edit")
     public RedirectView editCustomerProfile(@ModelAttribute Customer customer, @ModelAttribute Address address,
                                             @ModelAttribute("contact") Contact contact, @ModelAttribute("name") Name name,
-                                            @RequestParam String username, HttpSession session) throws InputException {
+                                            @ModelAttribute("login") Login login, HttpSession session) throws InputException {
 
         Integer idCustomer = customerService.findSessionIdCustomer((Integer) session.getAttribute("id"));
-        customerService.editCustomer(customer, idCustomer, address, contact, name, username);
+        customerService.editCustomer(customer, idCustomer, address, contact, name, login.getUsername());
         return new RedirectView("/myDashboard");
     }
 

@@ -56,11 +56,12 @@ public class CustomerService {
         try {
             checkCustomerDetails(newCustomer.getDni(), newCustomer.getDateOfBirth(), true);
 
-            newCustomer.setAddressInfo(addressService.createAddress(address));
+
             newCustomer.setFullName(nameService.createName(name));
             newCustomer.setContactInfo(contactService.createContact(contact));
             newCustomer.setLoginInfo(loginService.createLogin(login, "CUSTOMER"));
             newCustomer.setActive(true);
+            newCustomer.setAddressInfo(addressService.createAddress(address));
             customerRepository.save(newCustomer);
             accountService.createAccount(CurrencyType.PESO_ARG, customerRepository.findCustomerByDni(newCustomer.getDni()));
 

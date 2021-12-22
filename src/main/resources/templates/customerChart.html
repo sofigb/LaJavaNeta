@@ -36,7 +36,7 @@
         <div class="container-xl">
           <div class="row g-3 mb-4 align-items-center justify-content-between">
             <div class="col-auto">
-              <h1 class="app-page-title mb-0">Empleados</h1>
+              <h1 class="app-page-title mb-0">Clientes</h1>
             </div>
             <div class="col-auto">
               <div class="page-utilities">
@@ -52,22 +52,22 @@
                     <form
                       class="table-search-form row gx-1 align-items-center"
                       method="POST"
-                      th:action="@{/workDashboard/findEmployee}"
-                      th:object="${searchEmployee}"
+                      th:action="@{/workDashboard/findCustomer}"
+                      th:object="${searchCustomer}"
                     >
                       <div class="col-auto">
                         <input
                           type="text"
                           id="search-orders"
-                          name="searchEmployee"
+                          name="searchCustomer"
                           class="form-control search-orders"
                           placeholder="search by username or email"
-                          th:value="${searchEmployee}"
+                          th:value="${searchCustomer}"
                         />
                       </div>
                       <div class="col-auto">
                         <button type="submit" class="btn app-btn-secondary">
-                          FIND EMPLOYEE
+                          Buscar Cliente
                         </button>
                       </div>
                     </form>
@@ -94,30 +94,32 @@
                   <div class="table-responsive">
                     <table
                       class="table app-table-hover mb-0 text-left"
-                      th:unless="${employees.isEmpty()}"
+                      th:unless="${customers.isEmpty()}"
                     >
                       <thead>
                         <tr>
+                          <th class="cell">DNI</th>
                           <th class="cell">Username</th>
                           <th class="cell">Email</th>
                           <th class="cell">Acciones</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr th:each="employee : ${employees}">
+                        <tr th:each="customer : ${customers}">
+                          <td class="cell" th:text="${customer.dni}"></td>
                           <td
                             class="cell"
-                            th:text="${employee.loginInfo.username}"
+                            th:text="${customer.loginInfo.username}"
                           ></td>
                           <td
                             class="cell"
-                            th:text="${employee.contactInfo.email}"
+                            th:text="${customer.contactInfo.email}"
                           ></td>
-                          <td class="cell" sec:authorize="hasRole('ADMIN')">
+                          <td class="cell" sec:authorize="hasRole('EMPLOYEE')">
                             <a
                               class="btn-sm app-btn-secondary"
-                              th:href="@{/workDashboard/employeeData/__${employee.id}__}"
-                              >Modificar</a
+                              th:href="@{/workDashboard/updateCustomer/__${customer.id}__}"
+                              >Ver mas</a
                             >
                           </td>
                         </tr>
@@ -134,6 +136,16 @@
           </div>
         </div>
         <!--//container-fluid-->
+        <div class="mt-3 container">
+          <div class="col-md-12 text-center btn-group" style="width: 100%">
+            <a
+              class="btn app-btn-secondary btn-block"
+              th:href="@{/workDashboard/registerCustomer}"
+              sec:authorize="hasRole('EMPLOYEE')"
+              >Registrar Cliente</a
+            >
+          </div>
+        </div>
       </div>
       <!--//app-content-->
 

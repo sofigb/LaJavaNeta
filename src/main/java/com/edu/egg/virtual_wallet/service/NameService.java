@@ -57,7 +57,7 @@ public class NameService {
         Validation.nullCheck(lastName, "Last Name");
 
         Validation.validNameCheck(firstName, "First Name");
-        Validation.validNameCheck(middleName, "Middle Name");
+        if (middleName != null) Validation.validNameCheck(middleName, "Middle Name");
         Validation.validNameCheck(lastName, "Last Name");
     }
 
