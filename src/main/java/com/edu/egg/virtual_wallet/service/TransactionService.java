@@ -53,7 +53,7 @@ public class TransactionService {
 
                     break;
                 case DEPOSIT:
-                    aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
+                    //aService.transaction(transactions.getSenderAccount().getId(), (transactions.getSenderAccount().getBalance() + transactions.getAmount()));
 
                     if (account != null) {
                         balance = account.getBalance() + transactions.getAmount();
