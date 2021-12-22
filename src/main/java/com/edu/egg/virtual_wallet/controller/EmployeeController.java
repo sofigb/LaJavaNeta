@@ -9,6 +9,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 import javax.servlet.http.HttpSession;
@@ -80,26 +81,28 @@ public class EmployeeController {
 
     @PostMapping("/findCustomer")
     @PreAuthorize("hasRole('EMPLOYEE')")
-    public RedirectView findCustomer(@RequestParam String searchCustomer) { // SEARCH FOR CUSTOMER BY USERNAME + EMAIL + DNI
+    public RedirectView findCustomer(@RequestParam String searchCustomer, RedirectAttributes attributes) { // SEARCH FOR CUSTOMER BY USERNAME + EMAIL + DNI
         try {
             Integer idCustomer = customerService.
                     searchCustomerByUsernameEmailOrDni(searchCustomer, searchCustomer, searchCustomer);
             return new RedirectView("/workDashboard/updateCustomer/" + idCustomer);
 
-        } catch (InputException e) {
-            return new RedirectView("/workDashboard");
+        } catch (Exception e) {
+            attributes.addFlashAttribute("error",e.getMessage());
+            return new RedirectView("/workDashboard/show/customers");
         }
     }
 
     @PostMapping("/findEmployee")
     @PreAuthorize("hasRole('ADMIN')")
-    public RedirectView findEmployee(@RequestParam String searchEmployee) { // SEARCH FOR EMPLOYEE BY USERNAME + EMAIL
+    public RedirectView findEmployee(@RequestParam String searchEmployee, RedirectAttributes attributes) { // SEARCH FOR EMPLOYEE BY USERNAME + EMAIL
         try {
             Integer idEmployee = employeeService.searchEmployeeByUsernameOrEmail(searchEmployee, searchEmployee);
             return new RedirectView("/workDashboard/employeeData/" + idEmployee);
 
-        } catch (InputException e) {
-            return new RedirectView("/workDashboard");
+        } catch (Exception e) {
+            attributes.addFlashAttribute("error",e.getMessage());
+            return new RedirectView("/workDashboard/show/employees");
         }
     }
 
@@ -209,13 +212,16 @@ public class EmployeeController {
     @GetMapping("/show/employees")
     @PreAuthorize("hasRole('ADMIN')")
     public ModelAndView showEmployees() throws InputException {
-        try {
+
         ModelAndView mav = new ModelAndView("employeeChart");
+
+        /*if(flashMap != null){
+            mav.addObject("error", flashMap.get("error"));
+
+        }*/
+
         mav.addObject("employees", employeeService.getEmployeeList());
         return mav;
-    } catch (Exception e) {
-        throw new InputException(e.getMessage());
-    }
     }
 
     @GetMapping("/show/customers")
